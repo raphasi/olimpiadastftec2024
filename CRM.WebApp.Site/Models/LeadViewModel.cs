@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CRM.WebApp.Site.ViewModels;
+namespace CRM.WebApp.Site.Models;
 
 public class LeadViewModel
 {

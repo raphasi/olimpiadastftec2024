@@ -8,82 +8,82 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class LeadController : Controller
+    public class ActivityController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadController(IHttpClientFactory httpClientFactory)
+        public ActivityController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        // GET: Leads
+        // GET: Activities
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync("api/lead");
+            var response = await client.GetAsync("api/activity");
             response.EnsureSuccessStatusCode();
 
-            var leads = await response.Content.ReadFromJsonAsync<IEnumerable<LeadViewModel>>();
-            return View(leads);
+            var activities = await response.Content.ReadFromJsonAsync<IEnumerable<ActivityViewModel>>();
+            return View(activities);
         }
 
-        // GET: Leads/Details/5
+        // GET: Activities/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/activity/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var activity = await response.Content.ReadFromJsonAsync<ActivityViewModel>();
+            return View(activity);
         }
 
-        // GET: Leads/Create
+        // GET: Activities/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Leads/Create
+        // POST: Activities/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(LeadViewModel leadViewModel)
+        public async Task<IActionResult> Create(ActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PostAsJsonAsync("api/lead", leadViewModel);
+                var response = await client.PostAsJsonAsync("api/activity", activityViewModel);
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(leadViewModel);
+            return View(activityViewModel);
         }
 
-        // GET: Leads/Edit/5
+        // GET: Activities/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/activity/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var activity = await response.Content.ReadFromJsonAsync<ActivityViewModel>();
+            return View(activity);
         }
 
-        // POST: Leads/Edit/5
+        // POST: Activities/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, LeadViewModel leadViewModel)
+        public async Task<IActionResult> Edit(Guid id, ActivityViewModel activityViewModel)
         {
-            if (id != leadViewModel.LeadID)
+            if (id != activityViewModel.ActivityID)
             {
                 return BadRequest();
             }
@@ -91,7 +91,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PutAsJsonAsync($"api/lead/{id}", leadViewModel);
+                var response = await client.PutAsJsonAsync($"api/activity/{id}", activityViewModel);
                 if (!response.IsSuccessStatusCode)
                 {
                     return NotFound();
@@ -99,30 +99,30 @@ namespace CRM.WebApp.Site.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(leadViewModel);
+            return View(activityViewModel);
         }
 
-        // GET: Leads/Delete/5
+        // GET: Activities/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/activity/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var activity = await response.Content.ReadFromJsonAsync<ActivityViewModel>();
+            return View(activity);
         }
 
-        // POST: Leads/Delete/5
+        // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.DeleteAsync($"api/lead/{id}");
+            var response = await client.DeleteAsync($"api/activity/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();

@@ -1,14 +1,13 @@
-﻿<!-- Views/Leads/Index.cshtml -->
-@model IEnumerable<CRM.WebApp.Site.Models.LeadViewModel>
+﻿@model IEnumerable<CRM.WebApp.Site.Models.NoteViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
-    <h2 class="text-center">Leads</h2>
+    <h2 class="text-center">Notas</h2>
     <p class="text-center">
-        Nessa seção ficam armazenados todos os leads do sistema CRM.
+        Nessa seção ficam armazenadas todas as notas relacionadas aos clientes, atividades e oportunidades.
     </p>
 </div>
 <a asp-action="Create" class="btn btn-primary">
-    Adicionar lead
+    Adicionar nota
 </a>
 <div class="row mt-5">
     <div class="col-md-12">
@@ -21,31 +20,25 @@
                 <table id="datatable" class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Nome Completo</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
+                            <th>Conteúdo</th>
                             <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var lead in Model)
+                        @foreach (var note in Model)
                         {
                             <tr>
-                                <td>@lead.FullName</td>
-                                <td>@lead.Email</td>
-                                <td>@lead.Telephone</td>
+                                <td>@note.Content</td>
                                 <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = lead.LeadID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = lead.LeadID })"><i class="tim-icons icon-simple-remove"></i></a>
+                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = note.NoteID })"><i class="tim-icons icon-pencil"></i></a>
+                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = note.NoteID })"><i class="tim-icons icon-simple-remove"></i></a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Nome Completo</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
+                            <th>Conteúdo</th>
                             <th class="disabled-sorting text-right">Ações</th>
                         </tr>
                     </tfoot>

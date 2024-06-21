@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CRM.WebApp.Site.Models.QuoteViewModel>
+
+<div class="col-md-8 ml-auto mr-auto">
+    <h2 class="text-center">Cotações</h2>
+    <p class="text-center">
+        Nessa seção ficam armazenadas todas as cotações de venda de ingresso das olimpíadas.
+    </p>
+</div>
+<a asp-action="Create" class="btn btn-primary">
+    Adicionar cotação
+</a>
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                </div>
+
+                <table id="datatable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Oportunidade</th>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Desconto</th>
+                            <th>Preço Total</th>
+                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var quote in Model)
+                        {
+                            <tr>
+                                <td>@quote.OpportunityID</td>
+                                <td>@quote.ProductID</td>
+                                <td>@quote.Quantity</td>
+                                <td>@quote.Discount</td>
+                                <td>@quote.TotalPrice</td>
+                                <td class="text-right">
+                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = quote.QuoteID })"><i class="tim-icons icon-pencil"></i></a>
+                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = quote.QuoteID })"><i class="tim-icons icon-simple-remove"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Oportunidade</th>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Desconto</th>
+                            <th>Preço Total</th>
+                            <th class="disabled-sorting text-right">Ações</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

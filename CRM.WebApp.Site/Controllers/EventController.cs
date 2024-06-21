@@ -1,89 +1,89 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CRM.WebApp.Site.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class LeadController : Controller
+    public class EventController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadController(IHttpClientFactory httpClientFactory)
+        public EventController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        // GET: Leads
+        // GET: Events
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync("api/lead");
+            var response = await client.GetAsync("api/event");
             response.EnsureSuccessStatusCode();
 
-            var leads = await response.Content.ReadFromJsonAsync<IEnumerable<LeadViewModel>>();
-            return View(leads);
+            var events = await response.Content.ReadFromJsonAsync<IEnumerable<EventViewModel>>();
+            return View(events);
         }
 
-        // GET: Leads/Details/5
+        // GET: Events/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/event/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
+            return View(eventItem);
         }
 
-        // GET: Leads/Create
+        // GET: Events/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Leads/Create
+        // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(LeadViewModel leadViewModel)
+        public async Task<IActionResult> Create(EventViewModel eventViewModel)
         {
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PostAsJsonAsync("api/lead", leadViewModel);
+                var response = await client.PostAsJsonAsync("api/event", eventViewModel);
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(leadViewModel);
+            return View(eventViewModel);
         }
 
-        // GET: Leads/Edit/5
+        // GET: Events/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/event/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
+            return View(eventItem);
         }
 
-        // POST: Leads/Edit/5
+        // POST: Events/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, LeadViewModel leadViewModel)
+        public async Task<IActionResult> Edit(Guid id, EventViewModel eventViewModel)
         {
-            if (id != leadViewModel.LeadID)
+            if (id != eventViewModel.EventID)
             {
                 return BadRequest();
             }
@@ -91,7 +91,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PutAsJsonAsync($"api/lead/{id}", leadViewModel);
+                var response = await client.PutAsJsonAsync($"api/event/{id}", eventViewModel);
                 if (!response.IsSuccessStatusCode)
                 {
                     return NotFound();
@@ -99,30 +99,30 @@ namespace CRM.WebApp.Site.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(leadViewModel);
+            return View(eventViewModel);
         }
 
-        // GET: Leads/Delete/5
+        // GET: Events/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.GetAsync($"api/lead/{id}");
+            var response = await client.GetAsync($"api/event/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
-            var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
-            return View(lead);
+            var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
+            return View(eventItem);
         }
 
-        // POST: Leads/Delete/5
+        // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
-            var response = await client.DeleteAsync($"api/lead/{id}");
+            var response = await client.DeleteAsync($"api/event/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();

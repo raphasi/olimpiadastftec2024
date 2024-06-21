@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CRM.WebApp.Site.ViewModels;
+using CRM.WebApp.Site.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

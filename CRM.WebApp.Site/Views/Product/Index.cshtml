@@ -1,13 +1,13 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.OpportunityViewModel>
+﻿@model IEnumerable<CRM.WebApp.Site.Models.ProductViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
-    <h2 class="text-center">Oportunidades</h2>
+    <h2 class="text-center">Produtos</h2>
     <p class="text-center">
-        Nessa seção ficam armazenadas todas as oportunidades de venda de ingresso das olimpíadas.
+        Nessa seção ficam armazenados todos os produtos disponíveis para venda.
     </p>
 </div>
 <a asp-action="Create" class="btn btn-primary">
-    Adicionar oportunidade
+    Adicionar produto
 </a>
 <div class="row mt-5">
     <div class="col-md-12">
@@ -20,31 +20,34 @@
                 <table id="datatable" class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Nome</th>
                             <th>Descrição</th>
-                            <th>Valor Estimado</th>
-                            <th>Data de Fechamento Esperada</th>
+                            <th>Preço</th>
+                            <th>Inventário</th>
                             <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var opportunity in Model)
+                        @foreach (var product in Model)
                         {
                             <tr>
-                                <td>@opportunity.Description</td>
-                                <td>@opportunity.EstimatedValue</td>
-                                <td>@opportunity.ExpectedCloseDate</td>
+                                <td>@product.Name</td>
+                                <td>@product.Description</td>
+                                <td>@product.Price</td>
+                                <td>@product.Inventory</td>
                                 <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = opportunity.OpportunityID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = opportunity.OpportunityID })"><i class="tim-icons icon-simple-remove"></i></a>
+                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = product.ProductID })"><i class="tim-icons icon-pencil"></i></a>
+                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = product.ProductID })"><i class="tim-icons icon-simple-remove"></i></a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>Nome</th>
                             <th>Descrição</th>
-                            <th>Valor Estimado</th>
-                            <th>Data de Fechamento Esperada</th>
+                            <th>Preço</th>
+                            <th>Inventário</th>
                             <th class="disabled-sorting text-right">Ações</th>
                         </tr>
                     </tfoot>

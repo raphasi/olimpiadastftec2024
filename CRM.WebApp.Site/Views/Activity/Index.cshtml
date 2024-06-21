@@ -1,14 +1,13 @@
-﻿<!-- Views/Leads/Index.cshtml -->
-@model IEnumerable<CRM.WebApp.Site.Models.LeadViewModel>
+﻿@model IEnumerable<CRM.WebApp.Site.Models.ActivityViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
-    <h2 class="text-center">Leads</h2>
+    <h2 class="text-center">Atividades</h2>
     <p class="text-center">
-        Nessa seção ficam armazenados todos os leads do sistema CRM.
+        Nessa seção ficam armazenadas todas as atividades relacionadas às oportunidades de venda de ingresso das olimpíadas.
     </p>
 </div>
 <a asp-action="Create" class="btn btn-primary">
-    Adicionar lead
+    Adicionar atividade
 </a>
 <div class="row mt-5">
     <div class="col-md-12">
@@ -21,31 +20,28 @@
                 <table id="datatable" class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Nome Completo</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
                             <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var lead in Model)
+                        @foreach (var activity in Model)
                         {
                             <tr>
-                                <td>@lead.FullName</td>
-                                <td>@lead.Email</td>
-                                <td>@lead.Telephone</td>
+                                <td>@activity.Type</td>
+                                <td>@activity.Description</td>
                                 <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = lead.LeadID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = lead.LeadID })"><i class="tim-icons icon-simple-remove"></i></a>
+                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = activity.ActivityID })"><i class="tim-icons icon-pencil"></i></a>
+                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = activity.ActivityID })"><i class="tim-icons icon-simple-remove"></i></a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Nome Completo</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
                             <th class="disabled-sorting text-right">Ações</th>
                         </tr>
                     </tfoot>

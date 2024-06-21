@@ -1,16 +1,15 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace CRM.WebApp.Site.Models;
 
-public class OpportunityViewModel
+public class ProductViewModel
 {
-    public Guid OpportunityID { get; set; }
-    public Guid? CustomerID { get; set; }
-    public Guid? LeadID { get; set; }
+    public Guid ProductID { get; set; }
+    public string Name { get; set; }
     public string Description { get; set; }
-    public decimal? EstimatedValue { get; set; }
-    public DateTime? ExpectedCloseDate { get; set; }
+    public decimal? Price { get; set; }
+    public string ImageUrl { get; set; }
+    public int? Inventory { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? ModifiedBy { get; set; }
     public DateTime? CreatedOn { get; set; }
