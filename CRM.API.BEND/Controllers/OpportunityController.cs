@@ -1,82 +1,78 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers
+namespace CRM.API.BEND.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OpportunityController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OpportunityController : ControllerBase
+    private readonly IOpportunityService _opportunityService;
+
+    public OpportunityController(IOpportunityService opportunityService)
     {
-        private readonly IOpportunityRepository _opportunityRepository;
+        _opportunityService = opportunityService;
+    }
 
-        public OpportunityController(IOpportunityRepository opportunityRepository)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OpportunityDTO>> GetOpportunityById(Guid id)
+    {
+        var opportunity = await _opportunityService.GetByIdAsync(id);
+        if (opportunity == null)
         {
-            _opportunityRepository = opportunityRepository;
+            return NotFound();
+        }
+        return Ok(opportunity);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OpportunityDTO>>> GetAllOpportunities()
+    {
+        var opportunities = await _opportunityService.GetAllAsync();
+        return Ok(opportunities);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddOpportunity([FromBody] OpportunityDTO opportunity)
+    {
+        if (opportunity == null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Opportunity>> GetOpportunityById(Guid id)
+        await _opportunityService.AddAsync(opportunity);
+        return CreatedAtAction(nameof(GetOpportunityById), new { id = opportunity.OpportunityID }, opportunity);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateOpportunity(Guid id, [FromBody] OpportunityDTO opportunity)
+    {
+        if (opportunity == null || opportunity.OpportunityID != id)
         {
-            var opportunity = await _opportunityRepository.GetOpportunityByIdAsync(id);
-            if (opportunity == null)
-            {
-                return NotFound();
-            }
-            return Ok(opportunity);
+            return BadRequest();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Opportunity>>> GetAllOpportunities()
+        var existingOpportunity = await _opportunityService.GetByIdAsync(id);
+        if (existingOpportunity == null)
         {
-            var opportunities = await _opportunityRepository.GetAllOpportunitiesAsync();
-            return Ok(opportunities);
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddOpportunity([FromBody] Opportunity opportunity)
-        {
-            if (opportunity == null)
-            {
-                return BadRequest();
-            }
+        await _opportunityService.UpdateAsync(opportunity);
+        return NoContent();
+    }
 
-            await _opportunityRepository.AddOpportunityAsync(opportunity);
-            return CreatedAtAction(nameof(GetOpportunityById), new { id = opportunity.OpportunityID }, opportunity);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteOpportunity(Guid id)
+    {
+        var existingOpportunity = await _opportunityService.GetByIdAsync(id);
+        if (existingOpportunity == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateOpportunity(Guid id, [FromBody] Opportunity opportunity)
-        {
-            if (opportunity == null || opportunity.OpportunityID != id)
-            {
-                return BadRequest();
-            }
-
-            var existingOpportunity = await _opportunityRepository.GetOpportunityByIdAsync(id);
-            if (existingOpportunity == null)
-            {
-                return NotFound();
-            }
-
-            await _opportunityRepository.UpdateOpportunityAsync(opportunity);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteOpportunity(Guid id)
-        {
-            var existingOpportunity = await _opportunityRepository.GetOpportunityByIdAsync(id);
-            if (existingOpportunity == null)
-            {
-                return NotFound();
-            }
-
-            await _opportunityRepository.DeleteOpportunityAsync(id);
-            return NoContent();
-        }
+        await _opportunityService.DeleteAsync(id);
+        return NoContent();
     }
 }

@@ -1,82 +1,78 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers
+namespace CRM.API.BEND.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OrderController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OrderController : ControllerBase
+    private readonly IOrderService _orderService;
+
+    public OrderController(IOrderService orderService)
     {
-        private readonly IOrderRepository _orderRepository;
+        _orderService = orderService;
+    }
 
-        public OrderController(IOrderRepository orderRepository)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDTO>> GetOrderById(Guid id)
+    {
+        var order = await _orderService.GetByIdAsync(id);
+        if (order == null)
         {
-            _orderRepository = orderRepository;
+            return NotFound();
+        }
+        return Ok(order);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrders()
+    {
+        var orders = await _orderService.GetAllAsync();
+        return Ok(orders);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddOrder([FromBody] OrderDTO order)
+    {
+        if (order == null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderById(Guid id)
+        await _orderService.AddAsync(order);
+        return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateOrder(Guid id, [FromBody] OrderDTO order)
+    {
+        if (order == null || order.OrderID != id)
         {
-            var order = await _orderRepository.GetOrderByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return Ok(order);
+            return BadRequest();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
+        var existingOrder = await _orderService.GetByIdAsync(id);
+        if (existingOrder == null)
         {
-            var orders = await _orderRepository.GetAllOrdersAsync();
-            return Ok(orders);
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddOrder([FromBody] Order order)
-        {
-            if (order == null)
-            {
-                return BadRequest();
-            }
+        await _orderService.UpdateAsync(order);
+        return NoContent();
+    }
 
-            await _orderRepository.AddOrderAsync(order);
-            return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteOrder(Guid id)
+    {
+        var existingOrder = await _orderService.GetByIdAsync(id);
+        if (existingOrder == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateOrder(Guid id, [FromBody] Order order)
-        {
-            if (order == null || order.OrderID != id)
-            {
-                return BadRequest();
-            }
-
-            var existingOrder = await _orderRepository.GetOrderByIdAsync(id);
-            if (existingOrder == null)
-            {
-                return NotFound();
-            }
-
-            await _orderRepository.UpdateOrderAsync(order);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteOrder(Guid id)
-        {
-            var existingOrder = await _orderRepository.GetOrderByIdAsync(id);
-            if (existingOrder == null)
-            {
-                return NotFound();
-            }
-
-            await _orderRepository.DeleteOrderAsync(id);
-            return NoContent();
-        }
+        await _orderService.DeleteAsync(id);
+        return NoContent();
     }
 }

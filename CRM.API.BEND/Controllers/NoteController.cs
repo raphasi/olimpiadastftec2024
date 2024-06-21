@@ -1,4 +1,6 @@
-﻿using CRM.Domain.Entities;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
+using CRM.Domain.Entities;
 using CRM.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,17 +13,17 @@ namespace CRM.API.BEND.Controllers
     [ApiController]
     public class NoteController : ControllerBase
     {
-        private readonly INoteRepository _noteRepository;
+        private readonly INoteService _noteService;
 
-        public NoteController(INoteRepository noteRepository)
+        public NoteController(INoteService noteService)
         {
-            _noteRepository = noteRepository;
+            _noteService = noteService;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Note>> GetNoteById(Guid id)
         {
-            var note = await _noteRepository.GetNoteByIdAsync(id);
+            var note = await _noteService.GetByIdAsync(id);
             if (note == null)
             {
                 return NotFound();
@@ -30,52 +32,52 @@ namespace CRM.API.BEND.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Note>>> GetAllNotes()
+        public async Task<ActionResult<IEnumerable<NoteDTO>>> GetAllNotes()
         {
-            var notes = await _noteRepository.GetAllNotesAsync();
+            var notes = await _noteService.GetAllAsync();
             return Ok(notes);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddNote([FromBody] Note note)
+        public async Task<ActionResult> AddNote([FromBody] NoteDTO note)
         {
             if (note == null)
             {
                 return BadRequest();
             }
 
-            await _noteRepository.AddNoteAsync(note);
+            await _noteService.AddAsync(note);
             return CreatedAtAction(nameof(GetNoteById), new { id = note.NoteID }, note);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateNote(Guid id, [FromBody] Note note)
+        public async Task<ActionResult> UpdateNote(Guid id, [FromBody] NoteDTO note)
         {
             if (note == null || note.NoteID != id)
             {
                 return BadRequest();
             }
 
-            var existingNote = await _noteRepository.GetNoteByIdAsync(id);
+            var existingNote = await _noteService.GetByIdAsync(id);
             if (existingNote == null)
             {
                 return NotFound();
             }
 
-            await _noteRepository.UpdateNoteAsync(note);
+            await _noteService.UpdateAsync(note);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteNote(Guid id)
         {
-            var existingNote = await _noteRepository.GetNoteByIdAsync(id);
+            var existingNote = await _noteService.GetByIdAsync(id);
             if (existingNote == null)
             {
                 return NotFound();
             }
 
-            await _noteRepository.DeleteNoteAsync(id);
+            await _noteService.DeleteAsync(id);
             return NoContent();
         }
     }

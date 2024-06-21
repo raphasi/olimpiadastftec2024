@@ -1,9 +1,6 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
@@ -11,17 +8,17 @@ namespace CRM.API.BEND.Controllers
     [ApiController]
     public class QuoteController : ControllerBase
     {
-        private readonly IQuoteRepository _quoteRepository;
+        private readonly IQuoteService _quoteService;
 
-        public QuoteController(IQuoteRepository quoteRepository)
+        public QuoteController(IQuoteService quoteRepository)
         {
-            _quoteRepository = quoteRepository;
+            _quoteService = quoteRepository;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Quote>> GetQuoteById(Guid id)
+        public async Task<ActionResult<QuoteDTO>> GetQuoteById(Guid id)
         {
-            var quote = await _quoteRepository.GetQuoteByIdAsync(id);
+            var quote = await _quoteService.GetByIdAsync(id);
             if (quote == null)
             {
                 return NotFound();
@@ -30,52 +27,52 @@ namespace CRM.API.BEND.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Quote>>> GetAllQuotes()
+        public async Task<ActionResult<IEnumerable<QuoteDTO>>> GetAllQuotes()
         {
-            var quotes = await _quoteRepository.GetAllQuotesAsync();
+            var quotes = await _quoteService.GetAllAsync();
             return Ok(quotes);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddQuote([FromBody] Quote quote)
+        public async Task<ActionResult> AddQuote([FromBody] QuoteDTO quote)
         {
             if (quote == null)
             {
                 return BadRequest();
             }
 
-            await _quoteRepository.AddQuoteAsync(quote);
+            await _quoteService.AddAsync(quote);
             return CreatedAtAction(nameof(GetQuoteById), new { id = quote.QuoteID }, quote);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateQuote(Guid id, [FromBody] Quote quote)
+        public async Task<ActionResult> UpdateQuote(Guid id, [FromBody] QuoteDTO quote)
         {
             if (quote == null || quote.QuoteID != id)
             {
                 return BadRequest();
             }
 
-            var existingQuote = await _quoteRepository.GetQuoteByIdAsync(id);
+            var existingQuote = await _quoteService.GetByIdAsync(id);
             if (existingQuote == null)
             {
                 return NotFound();
             }
 
-            await _quoteRepository.UpdateQuoteAsync(quote);
+            await _quoteService.UpdateAsync(quote);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteQuote(Guid id)
         {
-            var existingQuote = await _quoteRepository.GetQuoteByIdAsync(id);
+            var existingQuote = await _quoteService.GetByIdAsync(id);
             if (existingQuote == null)
             {
                 return NotFound();
             }
 
-            await _quoteRepository.DeleteQuoteAsync(id);
+            await _quoteService.DeleteAsync(id);
             return NoContent();
         }
     }

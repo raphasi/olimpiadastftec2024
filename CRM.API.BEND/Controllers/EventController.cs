@@ -1,82 +1,79 @@
-﻿using CRM.Domain.Entities;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using CRM.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers
+namespace CRM.API.BEND.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class EventController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EventController : ControllerBase
+    private readonly IEventService _eventService;
+
+    public EventController(IEventService eventService)
     {
-        private readonly IEventRepository _eventRepository;
+        _eventService = eventService;
+    }
 
-        public EventController(IEventRepository eventRepository)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EventDTO>> GetEventById(Guid id)
+    {
+        var eventEntity = await _eventService.GetByIdAsync(id);
+        if (eventEntity == null)
         {
-            _eventRepository = eventRepository;
+            return NotFound();
+        }
+        return Ok(eventEntity);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<EventDTO>>> GetAllEvents()
+    {
+        var events = await _eventService.GetAllAsync();
+        return Ok(events);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddEvent([FromBody] EventDTO eventEntity)
+    {
+        if (eventEntity == null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEventById(Guid id)
+        await _eventService.AddAsync(eventEntity);
+        return CreatedAtAction(nameof(GetEventById), new { id = eventEntity.EventID }, eventEntity);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] EventDTO eventEntity)
+    {
+        if (eventEntity == null || eventEntity.EventID != id)
         {
-            var eventEntity = await _eventRepository.GetEventByIdAsync(id);
-            if (eventEntity == null)
-            {
-                return NotFound();
-            }
-            return Ok(eventEntity);
+            return BadRequest();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetAllEvents()
+        var existingEvent = await _eventService.GetByIdAsync(id);
+        if (existingEvent == null)
         {
-            var events = await _eventRepository.GetAllEventsAsync();
-            return Ok(events);
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddEvent([FromBody] Event eventEntity)
-        {
-            if (eventEntity == null)
-            {
-                return BadRequest();
-            }
+        await _eventService.UpdateAsync(eventEntity);
+        return NoContent();
+    }
 
-            await _eventRepository.AddEventAsync(eventEntity);
-            return CreatedAtAction(nameof(GetEventById), new { id = eventEntity.EventID }, eventEntity);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteEvent(Guid id)
+    {
+        var existingEvent = await _eventService.GetByIdAsync(id);
+        if (existingEvent == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] Event eventEntity)
-        {
-            if (eventEntity == null || eventEntity.EventID != id)
-            {
-                return BadRequest();
-            }
-
-            var existingEvent = await _eventRepository.GetEventByIdAsync(id);
-            if (existingEvent == null)
-            {
-                return NotFound();
-            }
-
-            await _eventRepository.UpdateEventAsync(eventEntity);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteEvent(Guid id)
-        {
-            var existingEvent = await _eventRepository.GetEventByIdAsync(id);
-            if (existingEvent == null)
-            {
-                return NotFound();
-            }
-
-            await _eventRepository.DeleteEventAsync(id);
-            return NoContent();
-        }
+        await _eventService.DeleteAsync(id);
+        return NoContent();
     }
 }

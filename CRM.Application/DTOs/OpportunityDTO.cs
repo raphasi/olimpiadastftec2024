@@ -24,10 +24,10 @@ public class OpportunityDTO
     public DateTime ExpectedCloseDate { get; set; }
 
     // Navigation properties
-    public CustomerDTO Customer { get; set; }
-    public LeadDTO Lead { get; set; }
-    public ICollection<OrderDTO> Orders { get; set; }
-    public ICollection<QuoteDTO> Quotes { get; set; }
-    public ICollection<ActivityDTO> Activities { get; set; }
-    public ICollection<NoteDTO> Notes { get; set; }
+    //public CustomerDTO Customer { get; set; }
+    //public LeadDTO Lead { get; set; }
+    //public ICollection<OrderDTO> Orders { get; set; }
+    //public ICollection<QuoteDTO> Quotes { get; set; }
+    //public ICollection<ActivityDTO> Activities { get; set; }
+    //public ICollection<NoteDTO> Notes { get; set; }
 }

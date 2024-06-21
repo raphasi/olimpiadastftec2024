@@ -1,4 +1,6 @@
-﻿using CRM.Domain.Entities;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
+using CRM.Domain.Entities;
 using CRM.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,17 +13,17 @@ namespace CRM.API.BEND.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductService productRepository)
         {
-            _productRepository = productRepository;
+            _productService = productRepository;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(Guid id)
+        public async Task<ActionResult<ProductDTO>> GetProductById(Guid id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _productService.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -30,52 +32,52 @@ namespace CRM.API.BEND.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
-            var products = await _productRepository.GetAllProductsAsync();
+            var products = await _productService.GetAllAsync();
             return Ok(products);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddProduct([FromBody] Product product)
+        public async Task<ActionResult> AddProduct([FromBody] ProductDTO product)
         {
             if (product == null)
             {
                 return BadRequest();
             }
 
-            await _productRepository.AddProductAsync(product);
+            await _productService.AddAsync(product);
             return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, product);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateProduct(Guid id, [FromBody] Product product)
+        public async Task<ActionResult> UpdateProduct(Guid id, [FromBody] ProductDTO product)
         {
             if (product == null || product.ProductID != id)
             {
                 return BadRequest();
             }
 
-            var existingProduct = await _productRepository.GetProductByIdAsync(id);
+            var existingProduct = await _productService.GetByIdAsync(id);
             if (existingProduct == null)
             {
                 return NotFound();
             }
 
-            await _productRepository.UpdateProductAsync(product);
+            await _productService.UpdateAsync(product);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
-            var existingProduct = await _productRepository.GetProductByIdAsync(id);
+            var existingProduct = await _productService.GetByIdAsync(id);
             if (existingProduct == null)
             {
                 return NotFound();
             }
 
-            await _productRepository.DeleteProductAsync(id);
+            await _productService.DeleteAsync(id);
             return NoContent();
         }
     }

@@ -33,10 +33,10 @@
             <div class="sidebar-wrapper">
                 <div class="logo">
                     <a href="javascript:void(0)" class="simple-text logo-mini">
-                        TF
+                        #
                     </a>
                     <a href="javascript:void(0)" class="simple-text logo-normal">
-                        CRM Brasileiro
+                        PARTIUNUVEM
                     </a>
                 </div>
                 <ul class="nav">
@@ -47,61 +47,44 @@
                         </a>
                     </li>
                     <li>
-                        <a asp-area="" asp-controller="Home" asp-action="Privacy">
-                            <i class="tim-icons icon-chart-pie-36"></i>
-                            <p>Privacidade</p>
+                        <a asp-area="" asp-controller="Lead" asp-action="Index">
+                            <i class="tim-icons icon-paper"></i>
+                            <p>Clientes Potenciais</p>
                         </a>
                     </li>
                     <li>
+                        <a asp-area="" asp-controller="Customer" asp-action="Index">
+                            <i class="tim-icons icon-heart-2"></i>
+                            <p>Clientes</p>
+                        </a>
+                    </li>
+
+                    <li>
                         <a data-toggle="collapse" href="#pagesExamples">
-                            <i class="tim-icons icon-image-02"></i>
+                            <i class="tim-icons icon-money-coins"></i>
                             <p>
-                                Pages
+                                Sales Insights
                                 <b class="caret"></b>
                             </p>
                         </a>
                         <div class="collapse" id="pagesExamples">
                             <ul class="nav">
                                 <li>
-                                    <a href="../examples/pages/pricing.html">
-                                        <span class="sidebar-mini-icon">P</span>
-                                        <span class="sidebar-normal"> Pricing </span>
+                                    <a asp-area="" asp-controller="Opportunity" asp-action="Index">
+                                        <i class="tim-icons icon-bank"></i>
+                                        <p>Oportunidade</p>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="../examples/pages/rtl.html">
                                         <span class="sidebar-mini-icon">RS</span>
-                                        <span class="sidebar-normal"> RTL Support </span>
+                                        <span class="sidebar-normal"> Propostas </span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="../examples/pages/timeline.html">
                                         <span class="sidebar-mini-icon">T</span>
-                                        <span class="sidebar-normal"> Timeline </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/pages/login.html">
-                                        <span class="sidebar-mini-icon">L</span>
-                                        <span class="sidebar-normal"> Login </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/pages/register.html">
-                                        <span class="sidebar-mini-icon">R</span>
-                                        <span class="sidebar-normal"> Register </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/pages/lock.html">
-                                        <span class="sidebar-mini-icon">LS</span>
-                                        <span class="sidebar-normal"> Lock Screen </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/pages/user.html">
-                                        <span class="sidebar-mini-icon">UP</span>
-                                        <span class="sidebar-normal"> User Profile </span>
+                                        <span class="sidebar-normal"> Pedidos </span>
                                     </a>
                                 </li>
                             </ul>
@@ -109,73 +92,24 @@
                     </li>
                     <li>
                         <a data-toggle="collapse" href="#componentsExamples">
-                            <i class="tim-icons icon-molecule-40"></i>
+                            <i class="tim-icons icon-notes"></i>
                             <p>
-                                Components
+                                Acompanhamento
                                 <b class="caret"></b>
                             </p>
                         </a>
                         <div class="collapse" id="componentsExamples">
                             <ul class="nav">
                                 <li>
-                                    <a data-toggle="collapse" aria-expanded="false" href="#multicollapse">
-                                        <span class="sidebar-mini-icon">MLT</span>
-                                        <span class="sidebar-normal">
-                                            Multi Level Collapse
-                                            <b class="caret"></b>
-                                        </span>
-                                    </a>
-                                    <div class="collapse" id="multicollapse">
-                                        <ul class="nav">
-                                            <li>
-                                                <a>
-                                                    <span class="sidebar-mini-icon">E</span>
-                                                    <span class="sidebar-normal"> Example </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
                                     <a href="../examples/components/buttons.html">
                                         <span class="sidebar-mini-icon">B</span>
-                                        <span class="sidebar-normal"> Buttons </span>
+                                        <span class="sidebar-normal"> Atividades </span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="../examples/components/grid.html">
                                         <span class="sidebar-mini-icon">G</span>
-                                        <span class="sidebar-normal"> Grid System </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/components/panels.html">
-                                        <span class="sidebar-mini-icon">P</span>
-                                        <span class="sidebar-normal"> Panels </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/components/sweet-alert.html">
-                                        <span class="sidebar-mini-icon">SA</span>
-                                        <span class="sidebar-normal"> Sweet Alert </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/components/notifications.html">
-                                        <span class="sidebar-mini-icon">N</span>
-                                        <span class="sidebar-normal"> Notifications </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/components/icons.html">
-                                        <span class="sidebar-mini-icon">I</span>
-                                        <span class="sidebar-normal"> Icons </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/components/typography.html">
-                                        <span class="sidebar-mini-icon">T</span>
-                                        <span class="sidebar-normal"> Typography </span>
+                                        <span class="sidebar-normal"> Anotações </span>
                                     </a>
                                 </li>
                             </ul>
@@ -183,9 +117,9 @@
                     </li>
                     <li>
                         <a data-toggle="collapse" href="#formsExamples">
-                            <i class="tim-icons icon-notes"></i>
+                            <i class="tim-icons icon-controller"></i>
                             <p>
-                                Forms
+                                Controles
                                 <b class="caret"></b>
                             </p>
                         </a>
@@ -194,72 +128,23 @@
                                 <li>
                                     <a href="../examples/forms/regular.html">
                                         <span class="sidebar-mini-icon">RF</span>
-                                        <span class="sidebar-normal"> Regular Forms </span>
+                                        <span class="sidebar-normal"> Produtos </span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="../examples/forms/extended.html">
                                         <span class="sidebar-mini-icon">EF</span>
-                                        <span class="sidebar-normal"> Extended Forms </span>
+                                        <span class="sidebar-normal"> Lista de Preço </span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="../examples/forms/validation.html">
                                         <span class="sidebar-mini-icon">V</span>
-                                        <span class="sidebar-normal"> Validation Forms </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/forms/wizard.html">
-                                        <span class="sidebar-mini-icon">W</span>
-                                        <span class="sidebar-normal"> Wizard </span>
+                                        <span class="sidebar-normal"> Evento </span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
-                    </li>
-                    <li>
-                        <a data-toggle="collapse" href="#tablesExamples">
-                            <i class="tim-icons icon-puzzle-10"></i>
-                            <p>
-                                Tables
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse" id="tablesExamples">
-                            <ul class="nav">
-                                <li>
-                                    <a href="../examples/tables/regular.html">
-                                        <span class="sidebar-mini-icon">RT</span>
-                                        <span class="sidebar-normal"> Regular Tables </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/tables/extended.html">
-                                        <span class="sidebar-mini-icon">ET</span>
-                                        <span class="sidebar-normal"> Extended Tables </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../examples/tables/datatables.net.html">
-                                        <span class="sidebar-mini-icon">DT</span>
-                                        <span class="sidebar-normal"> DataTables.net </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="../examples/widgets.html">
-                            <i class="tim-icons icon-settings"></i>
-                            <p>Widgets</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../examples/charts.html">
-                            <i class="tim-icons icon-chart-bar-32"></i>
-                            <p>Charts</p>
-                        </a>
                     </li>
                     <li>
                         <a href="../examples/calendar.html">
@@ -288,7 +173,7 @@
                                 <span class="navbar-toggler-bar bar3"></span>
                             </button>
                         </div>
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CRM BRASILEIRO</a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -303,32 +188,6 @@
                                     <span class="d-lg-none d-md-block">Search</span>
                                 </button>
                             </li>
-                            @*                         <li class="dropdown nav-item">
-                            <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                            <div class="notification d-none d-lg-block d-xl-block"></div>
-                            <i class="tim-icons icon-sound-wave"></i>
-                            <p class="d-lg-none">
-                            Notifications
-                            </p>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
-                            <li class="nav-link">
-                            <a href="#" class="nav-item dropdown-item">Mike John responded to your email</a>
-                            </li>
-                            <li class="nav-link">
-                            <a href="javascript:void(0)" class="nav-item dropdown-item">You have 5 more tasks</a>
-                            </li>
-                            <li class="nav-link">
-                            <a href="javascript:void(0)" class="nav-item dropdown-item">Your friend Michael is in town</a>
-                            </li>
-                            <li class="nav-link">
-                            <a href="javascript:void(0)" class="nav-item dropdown-item">Another notification</a>
-                            </li>
-                            <li class="nav-link">
-                            <a href="javascript:void(0)" class="nav-item dropdown-item">Another one</a>
-                            </li>
-                            </ul>
-                            </li> *@
                             <li class="dropdown nav-item">
                                 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                                     <div class="photo">
@@ -359,11 +218,7 @@
             </nav>
 
             <div class="content">
-                <div class="row">
-
-                    @RenderBody()
-
-                </div>
+                @RenderBody()
             </div>
 
             <footer class="footer">
@@ -558,5 +413,51 @@
 
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search records",
+                }
+
+            });
+
+            var table = $('#datatable').DataTable();
+
+            // Edit record
+            table.on('click', '.edit', function () {
+                $tr = $(this).closest('tr');
+                if ($($tr).hasClass('child')) {
+                    $tr = $tr.prev('.parent');
+                }
+
+                var data = table.row($tr).data();
+                alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
+            });
+
+            // Delete a record
+            table.on('click', '.remove', function (e) {
+                $tr = $(this).closest('tr');
+                if ($($tr).hasClass('child')) {
+                    $tr = $tr.prev('.parent');
+                }
+                table.row($tr).remove().draw();
+                e.preventDefault();
+            });
+
+            //Like record
+            table.on('click', '.like', function () {
+                alert('You clicked on Like button');
+            });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

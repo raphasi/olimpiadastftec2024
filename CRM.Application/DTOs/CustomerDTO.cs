@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRM.Application.DTOs
 {
@@ -46,16 +46,14 @@ namespace CRM.Application.DTOs
         [StringLength(200, ErrorMessage = "O Complemento não pode exceder 200 caracteres.")]
         public string Address_Adjunct { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "O Tipo de Lead deve ser um valor não negativo.")]
+        [Range(0, 9999, ErrorMessage = "O Tipo de Cliente deve ser um valor válido.")]
         public int TypeLead { get; set; }
 
-        [Range(0, 99999999999, ErrorMessage = "O CPF deve ser um valor válido.")]
-        public int CPF { get; set; }
+        public string CPF { get; set; }
 
-        [Range(0, 99999999999999, ErrorMessage = "O CNPJ deve ser um valor válido.")]
-        public int CNPJ { get; set; }
+        public string CNPJ { get; set; }
 
         // Navigation properties
-        public ICollection<OpportunityDTO> Opportunities { get; set; }
+        //public ICollection<OpportunityDTO> Opportunities { get; set; }
     }
 }

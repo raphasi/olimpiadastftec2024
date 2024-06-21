@@ -1,82 +1,79 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers
+
+namespace CRM.API.BEND.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class PriceLevelController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PriceLevelController : ControllerBase
+    private readonly IPriceLevelService _priceLevelService;
+
+    public PriceLevelController(IPriceLevelService priceLevelService)
     {
-        private readonly IPriceLevelRepository _priceLevelRepository;
+        _priceLevelService = priceLevelService;
+    }
 
-        public PriceLevelController(IPriceLevelRepository priceLevelRepository)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<PriceLevelDTO>> GetPriceLevelById(Guid id)
+    {
+        var priceLevel = await _priceLevelService.GetByIdAsync(id);
+        if (priceLevel == null)
         {
-            _priceLevelRepository = priceLevelRepository;
+            return NotFound();
+        }
+        return Ok(priceLevel);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<PriceLevelDTO>>> GetAllPriceLevels()
+    {
+        var priceLevels = await _priceLevelService.GetAllAsync();
+        return Ok(priceLevels);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddPriceLevel([FromBody] PriceLevelDTO priceLevel)
+    {
+        if (priceLevel == null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PriceLevel>> GetPriceLevelById(Guid id)
+        await _priceLevelService.AddAsync(priceLevel);
+        return CreatedAtAction(nameof(GetPriceLevelById), new { id = priceLevel.PriceLevelID }, priceLevel);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdatePriceLevel(Guid id, [FromBody] PriceLevelDTO priceLevel)
+    {
+        if (priceLevel == null || priceLevel.PriceLevelID != id)
         {
-            var priceLevel = await _priceLevelRepository.GetPriceLevelByIdAsync(id);
-            if (priceLevel == null)
-            {
-                return NotFound();
-            }
-            return Ok(priceLevel);
+            return BadRequest();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PriceLevel>>> GetAllPriceLevels()
+        var existingPriceLevel = await _priceLevelService.GetByIdAsync(id);
+        if (existingPriceLevel == null)
         {
-            var priceLevels = await _priceLevelRepository.GetAllPriceLevelsAsync();
-            return Ok(priceLevels);
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddPriceLevel([FromBody] PriceLevel priceLevel)
-        {
-            if (priceLevel == null)
-            {
-                return BadRequest();
-            }
+        await _priceLevelService.UpdateAsync(priceLevel);
+        return NoContent();
+    }
 
-            await _priceLevelRepository.AddPriceLevelAsync(priceLevel);
-            return CreatedAtAction(nameof(GetPriceLevelById), new { id = priceLevel.PriceLevelID }, priceLevel);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeletePriceLevel(Guid id)
+    {
+        var existingPriceLevel = await _priceLevelService.GetByIdAsync(id);
+        if (existingPriceLevel == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdatePriceLevel(Guid id, [FromBody] PriceLevel priceLevel)
-        {
-            if (priceLevel == null || priceLevel.PriceLevelID != id)
-            {
-                return BadRequest();
-            }
-
-            var existingPriceLevel = await _priceLevelRepository.GetPriceLevelByIdAsync(id);
-            if (existingPriceLevel == null)
-            {
-                return NotFound();
-            }
-
-            await _priceLevelRepository.UpdatePriceLevelAsync(priceLevel);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePriceLevel(Guid id)
-        {
-            var existingPriceLevel = await _priceLevelRepository.GetPriceLevelByIdAsync(id);
-            if (existingPriceLevel == null)
-            {
-                return NotFound();
-            }
-
-            await _priceLevelRepository.DeletePriceLevelAsync(id);
-            return NoContent();
-        }
+        await _priceLevelService.DeleteAsync(id);
+        return NoContent();
     }
 }

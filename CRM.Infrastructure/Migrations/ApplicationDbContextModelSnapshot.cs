@@ -91,11 +91,11 @@ namespace CRM.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("CNPJ")
-                        .HasColumnType("int");
+                    b.Property<string>("CNPJ")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CPF")
-                        .HasColumnType("int");
+                    b.Property<string>("CPF")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");

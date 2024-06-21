@@ -12,6 +12,7 @@ using CRM.Domain.Entities;
 using CRM.Application.Mappings;
 using CRM.Infrastructure.Identity;
 using CRM.Domain.Account;
+using System.Text.Json.Serialization;
 
 namespace CRM.CrossCutting.IoC;
 
@@ -63,6 +64,10 @@ public static class DependencyInjectionAPI
         var myhandlers = AppDomain.CurrentDomain.Load("CRM.Application");
         // Adicionar MediatR e registrar os handlers
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(myhandlers));
+
+        //System.Text.Json 
+        services.AddControllers().AddJsonOptions(x =>
+            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
         return services;

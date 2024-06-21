@@ -14,12 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="wwwroot\assets\demo\vendor\" />
     <Folder Include="wwwroot\assets\js\" />
     <Folder Include="wwwroot\assets\fonts\" />
     <Folder Include="wwwroot\assets\img\" />
     <Folder Include="wwwroot\assets\scss\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CRM.CrossCutting\CRM.CrossCutting.csproj" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

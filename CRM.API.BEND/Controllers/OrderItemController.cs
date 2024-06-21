@@ -1,82 +1,78 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers
+namespace CRM.API.BEND.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OrderItemController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OrderItemController : ControllerBase
+    private readonly IOrderItemService _orderItemService;
+
+    public OrderItemController(IOrderItemService orderItemService)
     {
-        private readonly IOrderItemRepository _orderItemRepository;
+        _orderItemService = orderItemService;
+    }
 
-        public OrderItemController(IOrderItemRepository orderItemRepository)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderItemDTO>> GetOrderItemById(Guid id)
+    {
+        var orderItem = await _orderItemService.GetByIdAsync(id);
+        if (orderItem == null)
         {
-            _orderItemRepository = orderItemRepository;
+            return NotFound();
+        }
+        return Ok(orderItem);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OrderItemDTO>>> GetAllOrderItems()
+    {
+        var orderItems = await _orderItemService.GetAllAsync();
+        return Ok(orderItems);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddOrderItem([FromBody] OrderItemDTO orderItem)
+    {
+        if (orderItem == null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItem>> GetOrderItemById(Guid id)
+        await _orderItemService.AddAsync(orderItem);
+        return CreatedAtAction(nameof(GetOrderItemById), new { id = orderItem.OrderItemID }, orderItem);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItemDTO orderItem)
+    {
+        if (orderItem == null || orderItem.OrderItemID != id)
         {
-            var orderItem = await _orderItemRepository.GetOrderItemByIdAsync(id);
-            if (orderItem == null)
-            {
-                return NotFound();
-            }
-            return Ok(orderItem);
+            return BadRequest();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetAllOrderItems()
+        var existingOrderItem = await _orderItemService.GetByIdAsync(id);
+        if (existingOrderItem == null)
         {
-            var orderItems = await _orderItemRepository.GetAllOrderItemsAsync();
-            return Ok(orderItems);
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddOrderItem([FromBody] OrderItem orderItem)
-        {
-            if (orderItem == null)
-            {
-                return BadRequest();
-            }
+        await _orderItemService.UpdateAsync(orderItem);
+        return NoContent();
+    }
 
-            await _orderItemRepository.AddOrderItemAsync(orderItem);
-            return CreatedAtAction(nameof(GetOrderItemById), new { id = orderItem.OrderItemID }, orderItem);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteOrderItem(Guid id)
+    {
+        var existingOrderItem = await _orderItemService.GetByIdAsync(id);
+        if (existingOrderItem == null)
+        {
+            return NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItem orderItem)
-        {
-            if (orderItem == null || orderItem.OrderItemID != id)
-            {
-                return BadRequest();
-            }
-
-            var existingOrderItem = await _orderItemRepository.GetOrderItemByIdAsync(id);
-            if (existingOrderItem == null)
-            {
-                return NotFound();
-            }
-
-            await _orderItemRepository.UpdateOrderItemAsync(orderItem);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteOrderItem(Guid id)
-        {
-            var existingOrderItem = await _orderItemRepository.GetOrderItemByIdAsync(id);
-            if (existingOrderItem == null)
-            {
-                return NotFound();
-            }
-
-            await _orderItemRepository.DeleteOrderItemAsync(id);
-            return NoContent();
-        }
+        await _orderItemService.DeleteAsync(id);
+        return NoContent();
     }
 }

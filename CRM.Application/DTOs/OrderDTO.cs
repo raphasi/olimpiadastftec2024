@@ -7,7 +7,7 @@ namespace CRM.Application.DTOs;
 
 public class OrderDTO
 {
-    public int OrderID { get; set; }
+    public Guid OrderID { get; set; }
 
     [Required(ErrorMessage = "O campo OpportunityID é obrigatório.")]
     public Guid OpportunityID { get; set; }

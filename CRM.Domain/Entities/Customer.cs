@@ -19,9 +19,9 @@ public sealed class Customer : Entity
     public string Address_State { get; set; }
     public string Address_City { get; set; }
     public string Address_Adjunct { get; set; }
-    public Nullable<int> TypeLead { get; set; }
-    public Nullable<int> CPF { get; set; }
-    public Nullable<int> CNPJ { get; set; }
+    public Nullable<int> TypeLead { get; private set; }
+    public string CPF { get; set; }
+    public string CNPJ { get; set; }
 
     // Navigation properties
     public ICollection<Opportunity> Opportunities { get; set; }

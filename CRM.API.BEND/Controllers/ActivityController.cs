@@ -1,9 +1,6 @@
-﻿using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
+﻿using CRM.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using CRM.Application.Interfaces;
 
 namespace CRM.API.BEND.Controllers
 {
@@ -11,17 +8,17 @@ namespace CRM.API.BEND.Controllers
     [ApiController]
     public class ActivityController : ControllerBase
     {
-        private readonly IActivityRepository _activityRepository;
+        private readonly IActivityService _activityService;
 
-        public ActivityController(IActivityRepository activityRepository)
+        public ActivityController(IActivityService activityService)
         {
-            _activityRepository = activityRepository;
+            _activityService = activityService;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivityById(Guid id)
+        public async Task<ActionResult<ActivityDTO>> GetActivityById(Guid id)
         {
-            var activity = await _activityRepository.GetActivityByIdAsync(id);
+            var activity = await _activityService.GetByIdAsync(id);
             if (activity == null)
             {
                 return NotFound();
@@ -30,52 +27,52 @@ namespace CRM.API.BEND.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetAllActivities()
+        public async Task<ActionResult<IEnumerable<ActivityDTO>>> GetAllActivities()
         {
-            var activities = await _activityRepository.GetAllActivitiesAsync();
+            var activities = await _activityService.GetAllAsync();
             return Ok(activities);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddActivity([FromBody] Activity activity)
+        public async Task<ActionResult> AddActivity([FromBody] ActivityDTO activity)
         {
             if (activity == null)
             {
                 return BadRequest();
             }
 
-            await _activityRepository.AddActivityAsync(activity);
+            await _activityService.AddAsync(activity);
             return CreatedAtAction(nameof(GetActivityById), new { id = activity.ActivityID }, activity);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateActivity(Guid id, [FromBody] Activity activity)
+        public async Task<ActionResult> UpdateActivity(Guid id, [FromBody] ActivityDTO activity)
         {
             if (activity == null || activity.ActivityID != id)
             {
                 return BadRequest();
             }
 
-            var existingActivity = await _activityRepository.GetActivityByIdAsync(id);
+            var existingActivity = await _activityService.GetByIdAsync(id);
             if (existingActivity == null)
             {
                 return NotFound();
             }
 
-            await _activityRepository.UpdateActivityAsync(activity);
+            await _activityService.UpdateAsync(activity);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteActivity(Guid id)
         {
-            var existingActivity = await _activityRepository.GetActivityByIdAsync(id);
+            var existingActivity = await _activityService.GetByIdAsync(id);
             if (existingActivity == null)
             {
                 return NotFound();
             }
 
-            await _activityRepository.DeleteActivityAsync(id);
+            await _activityService.DeleteAsync(id);
             return NoContent();
         }
     }

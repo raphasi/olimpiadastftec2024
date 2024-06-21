@@ -1,0 +1,59 @@
+﻿<!-- Views/Customers/Index.cshtml -->
+@model IEnumerable<CustomerViewModel>
+
+<div class="col-md-8 ml-auto mr-auto">
+    <h2 class="text-center">Clientes</h2>
+    <p class="text-center">
+        Nessa seção ficam armazenados todos os clientes da venda de ingresso das olimpíadas.
+    </p>
+
+</div>
+<a asp-action="Create" class="btn btn-primary">
+    Adicionar cliente
+</a>
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                </div>
+
+                <table id="datatable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome Completo</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var customer in Model)
+                        {
+                            <tr>
+                                <td>@customer.FullName</td>
+                                <td>@customer.Email</td>
+                                <td>@customer.Telephone</td>
+                                <td class="text-right">
+                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = customer.CustomerID })"><i class="tim-icons icon-pencil"></i></a>
+                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = customer.CustomerID })"><i class="tim-icons icon-simple-remove"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Nome Completo</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th class="disabled-sorting text-right">Ações</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
