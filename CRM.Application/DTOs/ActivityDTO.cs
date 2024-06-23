@@ -18,9 +18,9 @@ public class ActivityDTO
     [StringLength(500, ErrorMessage = "A Descrição não pode exceder 500 caracteres.")]
     public string Description { get; set; }
 
-    public Guid CreatedBy { get; set; }
-    public Guid ModifiedBy { get; set; }
-    public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
-    public int StatusCode { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
 }

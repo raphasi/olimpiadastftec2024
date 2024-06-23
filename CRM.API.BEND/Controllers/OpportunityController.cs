@@ -1,78 +1,130 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class OpportunityController : ControllerBase
+namespace CRM.API.BEND.Controllers
 {
-    private readonly IOpportunityService _opportunityService;
-
-    public OpportunityController(IOpportunityService opportunityService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OpportunityController : ControllerBase
     {
-        _opportunityService = opportunityService;
-    }
+        private readonly IOpportunityService _opportunityService;
+        private readonly ILogger<OpportunityController> _logger;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<OpportunityDTO>> GetOpportunityById(Guid id)
-    {
-        var opportunity = await _opportunityService.GetByIdAsync(id);
-        if (opportunity == null)
+        public OpportunityController(IOpportunityService opportunityService, ILogger<OpportunityController> logger)
         {
-            return NotFound();
-        }
-        return Ok(opportunity);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<OpportunityDTO>>> GetAllOpportunities()
-    {
-        var opportunities = await _opportunityService.GetAllAsync();
-        return Ok(opportunities);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> AddOpportunity([FromBody] OpportunityDTO opportunity)
-    {
-        if (opportunity == null)
-        {
-            return BadRequest();
+            _opportunityService = opportunityService;
+            _logger = logger;
         }
 
-        await _opportunityService.AddAsync(opportunity);
-        return CreatedAtAction(nameof(GetOpportunityById), new { id = opportunity.OpportunityID }, opportunity);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateOpportunity(Guid id, [FromBody] OpportunityDTO opportunity)
-    {
-        if (opportunity == null || opportunity.OpportunityID != id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(OpportunityDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<OpportunityDTO>> GetOpportunityById(Guid id)
         {
-            return BadRequest();
+            try
+            {
+                var opportunity = await _opportunityService.GetByIdAsync(id);
+                if (opportunity == null)
+                {
+                    _logger.LogWarning("Oportunidade com ID {OpportunityId} não encontrada.", id);
+                    return NotFound();
+                }
+                return Ok(opportunity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter oportunidade por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        var existingOpportunity = await _opportunityService.GetByIdAsync(id);
-        if (existingOpportunity == null)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<OpportunityDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<OpportunityDTO>>> GetAllOpportunities()
         {
-            return NotFound();
+            try
+            {
+                var opportunities = await _opportunityService.GetAllAsync();
+                return Ok(opportunities);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todas as oportunidades.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _opportunityService.UpdateAsync(opportunity);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteOpportunity(Guid id)
-    {
-        var existingOpportunity = await _opportunityService.GetByIdAsync(id);
-        if (existingOpportunity == null)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddOpportunity([FromBody] OpportunityDTO opportunity)
         {
-            return NotFound();
+            if (opportunity == null)
+            {
+                return BadRequest("Dados da oportunidade são obrigatórios.");
+            }
+
+            try
+            {
+                await _opportunityService.AddAsync(opportunity);
+                return CreatedAtAction(nameof(GetOpportunityById), new { id = opportunity.OpportunityID }, opportunity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar oportunidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _opportunityService.DeleteAsync(id);
-        return NoContent();
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateOpportunity(Guid id, [FromBody] OpportunityDTO opportunity)
+        {
+            if (opportunity == null || opportunity.OpportunityID != id)
+            {
+                return BadRequest("Dados da oportunidade são inválidos.");
+            }
+
+            try
+            {
+                await _opportunityService.UpdateAsync(opportunity);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar oportunidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> DeleteOpportunity(Guid id)
+        {
+            try
+            {
+                var existingOpportunity = await _opportunityService.GetByIdAsync(id);
+                if (existingOpportunity == null)
+                {
+                    return NotFound();
+                }
+
+                await _opportunityService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar oportunidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

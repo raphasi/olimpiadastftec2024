@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.OpportunityViewModel>
+﻿@model IEnumerable<OpportunityViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Oportunidades</h2>
@@ -6,9 +6,11 @@
         Nessa seção ficam armazenadas todas as oportunidades de venda de ingresso das olimpíadas.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar oportunidade
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,39 +19,53 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Descrição</th>
-                            <th>Valor Estimado</th>
-                            <th>Data de Fechamento Esperada</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var opportunity in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@opportunity.Description</td>
-                                <td>@opportunity.EstimatedValue</td>
-                                <td>@opportunity.ExpectedCloseDate</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = opportunity.OpportunityID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = opportunity.OpportunityID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Descrição</th>
+                                <th>Valor Estimado</th>
+                                <th>Data de Fechamento</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Descrição</th>
-                            <th>Valor Estimado</th>
-                            <th>Data de Fechamento Esperada</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var opportunity in Model)
+                            {
+                                <tr>
+                                    <td>@opportunity.Description</td>
+                                    <td>@opportunity.EstimatedValue</td>
+                                    <td>@opportunity.ExpectedCloseDate?.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = opportunity.OpportunityID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Oportunidade">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = opportunity.OpportunityID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Oportunidade" onclick="return confirm('Tem certeza que deseja excluir esta oportunidade?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Descrição</th>
+                                <th>Valor Estimado</th>
+                                <th>Data de Fechamento</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

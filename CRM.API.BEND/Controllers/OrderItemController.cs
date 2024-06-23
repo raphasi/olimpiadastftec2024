@@ -1,78 +1,130 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class OrderItemController : ControllerBase
+namespace CRM.API.BEND.Controllers
 {
-    private readonly IOrderItemService _orderItemService;
-
-    public OrderItemController(IOrderItemService orderItemService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderItemController : ControllerBase
     {
-        _orderItemService = orderItemService;
-    }
+        private readonly IOrderItemService _orderItemService;
+        private readonly ILogger<OrderItemController> _logger;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<OrderItemDTO>> GetOrderItemById(Guid id)
-    {
-        var orderItem = await _orderItemService.GetByIdAsync(id);
-        if (orderItem == null)
+        public OrderItemController(IOrderItemService orderItemService, ILogger<OrderItemController> logger)
         {
-            return NotFound();
-        }
-        return Ok(orderItem);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderItemDTO>>> GetAllOrderItems()
-    {
-        var orderItems = await _orderItemService.GetAllAsync();
-        return Ok(orderItems);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> AddOrderItem([FromBody] OrderItemDTO orderItem)
-    {
-        if (orderItem == null)
-        {
-            return BadRequest();
+            _orderItemService = orderItemService;
+            _logger = logger;
         }
 
-        await _orderItemService.AddAsync(orderItem);
-        return CreatedAtAction(nameof(GetOrderItemById), new { id = orderItem.OrderItemID }, orderItem);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItemDTO orderItem)
-    {
-        if (orderItem == null || orderItem.OrderItemID != id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(OrderItemDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<OrderItemDTO>> GetOrderItemById(Guid id)
         {
-            return BadRequest();
+            try
+            {
+                var orderItem = await _orderItemService.GetByIdAsync(id);
+                if (orderItem == null)
+                {
+                    _logger.LogWarning("Item do pedido com ID {OrderItemId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(orderItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter item do pedido por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        var existingOrderItem = await _orderItemService.GetByIdAsync(id);
-        if (existingOrderItem == null)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<OrderItemDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<OrderItemDTO>>> GetAllOrderItems()
         {
-            return NotFound();
+            try
+            {
+                var orderItems = await _orderItemService.GetAllAsync();
+                return Ok(orderItems);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os itens do pedido.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _orderItemService.UpdateAsync(orderItem);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteOrderItem(Guid id)
-    {
-        var existingOrderItem = await _orderItemService.GetByIdAsync(id);
-        if (existingOrderItem == null)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddOrderItem([FromBody] OrderItemDTO orderItem)
         {
-            return NotFound();
+            if (orderItem == null)
+            {
+                return BadRequest("Dados do item do pedido são obrigatórios.");
+            }
+
+            try
+            {
+                await _orderItemService.AddAsync(orderItem);
+                return CreatedAtAction(nameof(GetOrderItemById), new { id = orderItem.OrderItemID }, orderItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar item do pedido.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _orderItemService.DeleteAsync(id);
-        return NoContent();
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItemDTO orderItem)
+        {
+            if (orderItem == null || orderItem.OrderItemID != id)
+            {
+                return BadRequest("Dados do item do pedido são inválidos.");
+            }
+
+            try
+            {
+                await _orderItemService.UpdateAsync(orderItem);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar item do pedido.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> DeleteOrderItem(Guid id)
+        {
+            try
+            {
+                var existingOrderItem = await _orderItemService.GetByIdAsync(id);
+                if (existingOrderItem == null)
+                {
+                    return NotFound();
+                }
+
+                await _orderItemService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar item do pedido.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

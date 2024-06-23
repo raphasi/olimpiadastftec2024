@@ -1,14 +1,16 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.PriceLevelViewModel>
+﻿@model IEnumerable<PriceLevelViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Níveis de Preço</h2>
     <p class="text-center">
-        Nessa seção ficam armazenados todos os níveis de preço disponíveis.
+        Nessa seção ficam armazenados todos os níveis de preço.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar nível de preço
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,39 +19,53 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nome do Nível</th>
-                            <th>Percentual de Desconto</th>
-                            <th>Valor Base</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var priceLevel in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@priceLevel.LevelName</td>
-                                <td>@priceLevel.DiscountPercentage</td>
-                                <td>@priceLevel.ValueBase</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = priceLevel.PriceLevelID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = priceLevel.PriceLevelID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Nome do Nível</th>
+                                <th>Percentual de Desconto</th>
+                                <th>Valor Base</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Nome do Nível</th>
-                            <th>Percentual de Desconto</th>
-                            <th>Valor Base</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var priceLevel in Model)
+                            {
+                                <tr>
+                                    <td>@priceLevel.LevelName</td>
+                                    <td>@priceLevel.DiscountPercentage</td>
+                                    <td>@priceLevel.ValueBase</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = priceLevel.PriceLevelID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Nível de Preço">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = priceLevel.PriceLevelID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Nível de Preço" onclick="return confirm('Tem certeza que deseja excluir este nível de preço?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Nome do Nível</th>
+                                <th>Percentual de Desconto</th>
+                                <th>Valor Base</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

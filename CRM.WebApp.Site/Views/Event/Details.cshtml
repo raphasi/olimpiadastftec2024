@@ -1,0 +1,142 @@
+﻿@model CRM.WebApp.Site.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Evento";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Event</h4>
+<hr />
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="EventID" name="id" />
+    <input type="hidden" asp-for="EventID" name="EventID" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Status do Evento</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Informações do Evento</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label asp-for="Name" class="col-sm-2 col-form-label">Nome</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="Description" class="col-sm-2 col-form-label">Descrição</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Description" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="EventDate" class="col-sm-2 col-form-label">Data do Evento</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="EventDate" class="form-control datetimepicker" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="Location" class="col-sm-2 col-form-label">Local</label>
+                                    <div class="col-sm-7">
+                                        <div class="form-group">
+                                            <input asp-for="Location" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="TicketPrice" class="col-sm-2 col-form-label">Preço do Ingresso</label>
+                                    <div class="col-sm-7">
+                                        <div class="form-group">
+                                            <input asp-for="TicketPrice" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="ProductID" class="col-sm-2 col-form-label">Produto</label>
+                                    <div class="col-sm-7">
+                                        <div class="form-group">
+                                            <select asp-for="ProductID" class="form-control">
+                                                <option value="">Selecione um Produto</option>
+                                                @* Aqui você pode preencher as opções com os produtos disponíveis *@
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a class="btn btn-secondary" asp-action="Index">Voltar</a>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }

@@ -1,14 +1,16 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.QuoteViewModel>
+﻿@model IEnumerable<QuoteViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Cotações</h2>
     <p class="text-center">
-        Nessa seção ficam armazenadas todas as cotações de venda de ingresso das olimpíadas.
+        Nessa seção ficam armazenadas todas as cotações.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar cotação
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,45 +19,65 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Oportunidade</th>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
-                            <th>Desconto</th>
-                            <th>Preço Total</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var quote in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@quote.OpportunityID</td>
-                                <td>@quote.ProductID</td>
-                                <td>@quote.Quantity</td>
-                                <td>@quote.Discount</td>
-                                <td>@quote.TotalPrice</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = quote.QuoteID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = quote.QuoteID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Oportunidade</th>
+                                <th>Produto</th>
+                                <th>Nível de Preço</th>
+                                <th>Evento</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Preço Total</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Oportunidade</th>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
-                            <th>Desconto</th>
-                            <th>Preço Total</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var quote in Model)
+                            {
+                                <tr>
+                                    <td>@quote.OpportunityID</td>
+                                    <td>@quote.ProductID</td>
+                                    <td>@quote.PriceLevelID</td>
+                                    <td>@quote.EventID</td>
+                                    <td>@quote.Quantity</td>
+                                    <td>@quote.Discount</td>
+                                    <td>@quote.TotalPrice</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = quote.QuoteID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Cotação">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = quote.QuoteID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Cotação" onclick="return confirm('Tem certeza que deseja excluir esta cotação?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Oportunidade</th>
+                                <th>Produto</th>
+                                <th>Nível de Preço</th>
+                                <th>Evento</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Preço Total</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

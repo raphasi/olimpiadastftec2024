@@ -26,7 +26,9 @@ public class ProductDTO
     [Range(0, int.MaxValue, ErrorMessage = "O Inventário deve ser um valor não negativo.")]
     public int Inventory { get; set; }
 
-    // Navigation properties
-    public ICollection<QuoteDTO> Quotes { get; set; }
-    public ICollection<EventDTO> Events { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
 }

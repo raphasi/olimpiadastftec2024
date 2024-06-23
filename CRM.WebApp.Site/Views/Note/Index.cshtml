@@ -1,14 +1,16 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.NoteViewModel>
+﻿@model IEnumerable<NoteViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Notas</h2>
     <p class="text-center">
-        Nessa seção ficam armazenadas todas as notas relacionadas aos clientes, atividades e oportunidades.
+        Nessa seção ficam armazenadas todas as notas relacionadas às atividades e oportunidades.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar nota
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,33 +19,47 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Conteúdo</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var note in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@note.Content</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = note.NoteID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = note.NoteID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Conteúdo</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Conteúdo</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var note in Model)
+                            {
+                                <tr>
+                                    <td>@note.Content</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = note.NoteID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Nota">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = note.NoteID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Nota" onclick="return confirm('Tem certeza que deseja excluir esta nota?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Conteúdo</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

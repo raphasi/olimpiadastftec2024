@@ -1,79 +1,138 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
-using CRM.Domain.Entities;
+using CRM.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class CustomerController : ControllerBase
+namespace CRM.API.BEND.Controllers
 {
-    private readonly ICustomerService _customerService;
-
-    public CustomerController(ICustomerService customerService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomerController : ControllerBase
     {
-        _customerService = customerService;
-    }
+        private readonly ICustomerService _customerService;
+        private readonly ILogger<CustomerController> _logger;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Customer>> GetCustomerById(Guid id)
-    {
-        var customer = await _customerService.GetByIdAsync(id);
-        if (customer == null)
+        public CustomerController(ICustomerService customerService, ILogger<CustomerController> logger)
         {
-            return NotFound();
-        }
-        return Ok(customer);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
-    {
-        var customers = await _customerService.GetAllAsync();
-        return Ok(customers);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> AddCustomer([FromBody] CustomerDTO customer)
-    {
-        if (customer == null)
-        {
-            return BadRequest();
+            _customerService = customerService;
+            _logger = logger;
         }
 
-        await _customerService.AddAsync(customer);
-        return CreatedAtAction(nameof(GetCustomerById), new { id = customer.CustomerID }, customer);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDTO customer)
-    {
-        if (customer == null || customer.CustomerID != id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CustomerDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<CustomerDTO>> GetCustomerById(Guid id)
         {
-            return BadRequest();
+            try
+            {
+                var customer = await _customerService.GetByIdAsync(id);
+                if (customer == null)
+                {
+                    _logger.LogWarning("Cliente com ID {CustomerId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(customer);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter cliente por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        var existingCustomer = await _customerService.GetByIdAsync(id);
-        if (existingCustomer == null)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CustomerDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
         {
-            return NotFound();
+            try
+            {
+                var customers = await _customerService.GetAllAsync();
+                return Ok(customers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os clientes.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _customerService.UpdateAsync(customer);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteCustomer(Guid id)
-    {
-        var existingCustomer = await _customerService.GetByIdAsync(id);
-        if (existingCustomer == null)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddCustomer([FromBody] CustomerDTO customer)
         {
-            return NotFound();
+            if (customer == null)
+            {
+                return BadRequest("Dados do cliente são obrigatórios.");
+            }
+
+            try
+            {
+                await _customerService.AddAsync(customer);
+                return CreatedAtAction(nameof(GetCustomerById), new { id = customer.CustomerID }, customer);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar cliente.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _customerService.DeleteAsync(id);
-        return NoContent();
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDTO customer)
+        {
+            if (customer == null || customer.CustomerID != id)
+            {
+                return BadRequest("Dados do cliente são inválidos.");
+            }
+
+            try
+            {
+                //var existingCustomer = await _customerService.GetByIdAsync(id);
+                //if (existingCustomer == null)
+                //{
+                //    return NotFound();
+                //}
+                // Desanexar a entidade anterior
+                await _customerService.UpdateAsync(customer);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar cliente.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> DeleteCustomer(Guid id)
+        {
+            try
+            {
+                var existingCustomer = await _customerService.GetByIdAsync(id);
+                if (existingCustomer == null)
+                {
+                    return NotFound();
+                }
+
+                await _customerService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar cliente.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

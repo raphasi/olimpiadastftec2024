@@ -1,67 +1,81 @@
-﻿@model CustomerViewModel
+﻿@model CRM.WebApp.Site.Models.CustomerViewModel
 
 @{
     ViewData["Title"] = "Criar Cliente";
 }
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Infos registro</h4>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <label class="col-sm-3 col-form-label">Data de Criação</label>
-                    <div class="form-group">
-                        <input type="text" class="form-control datetimepicker" value="@DateTime.Now">
+<form asp-action="Create" id="RangeValidation" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker"  readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" value="@DateTime.Now" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <label class="col-sm-3 col-form-label">Criado por</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Tipo Cliente</h4>
+                </div>
+                <div class="card-body">
                     <div class="form-group">
-                        <input type="text" class="form-control" />
+                        <select asp-for="TypeLead" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o tipo de cliente">
+                            <option disabled selected>Tipo de Cliente</option>
+                            <option value="1">Pessoa Física</option>
+                            <option value="2">Pessoa Jurídica</option>
+                        </select>
+                        <span asp-validation-for="TypeLead" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Status do Cliente</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o status">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                        </select>
+                        <span asp-validation-for="StatusCode" class="text-danger"></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Tipo Cliente</h4>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <select class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
-                        <option disabled selected>Tipo de Cliente</option>
-                        <option value="1">Pessoa Fisica</option>
-                        <option value="2">Pessoa Juridica</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Status do Cliente</h4>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <select class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
-                        <option disabled selected>Status</option>
-                        <option value="1">Ativo</option>
-                        <option value="2">Inativo</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create" id="RangeValidation" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
@@ -73,7 +87,7 @@
                                 <label asp-for="CPF" class="col-sm-2 col-form-label">CPF</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="CPF" class="form-control" />
+                                        <input asp-for="CPF" class="form-control" placeholder="Digite o CPF" />
                                         <span asp-validation-for="CPF" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -82,7 +96,7 @@
                                 <label asp-for="CNPJ" class="col-sm-2 col-form-label">CNPJ</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="CNPJ" class="form-control" />
+                                        <input asp-for="CNPJ" class="form-control" placeholder="Digite o CNPJ" />
                                         <span asp-validation-for="CNPJ" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -91,7 +105,7 @@
                                 <label asp-for="FullName" class="col-sm-2 col-form-label">Nome Completo</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="FullName" class="form-control" />
+                                        <input asp-for="FullName" class="form-control" placeholder="Digite o nome completo" />
                                         <span asp-validation-for="FullName" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -100,16 +114,16 @@
                                 <label asp-for="FirstName" class="col-sm-2 col-form-label">Primeiro Nome</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="FirstName" class="form-control" />
+                                        <input asp-for="FirstName" class="form-control" placeholder="Digite o primeiro nome" />
                                         <span asp-validation-for="FirstName" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <label asp-for="LastName" class="col-sm-2 col-form-label">Sobre Nome</label>
+                                <label asp-for="LastName" class="col-sm-2 col-form-label">Sobrenome</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="LastName" class="form-control" />
+                                        <input asp-for="LastName" class="form-control" placeholder="Digite o sobrenome" />
                                         <span asp-validation-for="LastName" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -118,7 +132,7 @@
                                 <label asp-for="Email" class="col-sm-2 col-form-label">E-mail</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="Email" class="form-control" />
+                                        <input asp-for="Email" class="form-control" placeholder="Digite o e-mail" />
                                         <span asp-validation-for="Email" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -127,7 +141,7 @@
                                 <label asp-for="Telephone" class="col-sm-2 col-form-label">Telefone</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="Telephone" class="form-control" />
+                                        <input asp-for="Telephone" class="form-control" placeholder="Digite o telefone" />
                                         <span asp-validation-for="Telephone" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -145,8 +159,7 @@
                                 <label asp-for="Address_PostalCode" class="col-sm-2 col-form-label">CEP</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-
-                                        <input asp-for="Address_PostalCode" class="form-control" />
+                                        <input asp-for="Address_PostalCode" class="form-control" placeholder="Digite o CEP" />
                                         <span asp-validation-for="Address_PostalCode" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -155,8 +168,7 @@
                                 <label asp-for="Address1" class="col-sm-2 col-form-label">Rua</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-
-                                        <input asp-for="Address1" class="form-control" />
+                                        <input asp-for="Address1" class="form-control" placeholder="Digite a rua" />
                                         <span asp-validation-for="Address1" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -165,7 +177,7 @@
                                 <label asp-for="Address_Adjunct" class="col-sm-2 col-form-label">Bairro</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="Address_Adjunct" class="form-control" />
+                                        <input asp-for="Address_Adjunct" class="form-control" placeholder="Digite o bairro" />
                                         <span asp-validation-for="Address_Adjunct" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -174,7 +186,7 @@
                                 <label asp-for="Address_City" class="col-sm-2 col-form-label">Cidade</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <input asp-for="Address_City" class="form-control" />
+                                        <input asp-for="Address_City" class="form-control" placeholder="Digite a cidade" />
                                         <span asp-validation-for="Address_City" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -183,8 +195,7 @@
                                 <label asp-for="Address_Country" class="col-sm-2 col-form-label">País</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-
-                                        <input asp-for="Address_Country" class="form-control" />
+                                        <input asp-for="Address_Country" class="form-control" placeholder="Digite o país" />
                                         <span asp-validation-for="Address_Country" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -193,8 +204,7 @@
                                 <label asp-for="Address_State" class="col-sm-2 col-form-label">Estado</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-
-                                        <input asp-for="Address_State" class="form-control" />
+                                        <input asp-for="Address_State" class="form-control" placeholder="Digite o estado" />
                                         <span asp-validation-for="Address_State" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -210,10 +220,10 @@
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
-        </form>
-    </div>
-</div>
 
+        </div>
+    </div>
+</form>
 <a class="btn btn-bd-purple" asp-action="Index">Voltar</a>
 
 @section Scripts {

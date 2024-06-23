@@ -8,7 +8,7 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : BaseController<OrderViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Orders/Create
@@ -75,6 +76,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var order = await response.Content.ReadFromJsonAsync<OrderViewModel>();
+            order.IsNew = false;
             return View(order);
         }
 
@@ -91,6 +93,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(orderViewModel);
                 var response = await client.PutAsJsonAsync($"api/order/{id}", orderViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

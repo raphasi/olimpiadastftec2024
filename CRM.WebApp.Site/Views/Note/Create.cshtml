@@ -1,0 +1,132 @@
+﻿@model CRM.WebApp.Site.Models.NoteViewModel
+
+@{
+    ViewData["Title"] = Model.NoteID == Guid.Empty ? "Criar Nota" : "Editar Nota";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Note</h4>
+<hr />
+<form asp-action="@(Model.NoteID == Guid.Empty ? "Create" : "Edit")" method="post">
+    <input type="hidden" asp-for="NoteID" name="NoteID" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" value="@DateTime.Now" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" value="@DateTime.Now" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Status da Nota</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Informações da Nota</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label asp-for="Content" class="col-sm-2 col-form-label">Conteúdo</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Content" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="CustomerID" class="col-sm-2 col-form-label">Cliente</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <select asp-for="CustomerID" class="form-control">
+                                            <option value="">Selecione um Cliente</option>
+                                            @* Aqui você pode preencher as opções com os clientes disponíveis *@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="ActivityID" class="col-sm-2 col-form-label">Atividade</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <select asp-for="ActivityID" class="form-control">
+                                            <option value="">Selecione uma Atividade</option>
+                                            @* Aqui você pode preencher as opções com as atividades disponíveis *@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="OpportunityID" class="col-sm-2 col-form-label">Oportunidade</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <select asp-for="OpportunityID" class="form-control">
+                                            <option value="">Selecione uma Oportunidade</option>
+                                            @* Aqui você pode preencher as opções com as oportunidades disponíveis *@
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a class="btn btn-secondary" asp-action="Index">Voltar</a>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

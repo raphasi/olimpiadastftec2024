@@ -23,6 +23,12 @@ public class OpportunityDTO
     [Required(ErrorMessage = "O campo Data de Fechamento Esperada é obrigatório.")]
     public DateTime ExpectedCloseDate { get; set; }
 
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
+
     // Navigation properties
     //public CustomerDTO Customer { get; set; }
     //public LeadDTO Lead { get; set; }

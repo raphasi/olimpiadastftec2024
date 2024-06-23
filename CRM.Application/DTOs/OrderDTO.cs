@@ -19,7 +19,9 @@ public class OrderDTO
     [Range(0, double.MaxValue, ErrorMessage = "O Valor Total deve ser um valor positivo.")]
     public decimal TotalAmount { get; set; }
 
-    // Navigation properties
-    public OpportunityDTO Opportunity { get; set; }
-    public ICollection<OrderItemDTO> OrderItems { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
 }

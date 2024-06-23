@@ -1,6 +1,6 @@
 ﻿namespace CRM.WebApp.Site.Models;
 
-public class CustomerViewModel
+public class CustomerViewModel : EntityBase
 {
     public Guid CustomerID { get; set; }
     public string FullName { get; set; }
@@ -17,9 +17,4 @@ public class CustomerViewModel
     public int? TypeLead { get; set; }
     public string CPF { get; set; }
     public string CNPJ { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public Guid? ModifiedBy { get; set; }
-    public DateTime? CreatedOn { get; set; }
-    public DateTime? ModifiedOn { get; set; }
-    public int? StatusCode { get; set; }
 }

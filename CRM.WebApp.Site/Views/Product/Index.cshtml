@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Produtos</h2>
@@ -6,9 +6,11 @@
         Nessa seção ficam armazenados todos os produtos disponíveis para venda.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar produto
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,42 +19,56 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Descrição</th>
-                            <th>Preço</th>
-                            <th>Inventário</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var product in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@product.Name</td>
-                                <td>@product.Description</td>
-                                <td>@product.Price</td>
-                                <td>@product.Inventory</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = product.ProductID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = product.ProductID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Inventário</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Descrição</th>
-                            <th>Preço</th>
-                            <th>Inventário</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+                                    <td>@product.Name</td>
+                                    <td>@product.Description</td>
+                                    <td>@product.Price</td>
+                                    <td>@product.Inventory</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = product.ProductID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Produto">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = product.ProductID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Produto" onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Inventário</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

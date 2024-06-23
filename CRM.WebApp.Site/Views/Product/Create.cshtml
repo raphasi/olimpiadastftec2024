@@ -1,0 +1,120 @@
+﻿@model CRM.WebApp.Site.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Criar Produto";
+}
+
+<form asp-action="Create" id="RangeValidation" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações do Produto</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="Name" class="col-sm-3 col-form-label">Nome</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Description" class="col-sm-3 col-form-label">Descrição</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Price" class="col-sm-3 col-form-label">Preço</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Price" class="form-control" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="ImageUrl" class="col-sm-3 col-form-label">URL da Imagem</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="ImageUrl" class="form-control" />
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Inventory" class="col-sm-3 col-form-label">Estoque</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Inventory" class="form-control" />
+                                <span asp-validation-for="Inventory" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="StatusCode" class="col-sm-3 col-form-label">Status</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o status">
+                                    <option disabled selected>Status</option>
+                                    <option value="1">Ativo</option>
+                                    <option value="2">Inativo</option>
+                                </select>
+                                <span asp-validation-for="StatusCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Salvar" class="btn btn-primary" />
+    </div>
+</form>
+<a class="btn btn-bd-purple" asp-action="Index">Voltar</a>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

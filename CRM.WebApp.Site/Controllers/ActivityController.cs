@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class ActivityController : Controller
+    public class ActivityController : BaseController<ActivityViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Activities/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Activities/Create
@@ -69,12 +70,14 @@ namespace CRM.WebApp.Site.Controllers
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
             var response = await client.GetAsync($"api/activity/{id}");
+
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
             }
 
             var activity = await response.Content.ReadFromJsonAsync<ActivityViewModel>();
+            activity.IsNew = false;
             return View(activity);
         }
 
@@ -91,6 +94,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(activityViewModel);
                 var response = await client.PutAsJsonAsync($"api/activity/{id}", activityViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

@@ -1,0 +1,132 @@
+﻿@model CRM.WebApp.Site.Models.LeadViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Lead";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Lead</h4>
+<hr />
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="LeadID" name="id" />
+    <input type="hidden" asp-for="LeadID" name="LeadID" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Status do Lead</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Informações do Lead</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label asp-for="FullName" class="col-sm-2 col-form-label">Nome Completo</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="FullName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="FirstName" class="col-sm-2 col-form-label">Primeiro Nome</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="FirstName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="LastName" class="col-sm-2 col-form-label">Sobrenome</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="LastName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="Email" class="col-sm-2 col-form-label">E-mail</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Email" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="Telephone" class="col-sm-2 col-form-label">Telefone</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Telephone" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a class="btn btn-secondary" asp-action="Index">Voltar</a>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,79 +1,130 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-
-namespace CRM.API.BEND.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class PriceLevelController : ControllerBase
+namespace CRM.API.BEND.Controllers
 {
-    private readonly IPriceLevelService _priceLevelService;
-
-    public PriceLevelController(IPriceLevelService priceLevelService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PriceLevelController : ControllerBase
     {
-        _priceLevelService = priceLevelService;
-    }
+        private readonly IPriceLevelService _priceLevelService;
+        private readonly ILogger<PriceLevelController> _logger;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<PriceLevelDTO>> GetPriceLevelById(Guid id)
-    {
-        var priceLevel = await _priceLevelService.GetByIdAsync(id);
-        if (priceLevel == null)
+        public PriceLevelController(IPriceLevelService priceLevelService, ILogger<PriceLevelController> logger)
         {
-            return NotFound();
-        }
-        return Ok(priceLevel);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PriceLevelDTO>>> GetAllPriceLevels()
-    {
-        var priceLevels = await _priceLevelService.GetAllAsync();
-        return Ok(priceLevels);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> AddPriceLevel([FromBody] PriceLevelDTO priceLevel)
-    {
-        if (priceLevel == null)
-        {
-            return BadRequest();
+            _priceLevelService = priceLevelService;
+            _logger = logger;
         }
 
-        await _priceLevelService.AddAsync(priceLevel);
-        return CreatedAtAction(nameof(GetPriceLevelById), new { id = priceLevel.PriceLevelID }, priceLevel);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdatePriceLevel(Guid id, [FromBody] PriceLevelDTO priceLevel)
-    {
-        if (priceLevel == null || priceLevel.PriceLevelID != id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PriceLevelDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<PriceLevelDTO>> GetPriceLevelById(Guid id)
         {
-            return BadRequest();
+            try
+            {
+                var priceLevel = await _priceLevelService.GetByIdAsync(id);
+                if (priceLevel == null)
+                {
+                    _logger.LogWarning("Nível de preço com ID {PriceLevelId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(priceLevel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter nível de preço por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        var existingPriceLevel = await _priceLevelService.GetByIdAsync(id);
-        if (existingPriceLevel == null)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PriceLevelDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<PriceLevelDTO>>> GetAllPriceLevels()
         {
-            return NotFound();
+            try
+            {
+                var priceLevels = await _priceLevelService.GetAllAsync();
+                return Ok(priceLevels);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os níveis de preço.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _priceLevelService.UpdateAsync(priceLevel);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeletePriceLevel(Guid id)
-    {
-        var existingPriceLevel = await _priceLevelService.GetByIdAsync(id);
-        if (existingPriceLevel == null)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddPriceLevel([FromBody] PriceLevelDTO priceLevel)
         {
-            return NotFound();
+            if (priceLevel == null)
+            {
+                return BadRequest("Dados do nível de preço são obrigatórios.");
+            }
+
+            try
+            {
+                await _priceLevelService.AddAsync(priceLevel);
+                return CreatedAtAction(nameof(GetPriceLevelById), new { id = priceLevel.PriceLevelID }, priceLevel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar nível de preço.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _priceLevelService.DeleteAsync(id);
-        return NoContent();
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdatePriceLevel(Guid id, [FromBody] PriceLevelDTO priceLevel)
+        {
+            if (priceLevel == null || priceLevel.PriceLevelID != id)
+            {
+                return BadRequest("Dados do nível de preço são inválidos.");
+            }
+
+            try
+            {
+                await _priceLevelService.UpdateAsync(priceLevel);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar nível de preço.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> DeletePriceLevel(Guid id)
+        {
+            try
+            {
+                var existingPriceLevel = await _priceLevelService.GetByIdAsync(id);
+                if (existingPriceLevel == null)
+                {
+                    return NotFound();
+                }
+
+                await _priceLevelService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar nível de preço.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

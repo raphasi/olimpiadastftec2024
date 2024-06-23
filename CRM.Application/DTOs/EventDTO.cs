@@ -28,7 +28,9 @@ public class EventDTO
     [Range(0.01, double.MaxValue, ErrorMessage = "O Preço do Ingresso deve ser maior que zero.")]
     public Nullable<decimal> TicketPrice { get; set; }
 
-    // Navigation properties
-    public ProductDTO Product { get; set; }
-    public ICollection<QuoteDTO> Quotes { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
 }

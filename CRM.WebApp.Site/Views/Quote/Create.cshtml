@@ -1,0 +1,138 @@
+﻿@model CRM.WebApp.Site.Models.QuoteViewModel
+
+@{
+    ViewData["Title"] = "Criar Cotação";
+}
+
+<form asp-action="Create" id="RangeValidation" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações da Cotação</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="OpportunityID" class="col-sm-3 col-form-label">Oportunidade</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="OpportunityID" class="form-control" />
+                                <span asp-validation-for="OpportunityID" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="ProductID" class="col-sm-3 col-form-label">Produto</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="ProductID" class="form-control" />
+                                <span asp-validation-for="ProductID" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="PriceLevelID" class="col-sm-3 col-form-label">Nível de Preço</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="PriceLevelID" class="form-control" />
+                                <span asp-validation-for="PriceLevelID" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="EventID" class="col-sm-3 col-form-label">Evento</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="EventID" class="form-control" />
+                                <span asp-validation-for="EventID" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Quantity" class="col-sm-3 col-form-label">Quantidade</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Quantity" class="form-control" />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Discount" class="col-sm-3 col-form-label">Desconto</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="Discount" class="form-control" />
+                                <span asp-validation-for="Discount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="TotalPrice" class="col-sm-3 col-form-label">Preço Total</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="TotalPrice" class="form-control" />
+                                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="StatusCode" class="col-sm-3 col-form-label">Status</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o status">
+                                    <option disabled selected>Status</option>
+                                    <option value="1">Ativo</option>
+                                    <option value="2">Inativo</option>
+                                </select>
+                                <span asp-validation-for="StatusCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Salvar" class="btn btn-primary" />
+    </div>
+</form>
+<a class="btn btn-bd-purple" asp-action="Index">Voltar</a>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

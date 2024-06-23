@@ -1,79 +1,130 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
-using CRM.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace CRM.API.BEND.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class EventController : ControllerBase
+namespace CRM.API.BEND.Controllers
 {
-    private readonly IEventService _eventService;
-
-    public EventController(IEventService eventService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EventController : ControllerBase
     {
-        _eventService = eventService;
-    }
+        private readonly IEventService _eventService;
+        private readonly ILogger<EventController> _logger;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<EventDTO>> GetEventById(Guid id)
-    {
-        var eventEntity = await _eventService.GetByIdAsync(id);
-        if (eventEntity == null)
+        public EventController(IEventService eventService, ILogger<EventController> logger)
         {
-            return NotFound();
-        }
-        return Ok(eventEntity);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<EventDTO>>> GetAllEvents()
-    {
-        var events = await _eventService.GetAllAsync();
-        return Ok(events);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> AddEvent([FromBody] EventDTO eventEntity)
-    {
-        if (eventEntity == null)
-        {
-            return BadRequest();
+            _eventService = eventService;
+            _logger = logger;
         }
 
-        await _eventService.AddAsync(eventEntity);
-        return CreatedAtAction(nameof(GetEventById), new { id = eventEntity.EventID }, eventEntity);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] EventDTO eventEntity)
-    {
-        if (eventEntity == null || eventEntity.EventID != id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(EventDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<EventDTO>> GetEventById(Guid id)
         {
-            return BadRequest();
+            try
+            {
+                var eventItem = await _eventService.GetByIdAsync(id);
+                if (eventItem == null)
+                {
+                    _logger.LogWarning("Evento com ID {EventId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(eventItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter evento por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        var existingEvent = await _eventService.GetByIdAsync(id);
-        if (existingEvent == null)
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<EventDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<EventDTO>>> GetAllEvents()
         {
-            return NotFound();
+            try
+            {
+                var events = await _eventService.GetAllAsync();
+                return Ok(events);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os eventos.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _eventService.UpdateAsync(eventEntity);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteEvent(Guid id)
-    {
-        var existingEvent = await _eventService.GetByIdAsync(id);
-        if (existingEvent == null)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddEvent([FromBody] EventDTO eventItem)
         {
-            return NotFound();
+            if (eventItem == null)
+            {
+                return BadRequest("Dados do evento são obrigatórios.");
+            }
+
+            try
+            {
+                await _eventService.AddAsync(eventItem);
+                return CreatedAtAction(nameof(GetEventById), new { id = eventItem.EventID }, eventItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar evento.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
-        await _eventService.DeleteAsync(id);
-        return NoContent();
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] EventDTO eventItem)
+        {
+            if (eventItem == null || eventItem.EventID != id)
+            {
+                return BadRequest("Dados do evento são inválidos.");
+            }
+
+            try
+            {
+                await _eventService.UpdateAsync(eventItem);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar evento.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> DeleteEvent(Guid id)
+        {
+            try
+            {
+                var existingEvent = await _eventService.GetByIdAsync(id);
+                if (existingEvent == null)
+                {
+                    return NotFound();
+                }
+
+                await _eventService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar evento.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
     }
 }

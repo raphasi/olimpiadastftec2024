@@ -1,6 +1,10 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
@@ -9,71 +13,124 @@ namespace CRM.API.BEND.Controllers
     public class QuoteController : ControllerBase
     {
         private readonly IQuoteService _quoteService;
+        private readonly ILogger<QuoteController> _logger;
 
-        public QuoteController(IQuoteService quoteRepository)
+        public QuoteController(IQuoteService quoteService, ILogger<QuoteController> logger)
         {
-            _quoteService = quoteRepository;
+            _quoteService = quoteService;
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(QuoteDTO), 200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<QuoteDTO>> GetQuoteById(Guid id)
         {
-            var quote = await _quoteService.GetByIdAsync(id);
-            if (quote == null)
+            try
             {
-                return NotFound();
+                var quote = await _quoteService.GetByIdAsync(id);
+                if (quote == null)
+                {
+                    _logger.LogWarning("Cotação com ID {QuoteId} não encontrada.", id);
+                    return NotFound();
+                }
+                return Ok(quote);
             }
-            return Ok(quote);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter cotação por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<QuoteDTO>), 200)]
         public async Task<ActionResult<IEnumerable<QuoteDTO>>> GetAllQuotes()
         {
-            var quotes = await _quoteService.GetAllAsync();
-            return Ok(quotes);
+            try
+            {
+                var quotes = await _quoteService.GetAllAsync();
+                return Ok(quotes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todas as cotações.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult> AddQuote([FromBody] QuoteDTO quote)
         {
             if (quote == null)
             {
-                return BadRequest();
+                return BadRequest("Dados da cotação são obrigatórios.");
             }
 
-            await _quoteService.AddAsync(quote);
-            return CreatedAtAction(nameof(GetQuoteById), new { id = quote.QuoteID }, quote);
+            try
+            {
+                await _quoteService.AddAsync(quote);
+                return CreatedAtAction(nameof(GetQuoteById), new { id = quote.QuoteID }, quote);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar cotação.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> UpdateQuote(Guid id, [FromBody] QuoteDTO quote)
         {
             if (quote == null || quote.QuoteID != id)
             {
-                return BadRequest();
+                return BadRequest("Dados da cotação são inválidos.");
             }
 
-            var existingQuote = await _quoteService.GetByIdAsync(id);
-            if (existingQuote == null)
+            try
             {
-                return NotFound();
-            }
+                var existingQuote = await _quoteService.GetByIdAsync(id);
+                if (existingQuote == null)
+                {
+                    return NotFound();
+                }
 
-            await _quoteService.UpdateAsync(quote);
-            return NoContent();
+                await _quoteService.UpdateAsync(quote);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar cotação.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> DeleteQuote(Guid id)
         {
-            var existingQuote = await _quoteService.GetByIdAsync(id);
-            if (existingQuote == null)
+            try
             {
-                return NotFound();
-            }
+                var existingQuote = await _quoteService.GetByIdAsync(id);
+                if (existingQuote == null)
+                {
+                    return NotFound();
+                }
 
-            await _quoteService.DeleteAsync(id);
-            return NoContent();
+                await _quoteService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar cotação.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
     }
 }

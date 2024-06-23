@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class OpportunityController : Controller
+    public class OpportunityController : BaseController<OpportunityViewModel>   
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Opportunities/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Opportunities/Create
@@ -75,6 +76,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var opportunity = await response.Content.ReadFromJsonAsync<OpportunityViewModel>();
+            opportunity.IsNew = false;
             return View(opportunity);
         }
 
@@ -91,6 +93,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(opportunityViewModel);
                 var response = await client.PutAsJsonAsync($"api/opportunity/{id}", opportunityViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

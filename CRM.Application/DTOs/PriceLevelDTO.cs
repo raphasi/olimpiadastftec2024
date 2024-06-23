@@ -21,7 +21,10 @@ namespace CRM.Application.DTOs
         [Range(0, double.MaxValue, ErrorMessage = "O Valor Base deve ser um valor positivo.")]
         public decimal ValueBase { get; set; }
 
-        // Navigation properties
-        public ICollection<QuoteDTO> Quotes { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? StatusCode { get; set; }
     }
 }

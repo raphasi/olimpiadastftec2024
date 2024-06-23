@@ -21,8 +21,9 @@ public class NoteDTO
     [StringLength(5000, ErrorMessage = "O Conteúdo não pode exceder 5000 caracteres.")]
     public string Content { get; set; }
 
-    // Navigation properties
-    public CustomerDTO Customer { get; set; }
-    public OpportunityDTO Opportunities { get; set; }
-    public ActivityDTO Activities { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
+    public DateTime? CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public int? StatusCode { get; set; }
 }

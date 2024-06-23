@@ -8,7 +8,7 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class EventController : Controller
+    public class EventController : BaseController<EventViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Events/Create
@@ -75,6 +76,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
+            eventItem.IsNew = false;
             return View(eventItem);
         }
 
@@ -91,6 +93,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(eventViewModel);
                 var response = await client.PutAsJsonAsync($"api/event/{id}", eventViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

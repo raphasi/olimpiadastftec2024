@@ -8,7 +8,7 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers;
 
-public class NoteController : Controller
+public class NoteController : BaseController<NoteViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ public class NoteController : Controller
     // GET: Notes/Create
     public IActionResult Create()
     {
-        return View();
+        var model = InitializeEntity();
+        return View(model);
     }
 
     // POST: Notes/Create
@@ -75,6 +76,7 @@ public class NoteController : Controller
         }
 
         var note = await response.Content.ReadFromJsonAsync<NoteViewModel>();
+        note.IsNew = false;
         return View(note);
     }
 
@@ -91,6 +93,7 @@ public class NoteController : Controller
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            UpdateEntity(noteViewModel);
             var response = await client.PutAsJsonAsync($"api/note/{id}", noteViewModel);
             if (!response.IsSuccessStatusCode)
             {

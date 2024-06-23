@@ -1,0 +1,104 @@
+﻿@model CRM.WebApp.Site.Models.PriceLevelViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Nível de Preço";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>PriceLevel</h4>
+<hr />
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="PriceLevelID" name="id" />
+    <input type="hidden" asp-for="PriceLevelID" name="PriceLevelID" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control datetimepicker" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedBy" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações do Nível de Preço</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="LevelName" class="col-sm-3 col-form-label">Nome do Nível</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="LevelName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Percentual de Desconto</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="DiscountPercentage" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="ValueBase" class="col-sm-3 col-form-label">Valor Base</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <input asp-for="ValueBase" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="StatusCode" class="col-sm-3 col-form-label">Status</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                                    <option disabled selected>Status</option>
+                                    <option value="1">Ativo</option>
+                                    <option value="2">Inativo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a class="btn btn-secondary" asp-action="Index">Voltar</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CRM.Application.DTOs;
+﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
@@ -9,64 +13,118 @@ namespace CRM.API.BEND.Controllers
     public class LeadController : ControllerBase
     {
         private readonly ILeadService _leadService;
+        private readonly ILogger<LeadController> _logger;
 
-        public LeadController(ILeadService leadService)
+        public LeadController(ILeadService leadService, ILogger<LeadController> logger)
         {
             _leadService = leadService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LeadDTO>>> GetAllLeads()
-        {
-            var leads = await _leadService.GetAllAsync();
-            return Ok(leads);
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(LeadDTO), 200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<LeadDTO>> GetLeadById(Guid id)
         {
-            var lead = await _leadService.GetByIdAsync(id);
-            if (lead == null)
+            try
             {
-                return NotFound();
+                var lead = await _leadService.GetByIdAsync(id);
+                if (lead == null)
+                {
+                    _logger.LogWarning("Lead com ID {LeadId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(lead);
             }
-            return Ok(lead);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter lead por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<LeadDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<LeadDTO>>> GetAllLeads()
+        {
+            try
+            {
+                var leads = await _leadService.GetAllAsync();
+                return Ok(leads);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os leads.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddLead([FromBody] LeadDTO leadDto)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> AddLead([FromBody] LeadDTO lead)
         {
-            if (!ModelState.IsValid)
+            if (lead == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Dados do lead são obrigatórios.");
             }
 
-            await _leadService.AddAsync(leadDto);
-            return CreatedAtAction(nameof(GetLeadById), new { id = leadDto.LeadID }, leadDto);
+            try
+            {
+                await _leadService.AddAsync(lead);
+                return CreatedAtAction(nameof(GetLeadById), new { id = lead.LeadID }, lead);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar lead.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateLead(Guid id, [FromBody] LeadDTO leadDto)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateLead(Guid id, [FromBody] LeadDTO lead)
         {
-            if (id != leadDto.LeadID)
+            if (lead == null || lead.LeadID != id)
             {
-                return BadRequest("ID mismatch");
+                return BadRequest("Dados do lead são inválidos.");
             }
 
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _leadService.UpdateAsync(lead);
+                return NoContent();
             }
-
-            await _leadService.UpdateAsync(leadDto);
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar lead.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> DeleteLead(Guid id)
         {
-            await _leadService.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                var existingLead = await _leadService.GetByIdAsync(id);
+                if (existingLead == null)
+                {
+                    return NotFound();
+                }
+
+                await _leadService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar lead.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers;
 
-public class ProductController : Controller
+public class ProductController : BaseController<ProductViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
@@ -46,7 +46,8 @@ public class ProductController : Controller
     // GET: Products/Create
     public IActionResult Create()
     {
-        return View();
+        var model = InitializeEntity();
+        return View(model);
     }
 
     // POST: Products/Create
@@ -76,6 +77,7 @@ public class ProductController : Controller
         }
 
         var product = await response.Content.ReadFromJsonAsync<ProductViewModel>();
+        product.IsNew = false;
         return View(product);
     }
 
@@ -92,6 +94,7 @@ public class ProductController : Controller
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            UpdateEntity(productViewModel);
             var response = await client.PutAsJsonAsync($"api/product/{id}", productViewModel);
             if (!response.IsSuccessStatusCode)
             {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class QuoteController : Controller
+    public class QuoteController : BaseController<QuoteViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Quotes/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Quotes/Create
@@ -75,6 +76,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var quote = await response.Content.ReadFromJsonAsync<QuoteViewModel>();
+            quote.IsNew = false;
             return View(quote);
         }
 
@@ -91,6 +93,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(quoteViewModel);
                 var response = await client.PutAsJsonAsync($"api/quote/{id}", quoteViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

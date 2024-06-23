@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class LeadController : Controller
+    public class LeadController : BaseController<LeadViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +45,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: Leads/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: Leads/Create
@@ -75,6 +76,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var lead = await response.Content.ReadFromJsonAsync<LeadViewModel>();
+            lead.IsNew = false;
             return View(lead);
         }
 
@@ -91,6 +93,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(leadViewModel);
                 var response = await client.PutAsJsonAsync($"api/lead/{id}", leadViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

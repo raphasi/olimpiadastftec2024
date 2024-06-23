@@ -5,10 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CRM.WebApp.Site.Models;
+using System.Net.WebSockets;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class PriceLevelController : Controller
+    public class PriceLevelController : BaseController<PriceLevelViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -45,7 +46,8 @@ namespace CRM.WebApp.Site.Controllers
         // GET: PriceLevels/Create
         public IActionResult Create()
         {
-            return View();
+            var model = InitializeEntity();
+            return View(model);
         }
 
         // POST: PriceLevels/Create
@@ -75,6 +77,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var priceLevel = await response.Content.ReadFromJsonAsync<PriceLevelViewModel>();
+            priceLevel.IsNew = false;
             return View(priceLevel);
         }
 
@@ -91,6 +94,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                UpdateEntity(priceLevelViewModel);  
                 var response = await client.PutAsJsonAsync($"api/pricelevel/{id}", priceLevelViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

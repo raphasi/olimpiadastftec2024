@@ -1,8 +1,7 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
-using CRM.Domain.Entities;
-using CRM.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,71 +13,118 @@ namespace CRM.API.BEND.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IProductService productRepository)
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
-            _productService = productRepository;
+            _productService = productService;
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductDTO), 200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<ProductDTO>> GetProductById(Guid id)
         {
-            var product = await _productService.GetByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var product = await _productService.GetByIdAsync(id);
+                if (product == null)
+                {
+                    _logger.LogWarning("Produto com ID {ProductId} não encontrado.", id);
+                    return NotFound();
+                }
+                return Ok(product);
             }
-            return Ok(product);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter produto por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
-            var products = await _productService.GetAllAsync();
-            return Ok(products);
+            try
+            {
+                var products = await _productService.GetAllAsync();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todos os produtos.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult> AddProduct([FromBody] ProductDTO product)
         {
             if (product == null)
             {
-                return BadRequest();
+                return BadRequest("Dados do produto são obrigatórios.");
             }
 
-            await _productService.AddAsync(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, product);
+            try
+            {
+                await _productService.AddAsync(product);
+                return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao adicionar produto.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> UpdateProduct(Guid id, [FromBody] ProductDTO product)
         {
             if (product == null || product.ProductID != id)
             {
-                return BadRequest();
+                return BadRequest("Dados do produto são inválidos.");
             }
 
-            var existingProduct = await _productService.GetByIdAsync(id);
-            if (existingProduct == null)
+            try
             {
-                return NotFound();
+                await _productService.UpdateAsync(product);
+                return NoContent();
             }
-
-            await _productService.UpdateAsync(product);
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar produto.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
-            var existingProduct = await _productService.GetByIdAsync(id);
-            if (existingProduct == null)
+            try
             {
-                return NotFound();
-            }
+                var existingProduct = await _productService.GetByIdAsync(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
 
-            await _productService.DeleteAsync(id);
-            return NoContent();
+                await _productService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar produto.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
     }
 }

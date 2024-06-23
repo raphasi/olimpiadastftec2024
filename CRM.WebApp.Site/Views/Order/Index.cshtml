@@ -1,14 +1,16 @@
-﻿@model IEnumerable<CRM.WebApp.Site.Models.OrderViewModel>
+﻿@model IEnumerable<OrderViewModel>
 
 <div class="col-md-8 ml-auto mr-auto">
     <h2 class="text-center">Pedidos</h2>
     <p class="text-center">
-        Nessa seção ficam armazenados todos os pedidos de venda de ingresso das olimpíadas.
+        Nessa seção ficam armazenados todos os pedidos realizados.
     </p>
 </div>
-<a asp-action="Create" class="btn btn-primary">
+
+<a asp-action="Create" class="btn btn-primary mb-3">
     Adicionar pedido
 </a>
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -17,36 +19,50 @@
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
 
-                <table id="datatable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Data do Pedido</th>
-                            <th>Valor Total</th>
-                            <th class="sorting_desc_disabled sorting_asc_disabled text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model)
-                        {
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@order.OrderDate</td>
-                                <td>@order.TotalAmount</td>
-                                <td class="text-right">
-                                    <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Edit", new { id = order.OrderID })"><i class="tim-icons icon-pencil"></i></a>
-                                    <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = order.OrderID })"><i class="tim-icons icon-simple-remove"></i></a>
-                                </td>
+                                <th>Data do Pedido</th>
+                                <th>Valor Total</th>
+                                <th class="text-right">Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Data do Pedido</th>
-                            <th>Valor Total</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td>@order.OrderDate?.ToString("dd/MM/yyyy")</td>
+                                    <td>@order.TotalAmount?.ToString("C")</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = order.OrderID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Pedido">
+                                            <i class="tim-icons icon-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = order.OrderID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Pedido" onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
+                                            <i class="tim-icons icon-simple-remove"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Data do Pedido</th>
+                                <th>Valor Total</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

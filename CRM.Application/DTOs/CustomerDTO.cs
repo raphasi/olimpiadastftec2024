@@ -53,6 +53,12 @@ namespace CRM.Application.DTOs
 
         public string CNPJ { get; set; }
 
+        public Guid? CreatedBy { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? StatusCode { get; set; }
+
         // Navigation properties
         //public ICollection<OpportunityDTO> Opportunities { get; set; }
     }

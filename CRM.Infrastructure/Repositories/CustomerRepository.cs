@@ -36,6 +36,7 @@ namespace CRM.Infrastructure.Repositories
         public async Task UpdateCustomerAsync(Customer customerEntity)
         {
             _customerContext.Set<Customer>().Update(customerEntity);
+            _customerContext.Entry(customerEntity).State = EntityState.Modified;
             await _customerContext.SaveChangesAsync();
         }
 
@@ -48,5 +49,11 @@ namespace CRM.Infrastructure.Repositories
                 await _customerContext.SaveChangesAsync();
             }
         }
+
+        public async void DetachCustomerAsync(Customer customer)
+        {
+            _customerContext.Entry(customer).State = EntityState.Detached;
+        }
+
     }
 }
