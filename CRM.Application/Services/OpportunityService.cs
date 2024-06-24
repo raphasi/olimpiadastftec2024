@@ -48,4 +48,17 @@ public class OpportunityService : IOpportunityService
     {
         await _opportunityRepository.DeleteOpportunityAsync(id);
     }
+
+    public async Task<IEnumerable<OpportunityDTO>> SearchAsync(string query)
+    {
+        var opps = string.IsNullOrEmpty(query)
+            ? await _opportunityRepository.GetTop10Async()
+            : await _opportunityRepository.SearchAsync(query);
+        return opps.Select(c => new OpportunityDTO
+        {
+            OpportunityID = c.OpportunityID,
+            Name = c.Name,
+            CustomerID = c.CustomerID
+        });
+    }
 }

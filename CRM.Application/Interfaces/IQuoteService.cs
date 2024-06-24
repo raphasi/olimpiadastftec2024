@@ -11,4 +11,5 @@ public interface IQuoteService
     Task AddAsync(QuoteDTO quote);
     Task UpdateAsync(QuoteDTO quote);
     Task DeleteAsync(Guid id);
+    Task<IEnumerable<QuoteDTO>> SearchAsync(string query);
 }

@@ -31,4 +31,8 @@ public class ProductDTO
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
     public int? StatusCode { get; set; }
+
+    public List<Guid> SelectedEventIds { get; set; } = new List<Guid>();
+    public List<EventDTO> AvailableEvents { get; set; } = new List<EventDTO>();
+
 }

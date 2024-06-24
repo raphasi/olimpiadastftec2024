@@ -15,6 +15,11 @@ namespace CRM.Infrastructure.EntitiesConfiguration
             builder.Property(q => q.QuoteID)
                    .IsRequired();
 
+            // Definindo as propriedades como obrigatórias e com restrições de tamanho
+            builder.Property(l => l.Name)
+                   .IsRequired(false)
+                   .HasMaxLength(200);
+
             // Definindo a propriedade OpportunityID como obrigatória
             builder.Property(q => q.OpportunityID)
                    .IsRequired(false);
@@ -29,6 +34,14 @@ namespace CRM.Infrastructure.EntitiesConfiguration
 
             // Definindo a propriedade EventID como obrigatória
             builder.Property(q => q.EventID)
+                   .IsRequired(false);
+
+            // Definindo a propriedade CustomerID como obrigatória
+            builder.Property(q => q.CustomerID)
+                   .IsRequired(false);
+
+            // Definindo a propriedade LeadID como obrigatória
+            builder.Property(q => q.LeadID)
                    .IsRequired(false);
 
             // Definindo a propriedade Quantity como obrigatória

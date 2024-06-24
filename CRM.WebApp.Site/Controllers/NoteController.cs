@@ -8,11 +8,11 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers;
 
-public class NoteController : BaseController<NoteViewModel>
+public class NoteController : BaseController<NoteViewModel, NoteViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public NoteController(IHttpClientFactory httpClientFactory)
+    public NoteController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "note")
     {
         _httpClientFactory = httpClientFactory;
     }

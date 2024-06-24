@@ -48,5 +48,19 @@ namespace CRM.Infrastructure.Repositories
                 await _priceLevelContext.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<PriceLevel>> SearchAsync(string query)
+        {
+            return await _priceLevelContext.PriceLevels
+                .Where(c => c.LevelName.Contains(query))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<PriceLevel>> GetTop10Async()
+        {
+            return await _priceLevelContext.PriceLevels
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

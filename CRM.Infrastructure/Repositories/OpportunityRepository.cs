@@ -48,5 +48,19 @@ namespace CRM.Infrastructure.Repositories
                 await _opportunityContext.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Opportunity>> SearchAsync(string query)
+        {
+            return await _opportunityContext.Opportunities
+                .Where(c => c.Name.Contains(query))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Opportunity>> GetTop10Async()
+        {
+            return await _opportunityContext.Opportunities
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

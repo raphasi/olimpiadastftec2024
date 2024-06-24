@@ -45,5 +45,18 @@ namespace CRM.Application.Services
         {
             await _leadRepository.DeleteLeadAsync(id);
         }
+
+        public async Task<IEnumerable<LeadDTO>> SearchAsync(string query)
+        {
+            var customers = string.IsNullOrEmpty(query)
+                ? await _leadRepository.GetTop10Async()
+                : await _leadRepository.SearchAsync(query);
+            return customers.Select(c => new LeadDTO
+            {
+                LeadID = c.LeadID,
+                FullName = c.FullName,
+                Email = c.Email
+            });
+        }
     }
 }

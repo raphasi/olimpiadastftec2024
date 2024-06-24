@@ -1,4 +1,5 @@
 ﻿using CRM.Application.DTOs;
+using CRM.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,4 +34,7 @@ public class EventDTO
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
     public int? StatusCode { get; set; }
+
+    public List<Guid> SelectedProductIds { get; set; } = new List<Guid>();
+    public List<ProductDTO> AvailableProducts { get; set; } = new List<ProductDTO>();
 }

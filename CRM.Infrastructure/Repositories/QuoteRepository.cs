@@ -48,5 +48,20 @@ namespace CRM.Infrastructure.Repositories
                 await _quoteContext.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Quote>> SearchAsync(string query)
+        {
+            return await _quoteContext.Quotes
+                .Where(c => c.Name.Contains(query))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Quote>> GetTop10Async()
+        {
+            return await _quoteContext.Quotes
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(10)
+                .ToListAsync();
+        }
+
     }
 }

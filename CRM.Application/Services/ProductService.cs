@@ -48,4 +48,16 @@ public class ProductService : IProductService
     {
         await _productRepository.DeleteProductAsync(id);
     }
+
+    public async Task<IEnumerable<ProductDTO>> SearchAsync(string query)
+    {
+        var opps = string.IsNullOrEmpty(query)
+            ? await _productRepository.GetTop10Async()
+            : await _productRepository.SearchAsync(query);
+        return opps.Select(c => new ProductDTO
+        {
+            ProductID = c.ProductID,
+            Name = c.Name
+        });
+    }
 }

@@ -87,17 +87,16 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label asp-for="OpportunityID" class="col-sm-3 col-form-label">Oportunidade</label>
+                                <label asp-for="OpportunityID" class="col-sm-2 col-form-label">Oportunidade</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <select asp-for="OpportunityID" class="form-control">
+                                        <select id="oppSelect" asp-for="OpportunityID" class="form-control" data-url="/opportunity/search">
                                             <option value="">Selecione uma Oportunidade</option>
-                                            @* Aqui você pode preencher as opções com as oportunidades disponíveis *@
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                         </div>
                     </div>
                 </div>
             </div>

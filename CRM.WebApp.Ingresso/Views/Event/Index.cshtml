@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CRM.WebApp.Ingresso.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Eventos";
+}
+
+<h1>Eventos</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Data</th>
+            <th>Localização</th>
+            <th>Preço do Ingresso</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var eventItem in Model)
+        {
+            <tr>
+                <td>@eventItem.Name</td>
+                <td>@eventItem.EventDate?.ToString("dd/MM/yyyy")</td>
+                <td>@eventItem.Location</td>
+                <td>@eventItem.TicketPrice?.ToString("C")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@eventItem.EventID" class="btn btn-primary">Detalhes</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

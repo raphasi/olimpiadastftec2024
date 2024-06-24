@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class QuoteController : BaseController<QuoteViewModel>
+    public class QuoteController : BaseController<QuoteViewModel, QuoteViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public QuoteController(IHttpClientFactory httpClientFactory)
+        public QuoteController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "quote")
         {
             _httpClientFactory = httpClientFactory;
         }

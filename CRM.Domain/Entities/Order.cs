@@ -8,6 +8,7 @@ public sealed class Order : Entity
 {
     public Guid OrderID { get; set; }
     public Nullable<Guid> OpportunityID { get; set; }
+    public Nullable<Guid> QuoteID { get; set; }
     public Nullable<DateTime> OrderDate { get; set; } = DateTime.Now;
     public Nullable<decimal> TotalAmount { get; set; }
 

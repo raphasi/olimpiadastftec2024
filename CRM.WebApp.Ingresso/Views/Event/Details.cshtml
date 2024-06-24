@@ -1,0 +1,38 @@
+﻿@model CRM.WebApp.Ingresso.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Evento";
+}
+
+<h1>@Model.Name</h1>
+<p>@Model.Description</p>
+<p><strong>Data:</strong> @Model.EventDate?.ToString("dd/MM/yyyy")</p>
+<p><strong>Localização:</strong> @Model.Location</p>
+<p><strong>Preço do Ingresso:</strong> @Model.TicketPrice?.ToString("C")</p>
+
+<h2>Produtos Disponíveis</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.AvailableProducts)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>@product.Price?.ToString("C")</td>
+                <td>
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-primary">Detalhes</a>
+                    <a asp-controller="Product" asp-action="AddToCart" asp-route-id="@product.ProductID" class="btn btn-success">Adicionar ao Carrinho</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

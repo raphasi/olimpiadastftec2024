@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class LeadController : BaseController<LeadViewModel>
+    public class LeadController : BaseController<LeadViewModel, LeadViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadController(IHttpClientFactory httpClientFactory)
+        public LeadController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "lead")
         {
             _httpClientFactory = httpClientFactory;
         }

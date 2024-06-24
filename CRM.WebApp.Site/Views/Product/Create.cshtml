@@ -103,6 +103,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Eventos</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select asp-for="SelectedEventIds" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione os eventos" multiple>
+                                    @foreach (var evento in Model.AvailableEvents)
+                                    {
+                                        <option value="@evento.EventID">@evento.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedEventIds" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -58,6 +58,16 @@ public static class DependencyInjectionAPI
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IQuoteService, QuoteService>();
         services.AddScoped<IAuthenticate, AuthenticateService>();
+        // Repositórios
+        services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<ICartItemRepository, CartItemRepository>();
+
+        // Serviços
+        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<ICartItemService, CartItemService>();
+
+        services.AddScoped<IProductEventRepository, ProductEventRepository>();
+        services.AddScoped<IProductEventService, ProductEventService>();
 
         // Configuração do AutoMapper
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));

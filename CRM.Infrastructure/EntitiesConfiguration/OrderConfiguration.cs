@@ -19,6 +19,10 @@ namespace CRM.Infrastructure.EntitiesConfiguration
             builder.Property(o => o.OpportunityID)
                    .IsRequired(false);
 
+            // Definindo a propriedade QuoteID como obrigatória
+            builder.Property(o => o.QuoteID)
+                   .IsRequired(false);
+
             // Definindo a propriedade OrderDate como obrigatória
             builder.Property(o => o.OrderDate)
                    .IsRequired(false);

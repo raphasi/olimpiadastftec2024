@@ -10,4 +10,7 @@ public interface IQuoteRepository
     Task AddQuoteAsync(Quote quoteEntity);
     Task UpdateQuoteAsync(Quote quoteEntity);
     Task DeleteQuoteAsync(Guid quoteId);
+    Task<IEnumerable<Quote>> SearchAsync(string query);
+    Task<IEnumerable<Quote>> GetTop10Async();
+
 }

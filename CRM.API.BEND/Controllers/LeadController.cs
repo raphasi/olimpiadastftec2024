@@ -1,5 +1,6 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using CRM.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -125,6 +126,13 @@ namespace CRM.API.BEND.Controllers
                 _logger.LogError(ex, "Erro ao deletar lead.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<LeadDTO>>> SearchAsync([FromQuery] string query = null)
+        {
+            var leads = await _leadService.SearchAsync(query);
+            return Ok(leads);
         }
     }
 }

@@ -9,11 +9,11 @@ using System.Net.WebSockets;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class PriceLevelController : BaseController<PriceLevelViewModel>
+    public class PriceLevelController : BaseController<PriceLevelViewModel, PriceLevelViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public PriceLevelController(IHttpClientFactory httpClientFactory)
+        public PriceLevelController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "pricelevel")
         {
             _httpClientFactory = httpClientFactory;
         }
@@ -94,7 +94,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                UpdateEntity(priceLevelViewModel);  
+                UpdateEntity(priceLevelViewModel);
                 var response = await client.PutAsJsonAsync($"api/pricelevel/{id}", priceLevelViewModel);
                 if (!response.IsSuccessStatusCode)
                 {

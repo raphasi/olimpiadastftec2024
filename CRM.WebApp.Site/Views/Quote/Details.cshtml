@@ -48,14 +48,54 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
+                    <h4 class="card-title">Status da Cotação</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
                     <h4 class="card-title">Informações da Cotação</h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <label asp-for="LeadID" class="col-sm-3 col-form-label">lead</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select id="leadSelect" asp-for="LeadID" class="form-control" data-url="/lead/search">
+                                    <option value="">Selecione um Lead</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="CustomerID" class="col-sm-3 col-form-label">Cliente</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <select id="customerSelect" asp-for="CustomerID" class="form-control" data-url="/customer/search">
+                                    <option value="">Selecione um Cliente</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <label asp-for="OpportunityID" class="col-sm-3 col-form-label">Oportunidade</label>
                         <div class="col-sm-7">
                             <div class="form-group">
-                                <input asp-for="OpportunityID" class="form-control" />
+                                <select id="oppSelect" asp-for="OpportunityID" class="form-control" data-url="/opportunity/search">
+                                    <option value="">Selecione uma Oportunidade</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -63,15 +103,19 @@
                         <label asp-for="ProductID" class="col-sm-3 col-form-label">Produto</label>
                         <div class="col-sm-7">
                             <div class="form-group">
-                                <input asp-for="ProductID" class="form-control" />
+                                <select id="prdSelect" asp-for="ProductID" class="form-control" data-url="/product/search">
+                                    <option value="">Selecione um Produto</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label asp-for="PriceLevelID" class="col-sm-3 col-form-label">Nível de Preço</label>
+                        <label asp-for="PriceLevelID" class="col-sm-3 col-form-label">Lista de Preço</label>
                         <div class="col-sm-7">
                             <div class="form-group">
-                                <input asp-for="PriceLevelID" class="form-control" />
+                                <select id="priceSelect" asp-for="PriceLevelID" class="form-control" data-url="/pricelevel/search">
+                                    <option value="">Selecione uma Lista de Preço</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -79,7 +123,9 @@
                         <label asp-for="EventID" class="col-sm-3 col-form-label">Evento</label>
                         <div class="col-sm-7">
                             <div class="form-group">
-                                <input asp-for="EventID" class="form-control" />
+                                <select id="eventSelect" asp-for="EventID" class="form-control" data-url="/event/search">
+                                    <option value="">Selecione um Evento</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -107,18 +153,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <label asp-for="StatusCode" class="col-sm-3 col-form-label">Status</label>
-                        <div class="col-sm-7">
-                            <div class="form-group">
-                                <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
-                                    <option disabled selected>Status</option>
-                                    <option value="1">Ativo</option>
-                                    <option value="2">Inativo</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -133,4 +167,74 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Preencher o valor selecionado se houver dados
+        var selectedLeadID = '@Model.LeadID';
+        if (selectedLeadID) {
+            $.ajax({
+                url: '/lead/getbyid/' + selectedLeadID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.fullName, data.leadID, true, true);
+                $('#leadSelect').append(option).trigger('change');
+            });
+        }
+
+        // Preencher o valor selecionado se houver dados
+        var selectedCustomerID = '@Model.CustomerID';
+        if (selectedCustomerID) {
+            $.ajax({
+                url: '/customer/getbyid/' + selectedCustomerID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.fullName, data.CustomerID, true, true);
+                $('#customerSelect').append(option).trigger('change');
+            });
+        }
+        // Preencher o valor selecionado se houver dados
+        var selectedOpportunityID = '@Model.OpportunityID';
+        if (selectedOpportunityID) {
+            $.ajax({
+                url: '/opportunity/getbyid/' + selectedOpportunityID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.name, data.OpportunityID, true, true);
+                $('#oppSelect').append(option).trigger('change');
+            });
+        }
+        // Preencher o valor selecionado se houver dados
+        var selectedPriceLevelID = '@Model.PriceLevelID';
+        if (selectedPriceLevelID) {
+            $.ajax({
+                url: '/pricelevel/getbyid/' + selectedPriceLevelID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.levelName, data.PriceLevelID, true, true);
+                $('#priceSelect').append(option).trigger('change');
+            });
+        }
+        // Preencher o valor selecionado se houver dados
+        var selectedProductID = '@Model.ProductID';
+        if (selectedProductID) {
+            $.ajax({
+                url: '/product/getbyid/' + selectedProductID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.name, data.ProductID, true, true);
+                $('#prdSelect').append(option).trigger('change');
+            });
+        }
+        // Preencher o valor selecionado se houver dados
+        var selectedEventID = '@Model.EventID';
+        if (selectedEventID) {
+            $.ajax({
+                url: '/event/getbyid/' + selectedEventID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.name, data.EventID, true, true);
+                $('#eventSelect').append(option).trigger('change');
+            });
+        }
+    </script>
 }

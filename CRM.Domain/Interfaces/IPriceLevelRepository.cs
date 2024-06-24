@@ -11,4 +11,6 @@ public interface IPriceLevelRepository
     Task AddPriceLevelAsync(PriceLevel priceLevelEntity);
     Task UpdatePriceLevelAsync(PriceLevel priceLevelEntity);
     Task DeletePriceLevelAsync(Guid priceLevelId);
+    Task<IEnumerable<PriceLevel>> SearchAsync(string query);
+    Task<IEnumerable<PriceLevel>> GetTop10Async();
 }

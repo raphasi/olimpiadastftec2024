@@ -11,6 +11,7 @@ public class OrderDTO
 
     [Required(ErrorMessage = "O campo OpportunityID é obrigatório.")]
     public Guid OpportunityID { get; set; }
+    public Guid? QuoteID { get; set; }
 
     [Required(ErrorMessage = "O campo Data do Pedido é obrigatório.")]
     public DateTime OrderDate { get; set; } = DateTime.Now;

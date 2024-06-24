@@ -26,7 +26,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Opportunity> Opportunities { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<PriceLevel> PriceLevels { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Event> Events { get; set; }
+    public DbSet<ProductEvent> ProductEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

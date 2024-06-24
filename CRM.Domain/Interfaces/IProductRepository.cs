@@ -11,4 +11,6 @@ public interface IProductRepository
     Task AddProductAsync(Product productEntity);
     Task UpdateProductAsync(Product productEntity);
     Task DeleteProductAsync(Guid productId);
+    Task<IEnumerable<Product>> SearchAsync(string query);
+    Task<IEnumerable<Product>> GetTop10Async();
 }

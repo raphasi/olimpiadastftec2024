@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CRM.WebApp.Ingresso.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Carrinho de Compras";
+}
+
+<div class="container">
+    <h2>Carrinho de Compras</h2>
+    @if (!Model.Any())
+    {
+        <p>Seu carrinho está vazio.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Price</td>
+                        <td>
+                            <form asp-action="Remove" method="post">
+                                <input type="hidden" name="id" value="@item.ProductID" />
+                                <button type="submit" class="btn btn-danger">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <form asp-action="Clear" method="post">
+            <button type="submit" class="btn btn-warning">Limpar Carrinho</button>
+        </form>
+        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-success">Finalizar Compra</a>
+    }
+</div>

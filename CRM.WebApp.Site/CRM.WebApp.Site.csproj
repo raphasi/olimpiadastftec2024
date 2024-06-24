@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CRM.CrossCutting\CRM.CrossCutting.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 

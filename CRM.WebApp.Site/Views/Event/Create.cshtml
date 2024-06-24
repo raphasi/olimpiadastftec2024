@@ -111,13 +111,16 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label asp-for="ProductID" class="col-sm-2 col-form-label">Produto</label>
+                                <label class="col-sm-2 col-form-label">Produtos</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <select asp-for="ProductID" class="form-control">
-                                            <option value="">Selecione um Produto</option>
-                                            @* Aqui você pode preencher as opções com os produtos disponíveis *@
+                                        <select asp-for="SelectedProductIds" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione os Produtos" multiple>
+                                            @foreach (var prd in Model.AvailableProducts)
+                                            {
+                                                <option value="@prd.ProductID">@prd.Name</option>
+                                            }
                                         </select>
+                                        <span asp-validation-for="SelectedProductIds" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>

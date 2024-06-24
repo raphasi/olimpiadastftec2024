@@ -14,4 +14,6 @@ public interface IProductService
     Task AddAsync(ProductDTO product);
     Task UpdateAsync(ProductDTO product);
     Task DeleteAsync(Guid id);
+
+    Task<IEnumerable<ProductDTO>> SearchAsync(string query);
 }

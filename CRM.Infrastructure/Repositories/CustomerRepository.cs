@@ -55,5 +55,18 @@ namespace CRM.Infrastructure.Repositories
             _customerContext.Entry(customer).State = EntityState.Detached;
         }
 
+        public async Task<IEnumerable<Customer>> SearchAsync(string query)
+        {
+            return await _customerContext.Customers
+                .Where(c => c.FullName.Contains(query) || c.Email.Contains(query) || c.CPF.Contains(query) || c.CNPJ.Contains(query))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Customer>> GetTop10Async()
+        {
+            return await _customerContext.Customers
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

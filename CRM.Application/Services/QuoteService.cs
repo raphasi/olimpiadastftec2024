@@ -45,4 +45,16 @@ public class QuoteService : IQuoteService
     {
         await _quoteRepository.DeleteQuoteAsync(id);
     }
+
+    public async Task<IEnumerable<QuoteDTO>> SearchAsync(string query)
+    {
+        var opps = string.IsNullOrEmpty(query)
+            ? await _quoteRepository.GetTop10Async()
+            : await _quoteRepository.SearchAsync(query);
+        return opps.Select(c => new QuoteDTO
+        {
+            QuoteID = c.QuoteID,
+            Name = c.Name
+        });
+    }
 }

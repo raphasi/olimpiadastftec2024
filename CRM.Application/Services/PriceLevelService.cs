@@ -48,4 +48,16 @@ public class PriceLevelService : IPriceLevelService
     {
         await _priceLevelRepository.DeletePriceLevelAsync(id);
     }
+
+    public async Task<IEnumerable<PriceLevelDTO>> SearchAsync(string query)
+    {
+        var opps = string.IsNullOrEmpty(query)
+            ? await _priceLevelRepository.GetTop10Async()
+            : await _priceLevelRepository.SearchAsync(query);
+        return opps.Select(c => new PriceLevelDTO
+        {
+            PriceLevelID = c.PriceLevelID,
+            LevelName = c.LevelName
+        });
+    }
 }

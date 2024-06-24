@@ -9,11 +9,11 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers;
 
-public class ProductController : BaseController<ProductViewModel>
+public class ProductController : BaseController<ProductViewModel, ProductViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public ProductController(IHttpClientFactory httpClientFactory)
+    public ProductController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "product")
     {
         _httpClientFactory = httpClientFactory;
     }
@@ -44,9 +44,16 @@ public class ProductController : BaseController<ProductViewModel>
     }
 
     // GET: Products/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
         var model = InitializeEntity();
+        var client = _httpClientFactory.CreateClient("CRM.API");
+        var response = await client.GetAsync("api/event");
+        if (response.IsSuccessStatusCode)
+        {
+            var events = await response.Content.ReadFromJsonAsync<IEnumerable<EventViewModel>>();
+            model.AvailableEvents = events != null ? new List<EventViewModel>(events) : new List<EventViewModel>();
+        }
         return View(model);
     }
 
@@ -60,6 +67,17 @@ public class ProductController : BaseController<ProductViewModel>
             var client = _httpClientFactory.CreateClient("CRM.API");
             var response = await client.PostAsJsonAsync("api/product", productViewModel);
             response.EnsureSuccessStatusCode();
+
+            // Associar o produto aos eventos selecionados
+            foreach (var eventId in productViewModel.SelectedEventIds)
+            {
+                var productEvent = new ProductEventViewModel
+                {
+                    ProductID = productViewModel.ProductID,
+                    EventID = eventId
+                };
+                await client.PostAsJsonAsync("api/productevent", productEvent);
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -78,6 +96,23 @@ public class ProductController : BaseController<ProductViewModel>
 
         var product = await response.Content.ReadFromJsonAsync<ProductViewModel>();
         product.IsNew = false;
+
+        // Buscar eventos disponíveis
+        var eventsResponse = await client.GetAsync("api/event");
+        if (eventsResponse.IsSuccessStatusCode)
+        {
+            var events = await eventsResponse.Content.ReadFromJsonAsync<IEnumerable<EventViewModel>>();
+            product.AvailableEvents = events != null ? new List<EventViewModel>(events) : new List<EventViewModel>();
+        }
+
+        // Buscar eventos associados ao produto
+        var productEventsResponse = await client.GetAsync($"api/productevent/product/{id}");
+        if (productEventsResponse.IsSuccessStatusCode)
+        {
+            var productEvents = await productEventsResponse.Content.ReadFromJsonAsync<IEnumerable<ProductEventViewModel>>();
+            product.SelectedEventIds = productEvents != null ? new List<Guid>(productEvents.Select(pe => pe.EventID)) : new List<Guid>();
+        }
+
         return View(product);
     }
 
@@ -99,6 +134,32 @@ public class ProductController : BaseController<ProductViewModel>
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound();
+            }
+
+            // Atualizar associações de eventos
+            var existingProductEventsResponse = await client.GetAsync($"api/productevent/product/{id}");
+            if (existingProductEventsResponse.IsSuccessStatusCode)
+            {
+                var existingProductEvents = await existingProductEventsResponse.Content.ReadFromJsonAsync<IEnumerable<ProductEventViewModel>>();
+                var existingEventIds = existingProductEvents.Select(pe => pe.EventID).ToList();
+
+                // Adicionar novas associações
+                foreach (var eventId in productViewModel.SelectedEventIds.Except(existingEventIds))
+                {
+                    var productEvent = new ProductEventViewModel
+                    {
+                        ProductID = productViewModel.ProductID,
+                        EventID = eventId
+                    };
+                    await client.PostAsJsonAsync("api/productevent", productEvent);
+                }
+
+                // Remover associações antigas
+                foreach (var eventId in existingEventIds.Except(productViewModel.SelectedEventIds))
+                {
+                    var productEvent = existingProductEvents.First(pe => pe.EventID == eventId);
+                    await client.DeleteAsync($"api/productevent/{productEvent.ProductID}");
+                }
             }
 
             return RedirectToAction(nameof(Index));

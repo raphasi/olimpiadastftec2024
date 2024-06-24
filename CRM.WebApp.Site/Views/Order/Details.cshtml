@@ -91,9 +91,8 @@
                                 <label asp-for="OpportunityID" class="col-sm-2 col-form-label">Oportunidade</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <select asp-for="OpportunityID" class="form-control">
+                                        <select id="oppSelect" asp-for="OpportunityID" class="form-control" data-url="/opportunity/search">
                                             <option value="">Selecione uma Oportunidade</option>
-                                            @* Aqui você pode preencher as opções com as oportunidades disponíveis *@
                                         </select>
                                     </div>
                                 </div>
@@ -116,4 +115,18 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Preencher o valor selecionado se houver dados
+        var selectedOpportunityID = '@Model.OpportunityID';
+        if (selectedOpportunityID) {
+            $.ajax({
+                url: '/opportunity/getbyid/' + selectedOpportunityID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.name, data.OpportunityID, true, true);
+                $('#oppSelect').append(option).trigger('change');
+            });
+        }
+    </script>
 }

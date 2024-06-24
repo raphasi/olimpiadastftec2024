@@ -8,11 +8,11 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class EventController : BaseController<EventViewModel>
+    public class EventController : BaseController<EventViewModel, EventViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public EventController(IHttpClientFactory httpClientFactory)
+        public EventController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "event")
         {
             _httpClientFactory = httpClientFactory;
         }
@@ -43,9 +43,10 @@ namespace CRM.WebApp.Site.Controllers
         }
 
         // GET: Events/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = InitializeEntity();
+            await LoadAvailableProducts(model);
             return View(model);
         }
 
@@ -62,6 +63,7 @@ namespace CRM.WebApp.Site.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            await LoadAvailableProducts(eventViewModel);
             return View(eventViewModel);
         }
 
@@ -77,6 +79,7 @@ namespace CRM.WebApp.Site.Controllers
 
             var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
             eventItem.IsNew = false;
+            await LoadAvailableProducts(eventItem);
             return View(eventItem);
         }
 
@@ -102,6 +105,7 @@ namespace CRM.WebApp.Site.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            await LoadAvailableProducts(eventViewModel);
             return View(eventViewModel);
         }
 
@@ -132,6 +136,16 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task LoadAvailableProducts(EventViewModel model)
+        {
+            var client = _httpClientFactory.CreateClient("CRM.API");
+            var response = await client.GetAsync("api/product");
+            response.EnsureSuccessStatusCode();
+
+            var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductViewModel>>();
+            model.AvailableProducts = new List<ProductViewModel>(products);
         }
     }
 }

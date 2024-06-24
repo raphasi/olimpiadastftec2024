@@ -12,6 +12,7 @@ public sealed class Event : Entity
     public Nullable<DateTime> EventDate { get; set; }
     public string Location { get; set; }
     public Nullable<decimal> TicketPrice { get; set; }
+    public ICollection<ProductEvent> ProductEvents { get; set; }
 
 
     // Navigation properties

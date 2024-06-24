@@ -14,4 +14,5 @@ public interface IOpportunityService
     Task AddAsync(OpportunityDTO opportunity);
     Task UpdateAsync(OpportunityDTO opportunity);
     Task DeleteAsync(Guid id);
+    Task<IEnumerable<OpportunityDTO>> SearchAsync(string query);
 }

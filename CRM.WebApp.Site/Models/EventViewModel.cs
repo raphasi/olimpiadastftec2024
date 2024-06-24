@@ -11,4 +11,6 @@ public class EventViewModel : EntityBase
     public DateTime? EventDate { get; set; }
     public string Location { get; set; }
     public decimal? TicketPrice { get; set; }
+    public List<Guid> SelectedProductIds { get; set; } = new List<Guid>();
+    public List<ProductViewModel> AvailableProducts { get; set; } = new List<ProductViewModel>();
 }

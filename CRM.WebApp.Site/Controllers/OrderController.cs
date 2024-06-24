@@ -8,11 +8,11 @@ using CRM.WebApp.Site.Models;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class OrderController : BaseController<OrderViewModel>
+    public class OrderController : BaseController<OrderViewModel, OrderViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public OrderController(IHttpClientFactory httpClientFactory)
+        public OrderController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "order")
         {
             _httpClientFactory = httpClientFactory;
         }

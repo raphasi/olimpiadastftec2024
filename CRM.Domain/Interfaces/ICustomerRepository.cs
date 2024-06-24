@@ -12,4 +12,6 @@ public interface ICustomerRepository
     Task UpdateCustomerAsync(Customer customerEntity);
     Task DeleteCustomerAsync(Guid customerId);
     void DetachCustomerAsync(Customer customerEntity);
+    Task<IEnumerable<Customer>> SearchAsync(string query);
+    Task<IEnumerable<Customer>> GetTop10Async();
 }

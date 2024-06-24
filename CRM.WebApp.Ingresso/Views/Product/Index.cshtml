@@ -1,0 +1,26 @@
+﻿@model IEnumerable<CRM.WebApp.Ingresso.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Loja Virtual";
+}
+
+<div class="container">
+    <h2>Loja Virtual</h2>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p class="card-text"><strong>Preço:</strong> @product.Price</p>
+                        <a href="@Url.Action("Details", "Store", new { id = product.ProductID })" class="btn btn-primary">Detalhes</a>
+                        <a href="@Url.Action("AddToCart", "Store", new { id = product.ProductID })" class="btn btn-success">Adicionar ao Carrinho</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

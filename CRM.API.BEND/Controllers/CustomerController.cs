@@ -134,5 +134,12 @@ namespace CRM.API.BEND.Controllers
                 return StatusCode(500, "Erro interno do servidor.");
             }
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> SearchCustomers([FromQuery] string query = null)
+        {
+            var customers = await _customerService.SearchAsync(query);
+            return Ok(customers);
+        }
     }
 }

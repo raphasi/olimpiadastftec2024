@@ -11,14 +11,32 @@ public class QuoteDTO
     [Required(ErrorMessage = "O campo OpportunityID é obrigatório.")]
     public Guid OpportunityID { get; set; }
 
+    public string NameOpp { get; set; }
+
     [Required(ErrorMessage = "O campo ProductID é obrigatório.")]
     public Guid ProductID { get; set; }
+
+    public string NameProduct { get; set; }
 
     [Required(ErrorMessage = "O campo PriceLevelID é obrigatório.")]
     public Guid PriceLevelID { get; set; }
 
+    public string NameLevel { get; set; }
+
     [Required(ErrorMessage = "O campo EventID é obrigatório.")]
     public Guid EventID { get; set; }
+
+    public string NameEvento { get; set; }
+
+    [Required(ErrorMessage = "O campo CustomerID é obrigatório.")]
+    public Guid CustomerID { get; set; }
+
+    [Required(ErrorMessage = "O campo CustomerID é obrigatório.")]
+    public Guid LeadID { get; set; }
+
+    [Required(ErrorMessage = "O campo Nome é obrigatório.")]
+    [StringLength(200, MinimumLength = 3, ErrorMessage = "O Nome deve ter entre 3 e 200 caracteres.")]
+    public string Name { get; set; }
 
     [Required(ErrorMessage = "O campo Quantidade é obrigatório.")]
     [Range(1, int.MaxValue, ErrorMessage = "A Quantidade deve ser pelo menos 1.")]

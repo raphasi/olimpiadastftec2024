@@ -97,6 +97,19 @@ namespace CRM.Application.Services
                 throw;
             }
         }
-
+        public async Task<IEnumerable<CustomerDTO>> SearchAsync(string query)
+        {
+            var customers = string.IsNullOrEmpty(query)
+                ? await _customerRepository.GetTop10Async()
+                : await _customerRepository.SearchAsync(query);
+            return customers.Select(c => new CustomerDTO
+            {
+                CustomerID = c.CustomerID,
+                FullName = c.FullName,
+                Email = c.Email,
+                CPF = c.CPF,
+                CNPJ = c.CNPJ
+            });
+        }
     }
 }

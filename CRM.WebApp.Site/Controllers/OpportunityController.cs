@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class OpportunityController : BaseController<OpportunityViewModel>   
+    public class OpportunityController : BaseController<OpportunityViewModel, OpportunityViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public OpportunityController(IHttpClientFactory httpClientFactory)
+        public OpportunityController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "opportunity")
         {
             _httpClientFactory = httpClientFactory;
         }

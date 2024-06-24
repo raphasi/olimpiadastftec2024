@@ -1,20 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CRM.WebApp.Site.Models;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace CRM.WebApp.Site.Controllers
 {
-    public class CustomerController : BaseController<CustomerViewModel>
+    public class CustomerController : BaseController<CustomerViewModel, CustomerViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(IHttpClientFactory httpClientFactory, ILogger<CustomerController> logger)
+        public CustomerController(IHttpClientFactory httpClientFactory, ILogger<CustomerController> logger) : base(httpClientFactory, "customer")
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;

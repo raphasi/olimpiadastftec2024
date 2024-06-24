@@ -1,5 +1,6 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using CRM.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,13 +14,17 @@ namespace CRM.API.BEND.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
+        private readonly IProductEventService _productEventService;
         private readonly ILogger<EventController> _logger;
 
-        public EventController(IEventService eventService, ILogger<EventController> logger)
+        public EventController(IEventService eventService, IProductEventService productEventService, ILogger<EventController> logger)
         {
             _eventService = eventService;
+            _productEventService = productEventService;
             _logger = logger;
         }
+
+
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(EventDTO), 200)]
@@ -125,6 +130,20 @@ namespace CRM.API.BEND.Controllers
                 _logger.LogError(ex, "Erro ao deletar evento.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<EventDTO>>> SearchCustomers([FromQuery] string query = null)
+        {
+            var customers = await _eventService.SearchAsync(query);
+            return Ok(customers);
+        }
+
+        [HttpGet("{id}/products")]
+        public async Task<ActionResult<IEnumerable<ProductEventDTO>>> GetProductsByEventId(Guid id)
+        {
+            var products = await _productEventService.GetProductsByEventIdAsync(id);
+            return Ok(products);
         }
     }
 }

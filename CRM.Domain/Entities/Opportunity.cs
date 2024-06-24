@@ -9,6 +9,7 @@ namespace CRM.Domain.Entities;
 public sealed class Opportunity : Entity
 {
     public Guid OpportunityID { get; set; }
+    public string Name { get; set; }
     public Nullable<Guid> CustomerID { get; set; }
     public Nullable<Guid> LeadID { get; set; }
     public string Description { get; set; }

@@ -9,8 +9,9 @@ public sealed class Product : Entity
     public string Description { get; set; }
     public Nullable<decimal> Price { get; set; }
     public string ImageUrl { get; set; }
-    public Nullable<int> Inventory { get; set; }    
+    public Nullable<int> Inventory { get; set; }
 
+    public ICollection<ProductEvent> ProductEvents { get; set; }
 
     // Navigation properties
     public ICollection<Quote> Quotes { get; set; }

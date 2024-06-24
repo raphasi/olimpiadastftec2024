@@ -14,5 +14,6 @@ namespace CRM.Application.Interfaces
         Task AddAsync(CustomerDTO customer);
         Task UpdateAsync(CustomerDTO customer);
         Task DeleteAsync(Guid id);
+        Task<IEnumerable<CustomerDTO>> SearchAsync(string query);
     }
 }

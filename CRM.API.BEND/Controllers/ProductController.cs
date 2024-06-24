@@ -1,5 +1,6 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using CRM.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -125,6 +126,13 @@ namespace CRM.API.BEND.Controllers
                 _logger.LogError(ex, "Erro ao deletar produto.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> SearchAsync([FromQuery] string query = null)
+        {
+            var prd = await _productService.SearchAsync(query);
+            return Ok(prd);
         }
     }
 }

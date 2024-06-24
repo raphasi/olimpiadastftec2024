@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="~/assets/img/favicon.png">
+    <!-- Adicione isso no <head> da sua view ou layout principal -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <title>
         @ViewData["Title"] - CRM Brasileiro
     </title>
@@ -246,6 +248,39 @@
             </footer>
         </div>
     </div>
+    <style>
+        .select2-container .select2-selection--single {
+            height: 38px; /* Ajuste a altura conforme necessário */
+            border: 1px solid #2b3553; /* Cor da borda */
+            border-radius: 4px; /* Arredondamento dos cantos */
+            background-color: #1e1e2f; /* Cor de fundo */
+            color: #fff; /* Cor do texto */
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px; /* Ajuste a linha conforme necessário */
+            color: #fff; /* Cor do texto */
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px; /* Ajuste a altura conforme necessário */
+        }
+
+        .select2-dropdown {
+            background-color: #1e1e2f; /* Cor de fundo do dropdown */
+            color: #fff; /* Cor do texto do dropdown */
+        }
+
+        .select2-results__option {
+            background-color: #1e1e2f; /* Cor de fundo das opções */
+            color: #fff; /* Cor do texto das opções */
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #2b3553; /* Cor de fundo da opção destacada */
+            color: #fff; /* Cor do texto da opção destacada */
+        }
+    </style>
 
     <!--   Core JS Files   -->
     <script src="~/assets/js/core/jquery.min.js"></script>
@@ -293,6 +328,8 @@
     <script src="~/assets/js/black-dashboard.js?v=1.1.1"></script>
     <!-- Black Dashboard DEMO methods, don't include it in your project! -->
     <script src="~/assets/demo/demo.js"></script>
+    <!-- Adicione isso antes do fechamento da tag </body> da sua view ou layout principal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
             $().ready(function () {
@@ -456,6 +493,262 @@
             table.on('click', '.like', function () {
                 alert('You clicked on Like button');
             });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#customerSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.customerID,
+                                    text: item.fullName // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#customerSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#leadSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.leadID,
+                                    text: item.fullName // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#leadSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            })
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#oppSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.opportunityID,
+                                    text: item.name // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#oppSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            })
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#prdSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.productID,
+                                    text: item.name // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#prdSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            })
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#priceSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.priceLevelID,
+                                    text: item.levelName // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#priceSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            })
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#eventSelect').select2({
+                ajax: {
+                    url: function () {
+                        return $(this).data('url');
+                    },
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || null // Envia uma string vazia para buscar os registros mais recentes
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.eventID,
+                                    text: item.name // ou qualquer outro campo que você queira exibir
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0, // Permite abrir o dropdown sem digitar
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+
+            // Carregar os 10 registros mais recentes ao abrir o dropdown
+            $('#eventSelect').on('select2:open', function () {
+                var select2 = $(this).data('select2');
+
+                select2.trigger('query', {
+                    term: null // Envia uma string vazia para buscar os registros mais recentes
+                });
+
+            })
         });
     </script>
     @RenderSection("Scripts", required: false)

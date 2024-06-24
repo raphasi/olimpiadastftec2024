@@ -72,6 +72,14 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                <label asp-for="Name" class="col-sm-2 col-form-label">Nome Opp</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <label asp-for="Description" class="col-sm-2 col-form-label">Descrição</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
@@ -99,9 +107,8 @@
                                 <label asp-for="CustomerID" class="col-sm-2 col-form-label">Cliente</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <select asp-for="CustomerID" class="form-control">
+                                        <select id="customerSelect" asp-for="CustomerID" class="form-control" data-url="/customer/search">
                                             <option value="">Selecione um Cliente</option>
-                                            @* Aqui você pode preencher as opções com os clientes disponíveis *@
                                         </select>
                                     </div>
                                 </div>
@@ -110,9 +117,8 @@
                                 <label asp-for="LeadID" class="col-sm-2 col-form-label">Lead</label>
                                 <div class="col-sm-7">
                                     <div class="form-group">
-                                        <select asp-for="LeadID" class="form-control">
-                                            <option value="">Selecione um Lead</option>
-                                            @* Aqui você pode preencher as opções com os leads disponíveis *@
+                                        <select id="leadSelect" asp-for="LeadID" class="form-control" data-url="/lead/search">
+                                            <option value="">Selecione um Cliente Potencial</option>
                                         </select>
                                     </div>
                                 </div>
@@ -135,4 +141,29 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Preencher o valor selecionado se houver dados
+        var selectedLeadID = '@Model.LeadID';
+        if (selectedLeadID) {
+            $.ajax({
+                url: '/lead/getbyid/' + selectedLeadID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.fullName, data.leadID, true, true);
+                $('#leadSelect').append(option).trigger('change');
+            });
+        }
+
+        // Preencher o valor selecionado se houver dados
+        var selectedCustomerID = '@Model.CustomerID';
+        if (selectedCustomerID) {
+            $.ajax({
+                url: '/customer/getbyid/' + selectedCustomerID, // Ajuste na URL para incluir a barra antes do GUID
+                dataType: 'json'
+            }).then(function (data) {
+                var option = new Option(data.fullName, data.leadID, true, true);
+                $('#customerSelect').append(option).trigger('change');
+            });
+        }
+    </script>
 }

@@ -11,4 +11,6 @@ public interface ILeadRepository
     Task AddLeadAsync(Lead leadEntity);
     Task UpdateLeadAsync(Lead leadEntity);
     Task DeleteLeadAsync(Guid leadId);
+    Task<IEnumerable<Lead>> SearchAsync(string query);
+    Task<IEnumerable<Lead>> GetTop10Async();
 }

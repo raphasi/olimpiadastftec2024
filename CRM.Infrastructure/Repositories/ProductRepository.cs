@@ -48,5 +48,20 @@ namespace CRM.Infrastructure.Repositories
                 await _productContext.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Product>> SearchAsync(string query)
+        {
+            return await _productContext.Products
+                .Where(c => c.Name.Contains(query))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Product>> GetTop10Async()
+        {
+            return await _productContext.Products
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(10)
+                .ToListAsync();
+        }
+
     }
 }

@@ -19,6 +19,11 @@ public class OpportunityConfiguration : IEntityTypeConfiguration<Opportunity>
         builder.Property(o => o.CustomerID)
                .IsRequired(false);
 
+        // Definindo as propriedades como obrigatórias e com restrições de tamanho
+        builder.Property(l => l.Name)
+               .IsRequired(false)
+               .HasMaxLength(200);
+
         builder.Property(o => o.LeadID)
                .IsRequired(false);
 

@@ -9,4 +9,6 @@ public interface IEventRepository
     Task AddEventAsync(Event eventEntity);
     Task UpdateEventAsync(Event eventEntity);
     Task DeleteEventAsync(Guid eventId);
+    Task<IEnumerable<Event>> SearchAsync(string query);
+    Task<IEnumerable<Event>> GetTop10Async();
 }

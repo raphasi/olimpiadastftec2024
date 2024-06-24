@@ -12,4 +12,6 @@ public class ProductViewModel : EntityBase
     [Url(ErrorMessage = "A URL da Imagem deve ser válida.")]
     public string ImageUrl { get; set; }
     public int? Inventory { get; set; }
+    public List<Guid> SelectedEventIds { get; set; } = new List<Guid>();
+    public List<EventViewModel> AvailableEvents { get; set; } = new List<EventViewModel>();
 }
