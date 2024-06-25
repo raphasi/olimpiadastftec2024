@@ -69,16 +69,13 @@ public static class DependencyInjectionAPI
         services.AddScoped<IProductEventRepository, ProductEventRepository>();
         services.AddScoped<IProductEventService, ProductEventService>();
 
+        services.AddScoped<ITokenService, TokenService>();
+
         // Configuração do AutoMapper
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
         var myhandlers = AppDomain.CurrentDomain.Load("CRM.Application");
         // Adicionar MediatR e registrar os handlers
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(myhandlers));
-
-        //System.Text.Json 
-        services.AddControllers().AddJsonOptions(x =>
-            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
 
         return services;
     }

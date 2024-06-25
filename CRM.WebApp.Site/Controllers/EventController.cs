@@ -39,6 +39,7 @@ namespace CRM.WebApp.Site.Controllers
             }
 
             var eventItem = await response.Content.ReadFromJsonAsync<EventViewModel>();
+            await LoadAvailableProducts(eventItem);
             return View(eventItem);
         }
 

@@ -1,6 +1,7 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using CRM.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -44,8 +45,10 @@ namespace CRM.API.BEND.Controllers
             }
         }
 
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<LeadDTO>), 200)]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<LeadDTO>>> GetAllLeads()
         {
             try
