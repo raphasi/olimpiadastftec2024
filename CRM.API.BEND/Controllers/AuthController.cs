@@ -201,7 +201,7 @@ public class AuthController : Controller
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    ObjectID = new Guid(objectId)
+                    SecurityIdentifierString = objectId
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password!);

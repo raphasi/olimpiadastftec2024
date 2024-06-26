@@ -1,6 +1,7 @@
 ﻿using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Security.Principal;
 using Microsoft.Extensions.Configuration;
 
 namespace CRM.Application.Services;
@@ -16,7 +17,7 @@ public class LdapService
     public bool ValidateUser(string email, string password)
     {
         var ldapSettings = _configuration.GetSection("LdapSettings");
-        using (var context = new PrincipalContext(ContextType.Domain, ldapSettings["Server"], ldapSettings["UserDn"], ldapSettings["Password"]))
+        using (var context = new PrincipalContext(ContextType.Domain))
         {
             return context.ValidateCredentials(email, password);
         }
@@ -25,9 +26,12 @@ public class LdapService
     public bool IsUserInGroup(string email)
     {
         var ldapSettings = _configuration.GetSection("LdapSettings");
-        using (var context = new PrincipalContext(ContextType.Domain, ldapSettings["Server"], ldapSettings["UserDn"], ldapSettings["Password"]))
+        using (var context = new PrincipalContext(ContextType.Domain))
         {
-            using (var user = UserPrincipal.FindByIdentity(context, email))
+            UserPrincipal userPrincipal = new UserPrincipal(context);
+            userPrincipal.UserPrincipalName = email;
+
+            using (var user = UserPrincipal.FindByIdentity(context, IdentityType.UserPrincipalName, email))
             {
                 if (user != null)
                 {
@@ -44,7 +48,7 @@ public class LdapService
     public string GetUserObjectId(string email)
     {
         var ldapSettings = _configuration.GetSection("LdapSettings");
-        using (var context = new PrincipalContext(ContextType.Domain, ldapSettings["Server"], ldapSettings["UserDn"], ldapSettings["Password"]))
+        using (var context = new PrincipalContext(ContextType.Domain))
         {
             using (var user = UserPrincipal.FindByIdentity(context, email))
             {

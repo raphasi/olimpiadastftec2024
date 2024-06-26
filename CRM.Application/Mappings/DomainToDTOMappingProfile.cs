@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CRM.Domain.Entities;
 using CRM.Application.DTOs;
+using CRM.Infrastructure.Identity;
 
 namespace CRM.Application.Mappings
 {
@@ -61,6 +62,11 @@ namespace CRM.Application.Mappings
 
             CreateMap<ProductEventDTO, ProductEvent>();
             CreateMap<ProductEventDTO, ProductEvent>();
+
+            CreateMap<ApplicationUser, LoginDTO>()
+            .ForMember(dest => dest.SecurityIdentifier, opt => opt.MapFrom(src => src.SecurityIdentifierString))
+            .ReverseMap()
+            .ForMember(dest => dest.SecurityIdentifierString, opt => opt.MapFrom(src => src.SecurityIdentifier));
 
         }
     }
