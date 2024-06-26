@@ -56,8 +56,7 @@ namespace CRM.API.BEND.Controllers
                 var leads = await _leadService.GetAllAsync();
                 return Ok(leads);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex)            {
                 _logger.LogError(ex, "Erro ao obter todos os leads.");
                 return StatusCode(500, "Erro interno do servidor.");
             }

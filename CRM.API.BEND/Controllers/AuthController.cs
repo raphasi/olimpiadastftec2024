@@ -1,6 +1,7 @@
 ﻿using Azure;
 using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using CRM.Application.Services;
 using CRM.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +35,7 @@ public class AuthController : Controller
         _logger = logger;
     }
 
+    [Authorize]
     [HttpPost]
     [Route("CreateRole")]
     public async Task<IActionResult> CreateRole(string roleName)
@@ -71,6 +73,7 @@ public class AuthController : Controller
           new ResponseDTO { Status = "Error", Message = "Role already exist." });
     }
 
+    [Authorize]
     [HttpPost]
     [Route("AddUserToRole")]
     public async Task<IActionResult> AddUserToRole(string email, string roleName)
@@ -149,6 +152,100 @@ public class AuthController : Controller
     }
 
     [HttpPost]
+    [Route("login_ad")]
+    public async Task<IActionResult> Login_AD([FromBody] LoginDTO model)
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email!);
+
+        if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password!))
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+            user.RefreshToken = refreshToken;
+
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                Expiration = token.ValidTo
+            });
+        }
+
+        // Validação no Active Directory
+        var ldapService = new LdapService(_configuration);
+        if (ldapService.ValidateUser(model.Email!, model.Password!) && ldapService.IsUserInGroup(model.Email!))
+        {
+            var objectId = ldapService.GetUserObjectId(model.Email!);
+
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    ObjectID = new Guid(objectId)
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password!);
+                if (!result.Succeeded)
+                {
+                    return BadRequest("Erro ao criar o usuário.");
+                }
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+            user.RefreshToken = refreshToken;
+
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                Expiration = token.ValidTo
+            });
+        }
+
+        return Unauthorized();
+    }
+
+    [Authorize]
+    [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModelDTO model)
     {
@@ -179,6 +276,7 @@ public class AuthController : Controller
 
     }
 
+    [Authorize]
     [HttpPost]
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken(TokenDTO tokenModel)

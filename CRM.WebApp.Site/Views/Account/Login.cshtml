@@ -1,0 +1,48 @@
+﻿@model CRM.WebApp.Site.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Informe seu Login";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Login" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações de Login</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="Email" class="col-sm-3 col-form-label">E-mail:</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Password" class="col-sm-3 col-form-label">Senha</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="Password" class="form-control" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" />
+    </div>
+</form>
+<a class="btn btn-secondary" asp-action="Index">Voltar</a>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

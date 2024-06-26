@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
 
 public abstract class BaseController<T, TViewModel> : Controller where T : EntityBase, new()
 {
@@ -58,5 +60,15 @@ public abstract class BaseController<T, TViewModel> : Controller where T : Entit
         var entities = JsonConvert.DeserializeObject<TViewModel>(content);
 
         return Ok(entities);
+    }
+
+    protected async Task<string> GetAccessToken()
+    {
+        return await HttpContext.GetTokenAsync("access_token");
+    }
+
+    protected static void PutTokenInHeaderAuthorization(string token, HttpClient client)
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 }

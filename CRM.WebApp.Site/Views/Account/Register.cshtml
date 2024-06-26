@@ -1,0 +1,93 @@
+﻿@model CRM.WebApp.Site.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registrar";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Register" id="RegisterForm" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações Pessoais</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="FullName" class="col-sm-3 col-form-label">Nome Completo</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="FullName" class="form-control" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Email" class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="PhoneNumber" class="col-sm-3 col-form-label">Telefone</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Informações de Login</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label asp-for="UserName" class="col-sm-3 col-form-label">Nome de Usuário</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="UserName" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label asp-for="Password" class="col-sm-3 col-form-label">Senha</label>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <input asp-for="Password" class="form-control" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @* <div class="row">
+                    <label asp-for="ConfirmPassword" class="col-sm-3 col-form-label">Confirmar Senha</label>
+                    <div class="col-sm-9">
+                    <div class="form-group">
+                    <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    </div>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Registrar" class="btn btn-primary" />
+    </div>
+</form>
+<a class="btn btn-secondary" asp-action="Index">Voltar</a>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

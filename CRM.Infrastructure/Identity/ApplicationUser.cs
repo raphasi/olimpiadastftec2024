@@ -9,6 +9,7 @@ namespace CRM.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser
 {
+    public string? FullName { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiryTime { get; set; }
     public Guid? UserId { get; set; }
