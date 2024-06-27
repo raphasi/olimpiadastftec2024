@@ -21,20 +21,25 @@ public abstract class BaseController<T, TViewModel> : Controller where T : Entit
 
     protected T InitializeEntity()
     {
+        var user = GetUserInfo();
         return new T
         {
             CreatedOn = DateTime.Now,
-            CreatedBy = Guid.NewGuid(), // ou obtenha o ID do usuário logado
+            CreatedBy = new Guid(user.id), // ou obtenha o ID do usuário logado
+            CreatedByName = user.userName, // ou obtenha o ID do usuário logado
             ModifiedOn = DateTime.Now,
-            ModifiedBy = Guid.NewGuid(), // ou obtenha o ID do usuário logado
+            ModifiedBy = new Guid(user.id), // ou obtenha o ID do usuário logado
+            ModifiedByName = user.userName, // ou obtenha o ID do usuário logado
             IsNew = true
         };
     }
 
     protected void UpdateEntity(T entity)
     {
+        var user = GetUserInfo();
         entity.ModifiedOn = DateTime.Now;
-        entity.ModifiedBy = Guid.NewGuid(); // ou obtenha o ID do usuário logado
+        entity.ModifiedBy = new Guid(user.id); // ou obtenha o ID do usuário logado
+        entity.ModifiedByName = user.userName; // ou obtenha o ID do usuário logado
         entity.IsNew = false;
     }
 
@@ -62,9 +67,21 @@ public abstract class BaseController<T, TViewModel> : Controller where T : Entit
         return Ok(entities);
     }
 
-    protected async Task<string> GetAccessToken()
+    protected string GetAccessToken()
     {
-        return await HttpContext.GetTokenAsync("access_token");
+        return HttpContext.Session.GetString("access_token");
+    }
+
+    protected UserInfoViewModel GetUserInfo()
+    {
+        // Recupera a string JSON da sessão
+        var userInfoJson = HttpContext.Session.GetString("user_info");
+        if (string.IsNullOrEmpty(userInfoJson))
+        {
+            return null;
+        }
+        var userInfo = JsonConvert.DeserializeObject<UserInfoViewModel>(userInfoJson);
+        return userInfo;
     }
 
     protected static void PutTokenInHeaderAuthorization(string token, HttpClient client)

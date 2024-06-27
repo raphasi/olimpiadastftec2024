@@ -1,0 +1,62 @@
+﻿@model FileManagerViewModel
+@{
+    ViewBag.Title = "Arquivos";
+}
+<div class="col-md-8 ml-auto mr-auto">
+    <h2 class="text-center">Gerenciar Arquivos</h2>
+    <p class="text-center">
+        Nesta seção, você pode visualizar e gerenciar as imagens armazenadas no servidor.
+    </p>
+</div>
+
+@if (Model.Files != null)
+{
+    var caminho = Model.PathImagesProduto;
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Imagens:</h3>
+                    <hr />
+                    <div class="row">
+                        @foreach (FileInfo file in Model.Files)
+                        {
+                            <div class="col-md-3 text-center">
+                                <img src="~/@caminho/@file.Name" width="125" height="125" title="@file.Name" asp-append-version="true" class="img-thumbnail">
+                                <div class="mt-2">
+                                    <a href="@Url.Action("Deletefile", "Imagens", new { fname = file.Name })" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar este arquivo?');">Deletar</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewData["Erro"] != null)
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        <img src="~/assets/img/card-danger.png" width="50" height="50" class="mr-2" />
+        <strong>@ViewData["Erro"]</strong>
+    </div>
+}
+
+<div class="clearfix"></div>
+<hr />
+<div class="text-center">
+    <span>Para ver o nome do arquivo, passe o mouse sobre a imagem.</span>
+</div>
+<div class="form-group text-center mt-3">
+    <a class="btn btn-outline-info" asp-controller="Imagens" asp-action="Index">Retornar</a>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

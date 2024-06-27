@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class ActivityController : BaseController<ActivityViewModel, ActivityViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -21,6 +23,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync("api/activity");
             response.EnsureSuccessStatusCode();
 

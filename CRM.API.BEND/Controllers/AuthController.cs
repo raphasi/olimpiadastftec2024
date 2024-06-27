@@ -6,6 +6,7 @@ using CRM.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -13,9 +14,8 @@ namespace CRM.API.BEND.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : Controller
+public class AuthController : ControllerBase
 {
-
     private readonly ITokenService _tokenService;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -35,158 +35,86 @@ public class AuthController : Controller
         _logger = logger;
     }
 
-    [Authorize]
-    [HttpPost]
-    [Route("CreateRole")]
+    [HttpPost("CreateRole")]
     public async Task<IActionResult> CreateRole(string roleName)
     {
-        var roleExist = await _roleManager.RoleExistsAsync(roleName);
-
-        if (!roleExist)
+        if (string.IsNullOrWhiteSpace(roleName))
         {
-            var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
-
-            if (roleResult.Succeeded)
-            {
-                _logger.LogInformation(1, "Roles Added");
-                return StatusCode(StatusCodes.Status200OK,
-                        new ResponseDTO
-                        {
-                            Status = "Success",
-                            Message =
-                        $"Role {roleName} added successfully"
-                        });
-            }
-            else
-            {
-                _logger.LogInformation(2, "Error");
-                return StatusCode(StatusCodes.Status400BadRequest,
-                   new ResponseDTO
-                   {
-                       Status = "Error",
-                       Message =
-                       $"Issue adding the new {roleName} role"
-                   });
-            }
+            return BadRequest(new ResponseDTO { Status = "Error", Message = "Role name cannot be empty." });
         }
-        return StatusCode(StatusCodes.Status400BadRequest,
-          new ResponseDTO { Status = "Error", Message = "Role already exist." });
+
+        if (await _roleManager.RoleExistsAsync(roleName))
+        {
+            return BadRequest(new ResponseDTO { Status = "Error", Message = "Role already exists." });
+        }
+
+        var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+        if (roleResult.Succeeded)
+        {
+            _logger.LogInformation("Role {RoleName} added successfully", roleName);
+            return Ok(new ResponseDTO { Status = "Success", Message = $"Role {roleName} added successfully" });
+        }
+
+        _logger.LogError("Error adding role {RoleName}", roleName);
+        return BadRequest(new ResponseDTO { Status = "Error", Message = $"Issue adding the new {roleName} role" });
     }
 
-    [Authorize]
-    [HttpPost]
-    [Route("AddUserToRole")]
+    [HttpPost("AddUserToRole")]
     public async Task<IActionResult> AddUserToRole(string email, string roleName)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user != null)
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(roleName))
         {
-            var result = await _userManager.AddToRoleAsync(user, roleName);
-            if (result.Succeeded)
-            {
-                _logger.LogInformation(1, $"User {user.Email} added to the {roleName} role");
-                return StatusCode(StatusCodes.Status200OK,
-                       new ResponseDTO
-                       {
-                           Status = "Success",
-                           Message =
-                       $"User {user.Email} added to the {roleName} role"
-                       });
-            }
-            else
-            {
-                _logger.LogInformation(1, $"Error: Unable to add user {user.Email} to the {roleName} role");
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseDTO
-                {
-                    Status = "Error",
-                    Message = $"Error: Unable to add user {user.Email} to the {roleName} role"
-                });
-            }
+            return BadRequest(new ResponseDTO { Status = "Error", Message = "Email and role name cannot be empty." });
         }
-        return BadRequest(new { error = "Unable to find user" });
+
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound(new ResponseDTO { Status = "Error", Message = "User not found." });
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (result.Succeeded)
+        {
+            _logger.LogInformation("User {Email} added to the {RoleName} role", email, roleName);
+            return Ok(new ResponseDTO { Status = "Success", Message = $"User {email} added to the {roleName} role" });
+        }
+
+        _logger.LogError("Error adding user {Email} to the {RoleName} role", email, roleName);
+        return BadRequest(new ResponseDTO { Status = "Error", Message = $"Error adding user {email} to the {roleName} role" });
     }
 
-    [HttpPost]
-    [Route("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO model)
     {
-        var user = await _userManager.FindByEmailAsync(model.Email!);
-
-        if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password!))
+        if (!ModelState.IsValid)
         {
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = _tokenService.GenerateAccessToken(authClaims,
-                                                         _configuration);
-
-            var refreshToken = _tokenService.GenerateRefreshToken();
-
-            user.RefreshTokenExpiryTime =
-                            DateTime.Now.AddDays(1);
-
-            user.RefreshToken = refreshToken;
-
-            await _userManager.UpdateAsync(user);
-
-            return Ok(new
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                Expiration = token.ValidTo
-            });
+            return BadRequest(ModelState);
         }
-        return Unauthorized();
+
+        var user = await _userManager.FindByEmailAsync(model.Email!);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password!))
+        {
+            return Unauthorized();
+        }
+
+        var tokenResponse = await GenerateTokenResponse(user);
+        return Ok(tokenResponse);
     }
 
-    [HttpPost]
-    [Route("login_ad")]
+    [HttpPost("login_ad")]
     public async Task<IActionResult> Login_AD([FromBody] LoginDTO model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var user = await _userManager.FindByEmailAsync(model.Email!);
-
-        if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password!))
+        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
         {
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
-            var refreshToken = _tokenService.GenerateRefreshToken();
-
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
-            user.RefreshToken = refreshToken;
-
-            await _userManager.UpdateAsync(user);
-
-            return Ok(new
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                Expiration = token.ValidTo
-            });
+            var tokenResponse = await GenerateTokenResponse(user);
+            return Ok(tokenResponse);
         }
 
         // Validação no Active Directory
@@ -211,53 +139,28 @@ public class AuthController : Controller
                 }
             }
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
-            var refreshToken = _tokenService.GenerateRefreshToken();
-
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
-            user.RefreshToken = refreshToken;
-
-            await _userManager.UpdateAsync(user);
-
-            return Ok(new
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                Expiration = token.ValidTo
-            });
+            var tokenResponse = await GenerateTokenResponse(user);
+            return Ok(tokenResponse);
         }
 
         return Unauthorized();
     }
 
-    [Authorize]
-    [HttpPost]
-    [Route("register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModelDTO model)
     {
-        var userExists = await _userManager.FindByNameAsync(model.UserName!);
-
-        if (userExists != null)
+        if (!ModelState.IsValid)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                   new ResponseDTO { Status = "Error", Message = "User already exists!" });
+            return BadRequest(ModelState);
         }
 
-        ApplicationUser user = new()
+        var userExists = await _userManager.FindByNameAsync(model.UserName!);
+        if (userExists != null)
+        {
+            return Conflict(new ResponseDTO { Status = "Error", Message = "User already exists!" });
+        }
+
+        var user = new ApplicationUser
         {
             Email = model.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
@@ -265,81 +168,102 @@ public class AuthController : Controller
         };
 
         var result = await _userManager.CreateAsync(user, model.Password!);
-
         if (!result.Succeeded)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                   new ResponseDTO { Status = "Error", Message = "User creation failed." });
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDTO { Status = "Error", Message = "User creation failed." });
         }
 
         return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
-
     }
 
-    [Authorize]
-    [HttpPost]
-    [Route("refresh-token")]
-    public async Task<IActionResult> RefreshToken(TokenDTO tokenModel)
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenDTO tokenModel)
     {
-
-        if (tokenModel is null)
+        if (tokenModel == null)
         {
             return BadRequest("Invalid client request");
         }
 
-        string? accessToken = tokenModel.AccessToken
-                              ?? throw new ArgumentNullException(nameof(tokenModel));
-
-        string? refreshToken = tokenModel.RefreshToken
-                               ?? throw new ArgumentException(nameof(tokenModel));
-
-        var principal = _tokenService.GetClaimsPrincipalFromExpiredToken(accessToken!, _configuration);
-
+        var principal = _tokenService.GetClaimsPrincipalFromExpiredToken(tokenModel.AccessToken!, _configuration);
         if (principal == null)
         {
             return BadRequest("Invalid access token/refresh token");
         }
 
-        string username = principal.Identity.Name;
-
+        var username = principal.Identity.Name;
         var user = await _userManager.FindByNameAsync(username!);
-
-        if (user == null || user.RefreshToken != refreshToken
-                         || user.RefreshTokenExpiryTime <= DateTime.Now)
+        if (user == null || user.RefreshToken != tokenModel.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
             return BadRequest("Invalid access token/refresh token");
         }
 
-        var newAccessToken = _tokenService.GenerateAccessToken(
-                                           principal.Claims.ToList(), _configuration);
-
+        var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims.ToList(), _configuration);
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
-
         await _userManager.UpdateAsync(user);
 
-        return new ObjectResult(new
+        return Ok(new
         {
-            accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-            refreshToken = newRefreshToken
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            RefreshToken = newRefreshToken
         });
     }
 
     [Authorize]
-    [HttpPost]
-    [Route("revoke/{username}")]
+    [HttpPost("revoke/{username}")]
     public async Task<IActionResult> Revoke(string username)
     {
         var user = await _userManager.FindByNameAsync(username);
-
-        if (user == null) return BadRequest("Invalid user name");
+        if (user == null)
+        {
+            return NotFound("Invalid user name");
+        }
 
         user.RefreshToken = null;
-
         await _userManager.UpdateAsync(user);
 
         return NoContent();
     }
 
+    private async Task<TokenDTO> GenerateTokenResponse(ApplicationUser user)
+    {
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var authClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName!),
+        new Claim(ClaimTypes.Email, user.Email!),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
+        var token = _tokenService.GenerateAccessToken(authClaims, _configuration);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+        user.RefreshToken = refreshToken;
+
+        await _userManager.UpdateAsync(user);
+
+        var userInfo = new UserInfoDTO
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            LeadID = user.LeadID,
+            SecurityIdentifier = user.SecurityIdentifierString,
+            Roles = userRoles
+        };
+
+        return new TokenDTO
+        {
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+            RefreshToken = refreshToken,
+            UserInfo = userInfo
+        };
+    }
 }

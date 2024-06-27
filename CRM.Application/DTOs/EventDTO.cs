@@ -19,7 +19,9 @@ public class EventDTO
     [StringLength(1000, ErrorMessage = "A Descrição não pode exceder 1000 caracteres.")]
     public string Description { get; set; }
 
-    
+    public string? ImageUrl { get; set; }
+
+
     public Nullable<DateTime> EventDate { get; set; }
 
     [StringLength(500, ErrorMessage = "A Localização não pode exceder 500 caracteres.")]

@@ -8,7 +8,7 @@
     <!-- Adicione isso no <head> da sua view ou layout principal -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <title>
-        @ViewData["Title"] - CRM Brasileiro
+        @ViewData["Title"] - Loja virtual
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
@@ -92,21 +92,15 @@
                             </ul>
                         </div>
                     </li>
-                    
+
                 </ul>
             </div>
         </div>
         <div class="main-panel">
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent fixed-top">
                 <div class="container-fluid">
                     <div class="navbar-wrapper">
-                        <div class="navbar-minimize d-inline">
-                            <button class="minimize-sidebar btn btn-link btn-just-icon" rel="tooltip" data-original-title="Sidebar toggle" data-placement="right">
-                                <i class="tim-icons icon-align-center visible-on-sidebar-regular"></i>
-                                <i class="tim-icons icon-bullet-list-67 visible-on-sidebar-mini"></i>
-                            </button>
-                        </div>
                         <div class="navbar-toggle d-inline">
                             <button type="button" class="navbar-toggler">
                                 <span class="navbar-toggler-bar bar1"></span>
@@ -114,7 +108,7 @@
                                 <span class="navbar-toggler-bar bar3"></span>
                             </button>
                         </div>
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SISTEMA DE COMPRA</a>
+                        <a class="navbar-brand" href="javascript:void(0)">Gerenciamento de Ingresso</a>
                     </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -123,36 +117,16 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navigation">
                         <ul class="navbar-nav ml-auto">
-                            <li class="search-bar input-group">
-                                <button class="btn btn-link" id="search-button" data-toggle="modal" data-target="#searchModal">
-                                    <i class="tim-icons icon-zoom-split"></i>
-                                    <span class="d-lg-none d-md-block">Search</span>
-                                </button>
-                            </li>
-                            <li class="dropdown nav-item">
-                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                                    <div class="photo">
-                                        <img src="../assets/img/mike.jpg" alt="Profile Photo">
-                                    </div>
-                                    <b class="caret d-none d-lg-block d-xl-block"></b>
-                                    <p class="d-lg-none">
-                                        Log out
-                                    </p>
+                            <li class="nav-item">
+                                <a asp-controller="Account" asp-action="Register" class="nav-link">
+                                    <i class="tim-icons icon-laptop"></i> Registrar
                                 </a>
-                                <ul class="dropdown-menu dropdown-navbar">
-                                    <li class="nav-link">
-                                        <a href="javascript:void(0)" class="nav-item dropdown-item">Profile</a>
-                                    </li>
-                                    <li class="nav-link">
-                                        <a href="javascript:void(0)" class="nav-item dropdown-item">Settings</a>
-                                    </li>
-                                    <li class="dropdown-divider"></li>
-                                    <li class="nav-link">
-                                        <a href="javascript:void(0)" class="nav-item dropdown-item">Log out</a>
-                                    </li>
-                                </ul>
                             </li>
-                            <li class="separator d-lg-none"></li>
+                            <li class="nav-item">
+                                <a asp-controller="Account" asp-action="Login" class="nav-link">
+                                    <i class="tim-icons icon-single-02"></i> Login
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

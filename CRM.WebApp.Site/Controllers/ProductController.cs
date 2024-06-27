@@ -6,9 +6,10 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CRM.WebApp.Site.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers;
-
+[Authorize(Policy = "AdminOnly")]
 public class ProductController : BaseController<ProductViewModel, ProductViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;

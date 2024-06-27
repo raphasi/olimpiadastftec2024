@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="~/assets/img/favicon.png">
-    <!-- Adicione isso no <head> da sua view ou layout principal -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <title>
         @ViewData["Title"] - CRM Brasileiro
@@ -143,6 +142,12 @@
                                     <a asp-area="" asp-controller="Event" asp-action="Index">
                                         <i class="tim-icons icon-laptop"></i>
                                         <p>Eventos</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Imagens" asp-action="Index">
+                                        <i class="tim-icons icon-image-02"></i>
+                                        <p>Gerenciar Imagens</p>
                                     </a>
                                 </li>
                             </ul>
@@ -328,7 +333,6 @@
     <script src="~/assets/js/black-dashboard.js?v=1.1.1"></script>
     <!-- Black Dashboard DEMO methods, don't include it in your project! -->
     <script src="~/assets/demo/demo.js"></script>
-    <!-- Adicione isso antes do fechamento da tag </body> da sua view ou layout principal -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {

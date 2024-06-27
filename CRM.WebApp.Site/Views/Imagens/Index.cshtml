@@ -1,0 +1,68 @@
+﻿<div class="col-md-8 ml-auto mr-auto">
+    <h2 class="text-center">Gerenciar Imagens</h2>
+    <p class="text-center">
+        Nesta seção, você pode fazer upload de novas imagens e visualizar as imagens armazenadas no servidor.
+    </p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <img src="~/assets/img/image_placeholder.jpg" width="250" height="200" asp-append-version="true" />
+                </div>
+                <hr />
+                <form method="post" enctype="multipart/form-data" asp-controller="Imagens" asp-action="UploadFiles">
+                    <div class="form-group">
+                        <label for="files"><b>CLIQUE AQUI PARA ENVIAR OS ARQUIVOS</b></label>
+                        <p>(Arquivos com o mesmo nome serão sobrescritos)</p>
+                        <input type="file" name="files" multiple class="btn btn-primary" />
+                    </div>
+                    <hr />
+                    <div class="form-group text-center">
+                        <input type="submit" value="Enviar Arquivo(s)" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <img src="~/assets/img/server.jpg" width="300" height="200" />
+                </div>
+                <hr />
+                <form method="post" enctype="multipart/form-data" asp-controller="Imagens" asp-action="GetImagens">
+                    <div class="form-group text-center">
+                        <label><strong>Visualizar Imagens na pasta do servidor:</strong></label>
+                    </div>
+                    <hr />
+                    <div class="form-group text-center">
+                        <input type="submit" value="Visualizar Arquivos no servidor" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    @if (ViewData["Deletado"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewData["Deletado"]
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

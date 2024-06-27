@@ -10,5 +10,6 @@ namespace CRM.Application.DTOs
     {
         public string? AccessToken { get; set; }
         public string? RefreshToken { get; set; }
+        public UserInfoDTO UserInfo { get; set; }
     }
 }

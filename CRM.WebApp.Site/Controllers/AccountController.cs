@@ -68,6 +68,11 @@ namespace CRM.WebApp.Site.Controllers
             return View();
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(201)]
@@ -87,12 +92,24 @@ namespace CRM.WebApp.Site.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var loginContent = await response.Content.ReadAsStringAsync();
-                    var loginResult = JsonSerializer.Deserialize<TokenViewModel>(loginContent);
+                    TokenViewModel loginResult = JsonSerializer.Deserialize<TokenViewModel>(loginContent);
 
                     // Armazenar o token no HttpContext
-                    //HttpContext.Response.Cookies.Append("access_token", loginResult.Result.);
+                    HttpContext.Session.SetString("access_token", loginResult.accessToken);
 
-                    return Ok(new { message = "Login realizado com sucesso." });
+                    var userInfoJson = JsonSerializer.Serialize<UserInfoViewModel>(loginResult.userInfo);
+                    // Armazena o UserInfoDTO na sessão
+                    HttpContext.Session.SetString("user_info", userInfoJson);
+
+                    // Armazene o token no cookie
+                    Response.Cookies.Append("access_token", loginResult.accessToken, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = false, // Ajuste para false se estiver testando sem HTTPS
+                        SameSite = SameSiteMode.Lax // Ajuste conforme necessário
+                    });
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {

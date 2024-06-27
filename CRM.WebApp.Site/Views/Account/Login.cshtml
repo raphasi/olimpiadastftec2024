@@ -1,48 +1,165 @@
 ﻿@model CRM.WebApp.Site.Models.LoginViewModel
 
 @{
+    Layout = null;
     ViewData["Title"] = "Informe seu Login";
 }
-<h2>@ViewData["Title"]</h2>
 
-<form asp-action="Login" method="post">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Informações de Login</h4>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
+    <!-- Fonts and icons -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="./assets/css/black-dashboard.css?v=1.1.1" rel="stylesheet" />
+    <!-- Custom CSS for Login -->
+    <style>
+        body {
+            background-image: url("https://www.tftec.com.br/wp-content/uploads/2024/03/bg-saa-pattern-03.webp");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background: rgba(42, 42, 60, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .login-card .card-header {
+                text-align: center;
+                margin-bottom: 20px;
+                background: rgba(42, 42, 60, 0.9);
+            }
+
+                .login-card .card-header img {
+                    max-width: 150px;
+                }
+
+            .login-card .card-title {
+                color: #fff;
+            }
+
+        .form-group label {
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #f96332;
+            border-color: #f96332;
+        }
+
+            .btn-primary:hover {
+                background-color: #f76c3c;
+                border-color: #f76c3c;
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="card-header">
+            <img src="https://www.tftec.com.br/wp-content/uploads/2023/10/LOGO-TFTEC-CLOUD-PRINCIPAL.png" alt="Logo TFTEC">
+
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Informe seu Login</h4>
+            <form asp-action="Login" method="post">
+                <div class="form-group">
+                    <label asp-for="Email" class="col-form-label">E-mail:</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <label asp-for="Email" class="col-sm-3 col-form-label">E-mail:</label>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                <input asp-for="Email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label asp-for="Password" class="col-sm-3 col-form-label">Senha</label>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                <input asp-for="Password" class="form-control" type="password" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="col-form-label">Senha</label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-            </div>
+                <br />
+                <div class="form-group text-center">
+                    <input type="submit" class="btn btn-primary btn-block" value="Login" />
+                </div>
+            </form>
         </div>
     </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" />
-    </div>
-</form>
-<a class="btn btn-secondary" asp-action="Index">Voltar</a>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
     }
-}
+
+    <!-- Core JS Files -->
+    <script src="./assets/js/core/jquery.min.js"></script>
+    <script src="./assets/js/core/popper.min.js"></script>
+    <script src="./assets/js/core/bootstrap.min.js"></script>
+    <script src="./assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <script src="./assets/js/plugins/moment.min.js"></script>
+    <!-- Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+    <script src="./assets/js/plugins/bootstrap-switch.js"></script>
+    <!-- Plugin for Sweet Alert -->
+    <script src="./assets/js/plugins/sweetalert2.min.js"></script>
+    <!-- Plugin for Sorting Tables -->
+    <script src="./assets/js/plugins/jquery.tablesorter.js"></script>
+    <!-- Forms Validations Plugin -->
+    <script src="./assets/js/plugins/jquery.validate.min.js"></script>
+    <!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+    <script src="./assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+    <!-- Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+    <script src="./assets/js/plugins/bootstrap-selectpicker.js"></script>
+    <!-- Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+    <script src="./assets/js/plugins/bootstrap-datetimepicker.js"></script>
+    <!-- DataTables.net Plugin, full documentation here: https://datatables.net/ -->
+    <script src="./assets/js/plugins/jquery.dataTables.min.js"></script>
+    <!-- Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs -->
+    <script src="./assets/js/plugins/bootstrap-tagsinput.js"></script>
+    <!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+    <script src="./assets/js/plugins/jasny-bootstrap.min.js"></script>
+    <!-- Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar -->
+    <script src="./assets/js/plugins/fullcalendar/fullcalendar.min.js"></script>
+    <script src="./assets/js/plugins/fullcalendar/daygrid.min.js"></script>
+    <script src="./assets/js/plugins/fullcalendar/timegrid.min.js"></script>
+    <script src="./assets/js/plugins/fullcalendar/interaction.min.js"></script>
+    <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+    <script src="./assets/js/plugins/jquery-jvectormap.js"></script>
+    <!-- Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+    <script src="./assets/js/plugins/nouislider.min.js"></script>
+    <!-- Google Maps Plugin -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+    <!-- Chart JS -->
+    <script src="./assets/js/plugins/chartjs.min.js"></script>
+    <!-- Notifications Plugin -->
+    <script src="./assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="./assets/js/black-dashboard.min.js?v=1.1.1"></script>
+    <!-- Black Dashboard DEMO methods, don't include it in your project! -->
+    <script src="./assets/demo/demo.js"></script>
+</body>
+
+</html>

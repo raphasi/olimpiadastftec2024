@@ -28,6 +28,18 @@ namespace CRM.WebApp.Ingresso.Controllers
             return View(events);
         }
 
+        // GET: Events
+        public async Task<IActionResult> List()
+        {
+            var client = _httpClientFactory.CreateClient("CRM.API");
+            var response = await client.GetAsync("api/event");
+            response.EnsureSuccessStatusCode();
+
+            var events = await response.Content.ReadFromJsonAsync<IEnumerable<EventViewModel>>();
+            return View(events);
+        }
+
+
         // GET: Events/Details/5
         public async Task<IActionResult> Details(Guid id)
         {

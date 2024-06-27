@@ -29,6 +29,9 @@ namespace CRM.Infrastructure.EntitiesConfiguration
 
             builder.Property(e => e.EventDate)
                    .IsRequired(false);
+            // Definindo a propriedade ImageUrl como opcional e com tamanho máximo
+            builder.Property(p => p.ImageUrl)
+                   .HasMaxLength(500);
 
             builder.Property(e => e.Location)
                    .IsRequired(false)

@@ -4,8 +4,9 @@ namespace CRM.WebApp.Site.Models
 {
     public class TokenViewModel
     {
-        public string Token { get; }
-        public string? RefreshToken { get; }
-        public DateTime Expiration { get; }
+        public string accessToken { get; set; }
+        public string? refreshToken { get; set; }
+        public DateTime expiration { get; set; }
+        public UserInfoViewModel userInfo { get; set; }
     }
 }

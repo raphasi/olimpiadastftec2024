@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class LeadController : BaseController<LeadViewModel, LeadViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -21,6 +24,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync("api/lead");
             response.EnsureSuccessStatusCode();
 
@@ -57,6 +61,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 var response = await client.PostAsJsonAsync("api/lead", leadViewModel);
                 response.EnsureSuccessStatusCode();
 

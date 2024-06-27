@@ -14,10 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Account\AccessDenied.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\assets\demo\vendor\" />
+    <Folder Include="wwwroot\assets\img\produto_evento\" />
     <Folder Include="wwwroot\assets\js\" />
     <Folder Include="wwwroot\assets\fonts\" />
-    <Folder Include="wwwroot\assets\img\" />
     <Folder Include="wwwroot\assets\scss\" />
   </ItemGroup>
 
@@ -26,6 +30,18 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Account\AccessDenied.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Account\AccessDenied.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Account\AccessDenied.cshtml" />
   </ItemGroup>
 
 </Project>

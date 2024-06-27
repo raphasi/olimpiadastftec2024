@@ -6,9 +6,11 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CRM.WebApp.Site.Models;
 using System.Net.WebSockets;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class PriceLevelController : BaseController<PriceLevelViewModel, PriceLevelViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;

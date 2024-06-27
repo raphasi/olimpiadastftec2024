@@ -230,6 +230,11 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<DateTime?>("EventDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("Location")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");

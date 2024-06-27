@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CRM.WebApp.Ingresso.Models;
+using System.Net.Http.Headers;
+using CRM.Application.DTOs;
 
 public abstract class BaseController<T, TViewModel> : Controller where T : EntityBase, new()
 {
@@ -58,5 +60,27 @@ public abstract class BaseController<T, TViewModel> : Controller where T : Entit
         var entities = JsonConvert.DeserializeObject<TViewModel>(content);
 
         return Ok(entities);
+    }
+
+    protected string GetAccessToken()
+    {
+        return HttpContext.Session.GetString("access_token");
+    }
+
+    protected UserInfoViewModel GetUserInfo()
+    {
+        // Recupera a string JSON da sessão
+        var userInfoJson = HttpContext.Session.GetString("user_info");
+        if (string.IsNullOrEmpty(userInfoJson))
+        {
+            return null;
+        }
+        var userInfo = JsonConvert.DeserializeObject<UserInfoViewModel>(userInfoJson);
+        return userInfo;
+    }
+
+    protected static void PutTokenInHeaderAuthorization(string token, HttpClient client)
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 }

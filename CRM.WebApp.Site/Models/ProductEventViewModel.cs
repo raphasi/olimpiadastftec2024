@@ -8,6 +8,7 @@ public class ProductEventViewModel
     public ProductDTO Product { get; set; }
     public Guid EventID { get; set; }
     public EventDTO Event { get; set; }
+    public string? ImageUrl { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? ModifiedBy { get; set; }
     public DateTime? CreatedOn { get; set; }

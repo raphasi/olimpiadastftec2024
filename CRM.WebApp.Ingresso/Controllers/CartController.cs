@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 using CRM.Application.DTOs;
 
 namespace CRM.WebApp.Ingresso.Controllers;
-public class CartController : Controller
+public class CartController : BaseController<CartDTO, CartDTO>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private static List<ProductViewModel> Cart = new List<ProductViewModel>();
+    private readonly ILogger<AccountController> _logger;
 
-    public CartController(IHttpClientFactory httpClientFactory)
+    public CartController(IHttpClientFactory httpClientFactory, ILogger<AccountController> logger) : base(httpClientFactory, "cart")
     {
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public IActionResult Index()
@@ -28,6 +30,8 @@ public class CartController : Controller
     public async Task<IActionResult> Add(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
+        var userInfo = GetUserInfo();
         var response = await client.GetAsync($"api/product/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -43,8 +47,12 @@ public class CartController : Controller
         // Criar oportunidade no CRM
         var opportunity = new OpportunityDTO
         {
-            CustomerID = Guid.Parse(userId), // ID do usuário logado
+            LeadID = Guid.Parse(userId), // ID do usuário logado
             Name = "Nova Oportunidade",
+            CreatedOn = DateTime.Now, 
+            CreatedBy = Guid.Parse(userId),
+            ModifiedBy = Guid.Parse(userId),
+
             // Outros campos necessários
         };
 

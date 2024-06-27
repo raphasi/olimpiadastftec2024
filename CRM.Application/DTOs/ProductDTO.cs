@@ -19,8 +19,7 @@ public class ProductDTO
     [Range(0.01, double.MaxValue, ErrorMessage = "O Preço deve ser maior que zero.")]
     public decimal Price { get; set; }
 
-    [Url(ErrorMessage = "A URL da Imagem deve ser válida.")]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
     [Required(ErrorMessage = "O campo Inventário é obrigatório.")]
     [Range(0, int.MaxValue, ErrorMessage = "O Inventário deve ser um valor não negativo.")]

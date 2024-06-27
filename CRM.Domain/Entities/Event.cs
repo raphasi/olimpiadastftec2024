@@ -13,6 +13,7 @@ public sealed class Event : Entity
     public string Location { get; set; }
     public Nullable<decimal> TicketPrice { get; set; }
     public ICollection<ProductEvent> ProductEvents { get; set; }
+    public string ImageUrl { get; set; }
 
 
     // Navigation properties

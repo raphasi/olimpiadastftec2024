@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class QuoteController : BaseController<QuoteViewModel, QuoteViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;

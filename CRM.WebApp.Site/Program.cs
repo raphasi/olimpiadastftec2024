@@ -1,5 +1,6 @@
 using CRM.CrossCutting.IoC;
 using CRM.Infrastructure.Context;
+using CRM.WebApp.Site.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -12,7 +13,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient("CRM.API", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
-    
+
+});
+
+builder.Services.AddDistributedMemoryCache(); // Necessário para armazenar sessões na memória
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(1); // Tempo de expiração da sessão
+    options.Cookie.HttpOnly = true; // Torna o cookie de sessão acessível apenas via HTTP
+    options.Cookie.IsEssential = true; // Necessário para conformidade com GDPR
+});
+
+builder.Services.Configure<ConfigurationImageViewModel>(options =>
+{
+    options.NomePastaImagensProdutos = builder.Configuration["ConfigurationPastaImagens:NomePastaImagensProdutos"];
 });
 
 builder.Services.AddInfrastructureJWT(builder.Configuration);
@@ -31,7 +45,20 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseStatusCodePages(async context =>
+{
+    if (context.HttpContext.Response.StatusCode == 401)
+    {
+        context.HttpContext.Response.Redirect("/Account/AccessDenied");
+    }
+    else if (context.HttpContext.Response.StatusCode == 403)
+    {
+        context.HttpContext.Response.Redirect("/Account/AccessDenied");
+    }
+});
+
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

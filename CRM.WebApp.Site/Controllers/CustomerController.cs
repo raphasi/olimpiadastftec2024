@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CRM.WebApp.Site.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.WebApp.Site.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class CustomerController : BaseController<CustomerViewModel, CustomerViewModel>
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -39,6 +41,7 @@ namespace CRM.WebApp.Site.Controllers
                 {
                     return NotFound();
                 }
+                UpdateEntity(customer);
                 return View(customer);
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,14 @@ namespace CRM.CrossCutting.IoC
         {
             var secretKey = configuration["Jwt:Key"] ?? throw new ArgumentException("Chave de acesso inválida");
 
+            // Configuração de Autorização
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+                // Adicione outras políticas conforme necessário
+            });
+
             // Configura o esquema de autenticação JWT-Bearer
             services.AddAuthentication(opt =>
             {
@@ -22,6 +31,19 @@ namespace CRM.CrossCutting.IoC
             // Configura a validação do token JWT
             .AddJwtBearer(options =>
             {
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Ler o token do cookie
+                        var token = context.Request.Cookies["access_token"];
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LeadController : ControllerBase
