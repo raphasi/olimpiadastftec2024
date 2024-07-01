@@ -1,5 +1,6 @@
 using CRM.CrossCutting.IoC;
 using CRM.Infrastructure.Context;
+using CRM.WebApp.Site.Middleware;
 using CRM.WebApp.Site.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,9 @@ app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Adiciona o middleware personalizado
+app.UseRedirectToLogin();
 
 // Configura a localização
 var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
