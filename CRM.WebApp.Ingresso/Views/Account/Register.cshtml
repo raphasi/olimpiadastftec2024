@@ -51,14 +51,14 @@
                                 <h4 class="card-title">Registrar</h4>
                             </div>
                             <div class="card-body">
-                                <form asp-action="Register" id="RegisterForm" class="form">
+                                <form asp-action="Register" method="post" id="RegisterForm" class="form">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="tim-icons icon-single-02"></i>
                                             </div>
                                         </div>
-                                        <input asp-for="FullName" class="form-control" placeholder="Nome Completo" />
+                                        <input asp-for="FullName" class="form-control" placeholder="Nome Completo"/>
                                         <span asp-validation-for="FullName" class="text-danger"></span>
                                     </div>
                                     <div class="input-group">
@@ -109,9 +109,6 @@
                                         <input type="submit" value="Registrar" class="btn btn-primary btn-round btn-lg" />
                                     </div>
                                 </form>
-                            </div>
-                            <div class="card-footer">
-                                <a href="javascript:void(0)" class="btn btn-primary btn-round btn-lg">Começar</a>
                             </div>
                         </div>
                     </div>

@@ -429,6 +429,9 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("QuoteID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int?>("StatusCode")
                         .HasColumnType("int");
 
@@ -599,6 +602,12 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<Guid?>("OpportunityID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("OrderID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OrderItemID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PriceLevelID")
                         .HasColumnType("uniqueidentifier");
 
@@ -681,11 +690,10 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityIdentifierString")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -926,7 +934,7 @@ namespace CRM.Infrastructure.Migrations
                     b.HasOne("CRM.Domain.Entities.Product", "Product")
                         .WithMany("Events")
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Product");
                 });

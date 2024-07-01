@@ -2,58 +2,59 @@
     ViewData["Title"] = "Upload de Arquivos";
 }
 
-<div class="col-md-8 ml-auto mr-auto">
-    <h2 class="text-center">Upload de Arquivos</h2>
-    <p class="text-center">
-        Nesta seção, você pode fazer upload de arquivos e visualizar os resultados.
-    </p>
-</div>
-
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
+            <div class="card-header text-center">
+                <h2>Upload de Arquivos</h2>
+                <p>Nesta seção, você pode fazer upload de arquivos e visualizar os resultados.</p>
+            </div>
             <div class="card-body text-center">
-                <img src="~/assets/img/image_placeholder.jpg" width="250" height="200" asp-append-version="true" class="img-thumbnail" />
+                <img src="~/assets/img/image_placeholder.jpg" width="250" height="200" asp-append-version="true" class="img-thumbnail mb-3" />
                 <hr />
-                <div class="jumbotron jumbotron-fluid">
-                    <div class="container">
-                        @if (ViewData["Erro"] != null)
-                        {
-                            <div class="alert alert-danger" role="alert">
-                                <img src="~/images/erro1.png" width="50" height="50" class="mr-2" />
-                                <strong>@ViewData["Erro"]</strong>
-                            </div>
-                        }
+                @if (ViewData["Erro"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <strong>@ViewData["Erro"]</strong>
                     </div>
-                    <div class="container">
-                        @if (ViewData["Resultado"] != null)
-                        {
-                            <div class="alert alert-success" role="alert">
-                                <h4>@ViewData["Resultado"]</h4>
-                            </div>
-                            <hr />
-                            @if (ViewBag.Arquivos != null)
-                            {
-                                <ul class="list-group">
-                                    @foreach (string arquivo in ViewBag.Arquivos)
+                }
+                @if (ViewData["Resultado"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        <h4>@ViewData["Resultado"]</h4>
+                    </div>
+                    <hr />
+                    @if (ViewBag.Arquivos != null)
+                    {
+                        <div class="table-responsive ps">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>Nome do Arquivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var arquivo in ViewBag.Arquivos)
                                     {
-                                        <li class="list-group-item">
-                                            @arquivo
-                                        </li>
+                                        <tr>
+                                            <td>@arquivo</td>
+                                        </tr>
                                     }
-                                </ul>
-                            }
-                        }
-                    </div>
-                </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
                 <div class="form-group mt-3">
                     <a class="btn btn-outline-info" asp-controller="Imagens" asp-action="GetImagens">Exibir Imagens</a>
+                </div>
+                <div class="form-group mt-3">
+                    <a class="btn btn-outline-secondary" asp-controller="Imagens" asp-action="Index">Retornar</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     <script>

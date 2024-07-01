@@ -13,12 +13,12 @@ public class ApplicationUser : IdentityUser
 {
     public string? FullName { get; set; }
     public string? RefreshToken { get; set; }
-    public DateTime RefreshTokenExpiryTime { get; set; }
+    public DateTime? RefreshTokenExpiryTime { get; set; }
     public Guid? UserId { get; set; }
     public Guid? LeadID { get; set; }
     public Guid? ObjectID { get; set; }
     // Propriedade para armazenar o SecurityIdentifier como string
-    public string SecurityIdentifierString { get; set; }
+    public string? SecurityIdentifierString { get; set; }
 
     // Propriedade não mapeada para manipular o SecurityIdentifier
     [NotMapped]

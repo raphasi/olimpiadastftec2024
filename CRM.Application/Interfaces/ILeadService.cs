@@ -11,7 +11,7 @@ public interface ILeadService
 {
     Task<IEnumerable<LeadDTO>> GetAllAsync();
     Task<LeadDTO> GetByIdAsync(Guid id);
-    Task AddAsync(LeadDTO lead);
+    Task<LeadDTO> AddAsync(LeadDTO lead);
     Task UpdateAsync(LeadDTO lead);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<LeadDTO>> SearchAsync(string query);

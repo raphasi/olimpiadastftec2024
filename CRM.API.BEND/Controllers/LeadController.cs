@@ -1,27 +1,30 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using CRM.Application.Services;
+using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LeadController : ControllerBase
     {
         private readonly ILeadService _leadService;
         private readonly ILogger<LeadController> _logger;
+        private readonly IGenericUpdateService<Lead> _genericUpdateService;
 
-        public LeadController(ILeadService leadService, ILogger<LeadController> logger)
+        public LeadController(ILeadService leadService, ILogger<LeadController> logger, IGenericUpdateService<Lead> genericUpdateService)
         {
             _leadService = leadService;
             _logger = logger;
+            _genericUpdateService = genericUpdateService;
         }
 
         [HttpGet("{id}")]
@@ -46,6 +49,48 @@ namespace CRM.API.BEND.Controllers
             }
         }
 
+        [HttpPatch("{id}/update-field")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateField(Guid id, [FromBody] UpdateFieldDTO updateFieldDTO)
+        {
+            if (updateFieldDTO == null || string.IsNullOrEmpty(updateFieldDTO.FieldName))
+            {
+                return BadRequest("Dados do campo são obrigatórios.");
+            }
+
+            try
+            {
+                object fieldValue = null;
+
+                // Verifica o tipo do FieldValue e converte adequadamente
+                if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.Number && updateFieldDTO.FieldValue.TryGetInt32(out int intValue))
+                {
+                    fieldValue = intValue;
+                }
+                else if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.String)
+                {
+                    fieldValue = updateFieldDTO.FieldValue.GetString();
+                }
+
+                await _genericUpdateService.UpdateFieldAsync(id, updateFieldDTO.FieldName, fieldValue);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar campo da entidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<LeadDTO>), 200)]
@@ -57,7 +102,8 @@ namespace CRM.API.BEND.Controllers
                 var leads = await _leadService.GetAllAsync();
                 return Ok(leads);
             }
-            catch (Exception ex)            {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "Erro ao obter todos os leads.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
@@ -75,8 +121,8 @@ namespace CRM.API.BEND.Controllers
 
             try
             {
-                await _leadService.AddAsync(lead);
-                return CreatedAtAction(nameof(GetLeadById), new { id = lead.LeadID }, lead);
+                var createdLead = await _leadService.AddAsync(lead);
+                return CreatedAtAction(nameof(GetLeadById), new { id = createdLead.LeadID }, createdLead);
             }
             catch (Exception ex)
             {

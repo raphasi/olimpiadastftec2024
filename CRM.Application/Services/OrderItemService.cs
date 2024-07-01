@@ -32,10 +32,12 @@ public class OrderItemService : IOrderItemService
         return _mapper.Map<OrderItemDTO>(orderItem);
     }
 
-    public async Task AddAsync(OrderItemDTO orderItem)
+    public async Task<OrderItemDTO> AddAsync(OrderItemDTO orderItem)
     {
+        orderItem.OrderItemID = Guid.NewGuid();
         var orderItemEntity = _mapper.Map<OrderItem>(orderItem);
         await _orderItemRepository.AddOrderItemAsync(orderItemEntity);
+        return orderItem;
     }
 
     public async Task UpdateAsync(OrderItemDTO orderItem)

@@ -32,10 +32,12 @@ public class PriceLevelService : IPriceLevelService
         return _mapper.Map<PriceLevelDTO>(priceLevel);
     }
 
-    public async Task AddAsync(PriceLevelDTO priceLevel)
+    public async Task<PriceLevelDTO> AddAsync(PriceLevelDTO priceLevel)
     {
+        priceLevel.PriceLevelID = Guid.NewGuid();
         var priceLevelEntity = _mapper.Map<PriceLevel>(priceLevel);
         await _priceLevelRepository.AddPriceLevelAsync(priceLevelEntity);
+        return priceLevel;
     }
 
     public async Task UpdateAsync(PriceLevelDTO priceLevel)

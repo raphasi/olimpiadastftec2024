@@ -36,7 +36,7 @@
                                 <tr>
                                     <td>@product.Name</td>
                                     <td>@product.Description</td>
-                                    <td>@product.Price</td>
+                                    <td>@product.Price?.ToString("C")</td>
                                     <td>@product.Inventory</td>
                                     <td class="text-right">
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = product.ProductID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Produto">

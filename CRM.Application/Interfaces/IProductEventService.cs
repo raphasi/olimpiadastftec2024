@@ -9,7 +9,7 @@ namespace CRM.Application.Interfaces
     {
         Task<ProductEventDTO> GetByIdAsync(Guid productEventId);
         Task<IEnumerable<ProductEventDTO>> GetAllAsync();
-        Task AddAsync(ProductEventDTO createProductEventDto);
+        Task<ProductEventDTO> AddAsync(ProductEventDTO createProductEventDto);
         Task UpdateAsync(ProductEventDTO updateProductEventDto);
         Task DeleteAsync(Guid productEventId);
         Task<IEnumerable<ProductDTO>> GetProductsByEventIdAsync(Guid eventId);

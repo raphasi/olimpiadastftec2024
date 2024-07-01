@@ -9,6 +9,6 @@ namespace CRM.WebApp.Ingresso.Models
         public DateTime? CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? StatusCode { get; set; }
-        public bool IsNew { get; set; } = true;
+        public bool? IsNew { get; set; } = true;
     }
 }

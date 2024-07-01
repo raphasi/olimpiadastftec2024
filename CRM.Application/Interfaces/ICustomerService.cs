@@ -11,7 +11,7 @@ namespace CRM.Application.Interfaces
     {
         Task<IEnumerable<CustomerDTO>> GetAllAsync();
         Task<CustomerDTO> GetByIdAsync(Guid id);
-        Task AddAsync(CustomerDTO customer);
+        Task<CustomerDTO> AddAsync(CustomerDTO customer);
         Task UpdateAsync(CustomerDTO customer);
         Task DeleteAsync(Guid id);
         Task<IEnumerable<CustomerDTO>> SearchAsync(string query);

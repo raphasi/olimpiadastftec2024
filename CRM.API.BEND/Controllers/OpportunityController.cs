@@ -1,27 +1,30 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using CRM.Application.Services;
+using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OpportunityController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
         private readonly ILogger<OpportunityController> _logger;
+        private readonly IGenericUpdateService<Opportunity> _genericUpdateService;
 
-        public OpportunityController(IOpportunityService opportunityService, ILogger<OpportunityController> logger)
+        public OpportunityController(IOpportunityService opportunityService, ILogger<OpportunityController> logger, IGenericUpdateService<Opportunity> genericUpdateService)
         {
             _opportunityService = opportunityService;
             _logger = logger;
+            _genericUpdateService = genericUpdateService;
         }
 
         [HttpGet("{id}")]
@@ -42,6 +45,49 @@ namespace CRM.API.BEND.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter oportunidade por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpPatch("{id}/update-field")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateField(Guid id, [FromBody] UpdateFieldDTO updateFieldDTO)
+        {
+            if (updateFieldDTO == null || string.IsNullOrEmpty(updateFieldDTO.FieldName))
+            {
+                return BadRequest("Dados do campo são obrigatórios.");
+            }
+
+            try
+            {
+                object fieldValue = null;
+
+                // Verifica o tipo do FieldValue e converte adequadamente
+                if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.Number && updateFieldDTO.FieldValue.TryGetInt32(out int intValue))
+                {
+                    fieldValue = intValue;
+                }
+                else if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.String)
+                {
+                    fieldValue = updateFieldDTO.FieldValue.GetString();
+                }
+
+                await _genericUpdateService.UpdateFieldAsync(id, updateFieldDTO.FieldName, fieldValue);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar campo da entidade.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
         }

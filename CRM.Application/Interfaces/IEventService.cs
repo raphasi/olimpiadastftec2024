@@ -11,7 +11,7 @@ public interface IEventService
 {
     Task<IEnumerable<EventDTO>> GetAllAsync();
     Task<EventDTO> GetByIdAsync(Guid id);
-    Task AddAsync(EventDTO evento);
+    Task<EventDTO> AddAsync(EventDTO evento);
     Task UpdateAsync(EventDTO evento);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<EventDTO>> SearchAsync(string query);

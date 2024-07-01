@@ -29,7 +29,15 @@ public static class DependencyInjectionAPI
             b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
         // Configuração do Identity
-        services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            // Configurações de senha
+            options.Password.RequireDigit = true; // Requer um dígito
+            options.Password.RequireLowercase = true; // Requer uma letra minúscula
+            options.Password.RequireUppercase = true; // Requer uma letra maiúscula
+            options.Password.RequireNonAlphanumeric = false; // Requer um caractere especial
+            options.Password.RequiredLength = 8; // Comprimento mínimo da senha
+        }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
         // Registro de Repositórios
@@ -70,6 +78,9 @@ public static class DependencyInjectionAPI
         services.AddScoped<IProductEventService, ProductEventService>();
 
         services.AddScoped<ITokenService, TokenService>();
+
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped(typeof(IGenericUpdateService<>), typeof(GenericUpdateService<>));
 
         // Configuração do AutoMapper
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));

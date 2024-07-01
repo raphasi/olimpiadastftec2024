@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,26 +46,21 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseStatusCodePages(async context =>
-{
-    if (context.HttpContext.Response.StatusCode == 401)
-    {
-        context.HttpContext.Response.Redirect("/Account/AccessDenied");
-    }
-    else if (context.HttpContext.Response.StatusCode == 403)
-    {
-        context.HttpContext.Response.Redirect("/Account/AccessDenied");
-    }
-});
-
 app.UseRouting();
 app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+// Configura a localização
+var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(localizationOptions);
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Account}/{action=Login}/{id?}");
+});
 
 app.Run();

@@ -12,33 +12,142 @@
     }
     else
     {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Preço</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Name</td>
-                        <td>@item.Price</td>
-                        <td>
-                            <form asp-action="Remove" method="post">
-                                <input type="hidden" name="id" value="@item.ProductID" />
-                                <button type="submit" class="btn btn-danger">Remover</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <form asp-action="Clear" method="post">
-            <button type="submit" class="btn btn-warning">Limpar Carrinho</button>
-        </form>
-        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-success">Finalizar Compra</a>
+        <div class="col-md-12">
+            <div>
+                <div>
+                    <div class="table-responsive ps">
+                        <table class="table table-shopping">
+                            <thead class="">
+                                <tr>
+                                    <th class="text-center"></th>
+                                    <th>Produto</th>
+                                    <th>Preço</th>
+                                    <th class="text-right">Quantidade</th>
+                                    <th class="text-right">Total</th>
+                                    <th class="text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="img-container">
+                                                <img src="/assets/img/produto_evento/@item.ImageUrl" alt="...">
+                                            </div>
+                                        </td>
+                                        <td class="td-name">
+                                            <a href="javascript:void(0)">@item.Name</a>
+                                            <br>
+                                            <small>by @item.Description</small>
+                                        </td>
+                                        <td class="td-number">
+                                            <small>R$</small>@item.Price
+                                        </td>
+                                        <td class="td-number">
+                                            <div class="btn-group">
+                                                <button id="decrement-btn-@item.ProductID" class="btn btn-info btn-simple btn-sm">
+                                                    <i class="tim-icons icon-simple-delete"></i>
+                                                </button>
+                                                <button id="increment-btn-@item.ProductID" class="btn btn-info btn-sm">
+                                                    <i class="tim-icons icon-simple-add"></i>
+                                                </button>
+                                            </div>
+                                            <span id="quantity-@item.ProductID">1</span>
+                                            <input type="hidden" id="product-id-@item.ProductID" value="@item.ProductID" />
+                                        </td>
+                                        <td class="td-number">
+                                            <small>R$</small><span id="total-@item.ProductID">@item.Price</span>
+                                        </td>
+                                        <td class="td-actions">
+                                            <form asp-action="Remove" method="post">
+                                                <input type="hidden" name="id" value="@item.ProductID" />
+                                                <button type="submit" rel="tooltip" data-placement="top" title="Remover item" class="btn btn-primary btn-link" data-original-title="Remove item">
+                                                    <i class="tim-icons icon-simple-remove"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td class="td-total">
+                                        Total
+                                    </td>
+                                    <td class="td-price">
+                                        <small>R$</small><span id="cart-total">@Model.Sum(item => item.Price)</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form asp-action="Clear" method="post">
+                            <button type="submit" class="btn btn-warning">Limpar Carrinho</button>
+                        </form>
+                        <a href="@Url.Action("Checkout", "Store")" class="btn btn-info btn-round float-right mr-5">
+                            Finalizar Compra
+                            <i class="tim-icons icon-minimal-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        @foreach (var item in Model)
+        {
+            <text>
+                document.getElementById('increment-btn-@item.ProductID').addEventListener('click', () => {
+                    updateQuantity('@item.ProductID', 1, @item.Price);
+                });
+
+                document.getElementById('decrement-btn-@item.ProductID').addEventListener('click', () => {
+                    updateQuantity('@item.ProductID', -1, @item.Price);
+                });
+            </text>
+        }
+
+        function updateQuantity(productId, change, price) {
+            let quantityElement = document.getElementById(`quantity-${productId}`);
+            let totalElement = document.getElementById(`total-${productId}`);
+            let quantity = parseInt(quantityElement.innerText);
+
+            quantity += change;
+            if (quantity < 1) quantity = 1;
+
+            quantityElement.innerText = quantity;
+            totalElement.innerText = (price * quantity).toFixed(2);
+
+            updateCartTotal();
+
+            fetch('/Store/UpdateCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ productId: productId, quantity: quantity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateCartTotal() {
+            let total = 0;
+            @foreach (var item in Model)
+            {
+                <text>
+                    total += parseFloat(document.getElementById('total-@item.ProductID').innerText);
+                </text>
+            }
+            document.getElementById('cart-total').innerText = total.toFixed(2);
+        }
+    });
+</script>

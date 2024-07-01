@@ -1,23 +1,22 @@
 ﻿@model IEnumerable<CRM.WebApp.Ingresso.Models.EventViewModel>
 
 @{
-    ViewData["Title"] = "Loja Virtual";
+    ViewData["Title"] = "Eventos";
 }
 
 <div class="container">
-    <h2>Loja Virtual - Eventos</h2>
+    <h2>Ingressos | Eventos | Jogos Olímpicos</h2>
     <div class="row">
         @foreach (var evento in Model)
         {
             <div class="col-md-4">
                 <div class="card">
-                    <img class="card-img-top" src="~/assets/img/evento_produto/@evento.ImageUrl" alt="@evento.Name">
+                    <img class="card-img-top" src="/assets/img/produto_evento/@evento.ImageUrl" alt="@evento.Name">
                     <div class="card-body">
-                        <h5 class="card-title">@evento.Name</h5>
-                        <p class="card-text">@evento.Description</p>
-                        <p class="card-text"><strong>Preço:</strong> @evento.TicketPrice</p>
+                        <h4 class="card-title">@evento.Description</h4>
+                        <p class="card-text"><strong>Data:</strong> @evento.EventDate.Value.ToShortDateString()</p>
+                        <p class="card-text"><strong>Preço:</strong> @evento.TicketPrice?.ToString("C")</p>
                         <a href="@Url.Action("Details", "Store", new { id = evento.EventID })" class="btn btn-primary">Detalhes</a>
-                        <a href="@Url.Action("AddToCart", "Store", new { id = evento.EventID })" class="btn btn-success">Adicionar ao Carrinho</a>
                     </div>
                 </div>
             </div>

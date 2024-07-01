@@ -21,19 +21,15 @@ namespace CRM.WebApp.Ingresso.Controllers
             _logger = logger;
         }
 
-        // GET: Account/Register
-        [HttpGet]
-        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (model == null)
             {
@@ -43,24 +39,71 @@ namespace CRM.WebApp.Ingresso.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
                 LeadViewModel lead = new LeadViewModel();
                 lead.FullName = model.FullName;
                 lead.Email = model.Email;
                 lead.Telephone = model.PhoneNumber;
-                lead.StatusCode = 1;
-                lead.IsNew = true;
-
                 var responseLead = await client.PostAsJsonAsync("api/lead", lead);
                 responseLead.EnsureSuccessStatusCode();
 
-
-                var response = await client.PostAsJsonAsync("api/auth/register", model);
-
-                if (response.IsSuccessStatusCode)
+                if (responseLead.IsSuccessStatusCode)
                 {
-                    return StatusCode(201, "Usuário registrado com sucesso.");
+                    var leadId = await responseLead.Content.ReadAsStringAsync();
+                    LeadViewModel leadIdResult = Newtonsoft.Json.JsonConvert.DeserializeObject<LeadViewModel>(leadId);
+
+                    if (leadIdResult != null)
+                        model.LeadID = leadIdResult.LeadID;
+                }
+
+
+                var data = new
+                {
+                    email = model.Email,
+                    roleName = "Cliente"
+                };
+
+                var response = await client.PostAsJsonAsync("api/auth/register_loja", model);
+                response.EnsureSuccessStatusCode();
+
+                 if (response.IsSuccessStatusCode)
+                {
+                    // Autenticação do Usuário
+                    var loginModel = new LoginViewModel
+                    {
+                        Email = model.Email,
+                        Password = model.Password
+                    };
+                    var responseLogin = await client.PostAsJsonAsync("api/auth/login", loginModel);
+                    responseLogin.EnsureSuccessStatusCode();
+                    if (responseLogin.IsSuccessStatusCode)
+                    {
+                        var loginContent = await responseLogin.Content.ReadAsStringAsync();
+                        TokenViewModel loginResult = JsonSerializer.Deserialize<TokenViewModel>(loginContent);
+
+                        // Armazenar o token no HttpContext
+                        HttpContext.Session.SetString("access_token", loginResult.accessToken);
+
+                        var userInfoJson = JsonSerializer.Serialize<UserInfoViewModel>(loginResult.userInfo);
+                        // Armazena o UserInfoDTO na sessão
+                        HttpContext.Session.SetString("user_info", userInfoJson);
+
+                        // Armazene o token no cookie
+                        Response.Cookies.Append("access_token", loginResult.accessToken, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = false, // Ajuste para false se estiver testando sem HTTPS
+                            SameSite = SameSiteMode.Lax // Ajuste conforme necessário
+                        });
+
+                        return RedirectToAction("List", "Event");
+                    }
+                    else
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        _logger.LogWarning("Erro ao logar usuário: {Error}", errorResponse);
+                        return BadRequest(errorResponse);
+                    }
                 }
                 else
                 {
@@ -72,7 +115,7 @@ namespace CRM.WebApp.Ingresso.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao registrar usuário.");
-                return StatusCode(500, "Erro interno do servidor.");
+                return StatusCode(500, "Erro interno do servidor: " + ex);
             }
         }
 
@@ -122,7 +165,7 @@ namespace CRM.WebApp.Ingresso.Controllers
                         SameSite = SameSiteMode.Lax // Ajuste conforme necessário
                     });
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("List", "Event");
                 }
                 else
                 {

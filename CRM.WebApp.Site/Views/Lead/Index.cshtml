@@ -40,7 +40,7 @@
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = lead.LeadID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Lead">
                                             <i class="tim-icons icon-pencil"></i>
                                         </a>
-                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("Delete", new { id = lead.LeadID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Lead" onclick="return confirm('Tem certeza que deseja excluir este lead?');">
+                                        <a class="btn btn-link btn-danger btn-icon btn-sm btn-neutral remove" href="@Url.Action("DeleteConfirmed", new { id = lead.LeadID })" data-toggle="tooltip" title="Excluir" aria-label="Excluir Lead" onclick="return confirm('Tem certeza que deseja excluir este lead?');">
                                             <i class="tim-icons icon-simple-remove"></i>
                                         </a>
                                     </td>

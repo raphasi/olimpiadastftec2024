@@ -33,7 +33,7 @@ namespace CRM.WebApp.Site.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<ActionResult> Register([FromForm] RegisterViewModel model)
         {
             if (model == null)
             {
@@ -68,6 +68,8 @@ namespace CRM.WebApp.Site.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("/Account/AccessDenied")]
         public IActionResult AccessDenied()
         {
             return View();
@@ -87,7 +89,7 @@ namespace CRM.WebApp.Site.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PostAsJsonAsync("api/auth/login", model);
+                var response = await client.PostAsJsonAsync("api/auth/login_ad", model);
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -32,10 +32,12 @@ public class ProductService : IProductService
         return _mapper.Map<ProductDTO>(product);
     }
 
-    public async Task AddAsync(ProductDTO product)
+    public async Task<ProductDTO> AddAsync(ProductDTO product)
     {
+        product.ProductID = Guid.NewGuid();
         var productEntity = _mapper.Map<Product>(product);
         await _productRepository.AddProductAsync(productEntity);
+        return product;
     }
 
     public async Task UpdateAsync(ProductDTO product)

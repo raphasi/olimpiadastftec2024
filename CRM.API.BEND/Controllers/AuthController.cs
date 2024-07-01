@@ -59,7 +59,7 @@ public class AuthController : ControllerBase
         return BadRequest(new ResponseDTO { Status = "Error", Message = $"Issue adding the new {roleName} role" });
     }
 
-    [HttpPost("AddUserToRole")]
+    [HttpPost("addusertorole")]
     public async Task<IActionResult> AddUserToRole(string email, string roleName)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(roleName))
@@ -172,6 +172,46 @@ public class AuthController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDTO { Status = "Error", Message = "User creation failed." });
         }
+
+        return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
+    }
+
+    [HttpPost("register_loja")]
+    public async Task<IActionResult> Register_Loja([FromBody] RegisterModelDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userExists = await _userManager.FindByNameAsync(model.UserName!);
+        if (userExists != null)
+        {
+            return Conflict(new ResponseDTO { Status = "Error", Message = "User already exists!" });
+        }
+
+        var user = new ApplicationUser
+        {
+            Email = model.Email,
+            RefreshTokenExpiryTime = DateTime.Now.AddDays(1),
+            UserName = model.UserName,
+            SecurityIdentifierString = "S-1-0-0",
+            LeadID = model.LeadID
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password!);
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDTO { Status = "Error", Message = "User creation failed." });
+        }
+
+        // Adiciona o usuário ao papel "Cliente" após o registro
+        var addToRoleResult = await AddUserToRole(user.Email, "Cliente");
+        if (addToRoleResult is BadRequestObjectResult || addToRoleResult is NotFoundObjectResult)
+        {
+            return addToRoleResult;
+        }
+
 
         return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
     }

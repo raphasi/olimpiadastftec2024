@@ -32,10 +32,12 @@ namespace CRM.Application.Services
             return _mapper.Map<IEnumerable<ProductEventDTO>>(productEvents);
         }
 
-        public async Task AddAsync(ProductEventDTO createProductEventDto)
+        public async Task<ProductEventDTO> AddAsync(ProductEventDTO createProductEventDto)
         {
+            createProductEventDto.Id = Guid.NewGuid();
             var productEvent = _mapper.Map<ProductEvent>(createProductEventDto);
             await _productEventRepository.AddAsync(productEvent);
+            return createProductEventDto;
         }
 
         public async Task UpdateAsync(ProductEventDTO updateProductEventDto)

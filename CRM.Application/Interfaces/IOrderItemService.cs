@@ -11,7 +11,7 @@ public interface IOrderItemService
 {
     Task<IEnumerable<OrderItemDTO>> GetAllAsync();
     Task<OrderItemDTO> GetByIdAsync(Guid id);
-    Task AddAsync(OrderItemDTO orderItem);
+    Task<OrderItemDTO>AddAsync(OrderItemDTO orderItem);
     Task UpdateAsync(OrderItemDTO orderItem);
     Task DeleteAsync(Guid id);
 }

@@ -11,7 +11,7 @@ public interface IPriceLevelService
 {
     Task<IEnumerable<PriceLevelDTO>> GetAllAsync();
     Task<PriceLevelDTO> GetByIdAsync(Guid id);
-    Task AddAsync(PriceLevelDTO priceLevel);
+    Task<PriceLevelDTO> AddAsync(PriceLevelDTO priceLevel);
     Task UpdateAsync(PriceLevelDTO priceLevel);
     Task DeleteAsync(Guid id);
 

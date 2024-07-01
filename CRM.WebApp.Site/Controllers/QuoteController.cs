@@ -23,6 +23,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync("api/quote");
             response.EnsureSuccessStatusCode();
 

@@ -32,10 +32,12 @@ public class OpportunityService : IOpportunityService
         return _mapper.Map<OpportunityDTO>(opportunity);
     }
 
-    public async Task AddAsync(OpportunityDTO opportunity)
+    public async Task<OpportunityDTO> AddAsync(OpportunityDTO opportunity)
     {
+        opportunity.OpportunityID = Guid.NewGuid();
         var opportunityEntity = _mapper.Map<Opportunity>(opportunity);
         await _opportunityRepository.AddOpportunityAsync(opportunityEntity);
+        return opportunity;
     }
 
     public async Task UpdateAsync(OpportunityDTO opportunity)

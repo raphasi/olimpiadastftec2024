@@ -1,10 +1,13 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
+using CRM.Application.Services;
+using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
@@ -16,11 +19,56 @@ namespace CRM.API.BEND.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly ILogger<OrderController> _logger;
+        private readonly IGenericUpdateService<Order> _genericUpdateService;
 
-        public OrderController(IOrderService orderService, ILogger<OrderController> logger)
+        public OrderController(IOrderService orderService, ILogger<OrderController> logger, IGenericUpdateService<Order> genericUpdateService)
         {
             _orderService = orderService;
             _logger = logger;
+            _genericUpdateService = genericUpdateService;
+        }
+
+        [HttpPatch("{id}/update-field")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateField(Guid id, [FromBody] UpdateFieldDTO updateFieldDTO)
+        {
+            if (updateFieldDTO == null || string.IsNullOrEmpty(updateFieldDTO.FieldName))
+            {
+                return BadRequest("Dados do campo são obrigatórios.");
+            }
+
+            try
+            {
+                object fieldValue = null;
+
+                // Verifica o tipo do FieldValue e converte adequadamente
+                if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.Number && updateFieldDTO.FieldValue.TryGetInt32(out int intValue))
+                {
+                    fieldValue = intValue;
+                }
+                else if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.String)
+                {
+                    fieldValue = updateFieldDTO.FieldValue.GetString();
+                }
+
+                await _genericUpdateService.UpdateFieldAsync(id, updateFieldDTO.FieldName, fieldValue);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar campo da entidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
         }
 
         [HttpGet("{id}")]

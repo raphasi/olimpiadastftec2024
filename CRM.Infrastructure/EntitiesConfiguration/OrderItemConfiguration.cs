@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using CRM.Domain.Entities;
+using System.Reflection.Emit;
 
 namespace CRM.Infrastructure.EntitiesConfiguration
 {
@@ -21,6 +22,10 @@ namespace CRM.Infrastructure.EntitiesConfiguration
 
             // Definindo a propriedade ProductID como obrigatória
             builder.Property(oi => oi.ProductID)
+                   .IsRequired(false);
+
+            // Definindo a propriedade QuoteID como obrigatória
+            builder.Property(o => o.QuoteID)
                    .IsRequired(false);
 
             // Definindo a propriedade Quantity como obrigatória

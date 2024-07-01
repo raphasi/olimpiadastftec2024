@@ -56,12 +56,14 @@ namespace CRM.Application.Services
             }
         }
 
-        public async Task AddAsync(CustomerDTO customer)
+        public async Task<CustomerDTO> AddAsync(CustomerDTO customer)
         {
             try
             {
+                customer.CustomerID = Guid.NewGuid();
                 var customerEntity = _mapper.Map<Customer>(customer);
                 await _customerRepository.AddCustomerAsync(customerEntity);
+                return customer;
             }
             catch (Exception ex)
             {

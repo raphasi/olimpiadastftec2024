@@ -27,13 +27,13 @@ namespace CRM.WebApp.Site.Controllers
         {
             if (files == null || files.Count == 0)
             {
-                ViewData["Erro"] = "Error: Arquivo(s) não selecionado(s)";
+                ViewData["Erro"] = "Arquivo(s) não selecionado(s)";
                 return View(ViewData);
             }
 
             if (files.Count > 10)
             {
-                ViewData["Erro"] = "Error: Quantidade de arquivos excedeu o limite";
+                ViewData["Erro"] = "Quantidade de arquivos excedeu o limite somente 10 por vez";
                 return View(ViewData);
             }
 

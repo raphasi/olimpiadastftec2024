@@ -29,10 +29,12 @@ namespace CRM.Application.Services
             return _mapper.Map<OrderDTO>(order);
         }
 
-        public async Task AddAsync(OrderDTO order)
+        public async Task<OrderDTO> AddAsync(OrderDTO order)
         {
+            order.OrderID = Guid.NewGuid();
             var orderEntity = _mapper.Map<Order>(order);
             await _orderRepository.AddOrderAsync(orderEntity);
+            return order;
         }
 
         public async Task UpdateAsync(OrderDTO order)

@@ -1,5 +1,8 @@
 using CRM.CrossCutting.IoC;
+using CRM.WebApp.Ingresso.Middleware;
 using CRM.WebApp.Ingresso.Models;
+using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient("CRM.API", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
-
 });
 
 builder.Services.AddDistributedMemoryCache(); // Necessário para armazenar sessões na memória
@@ -41,12 +43,24 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
+// Adiciona o middleware personalizado
+app.UseRedirectToLogin();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Store}/{action=Index}/{id?}");
+// Configura a localização
+var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(localizationOptions);
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Event}/{action=List}/{id?}");
+});
 
 app.Run();
 

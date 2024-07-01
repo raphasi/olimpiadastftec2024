@@ -4,12 +4,12 @@ namespace CRM.WebApp.Ingresso.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "E-mail é obrigatório")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Senha é obrigatório")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
         public string Password { get; set; }

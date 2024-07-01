@@ -41,13 +41,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasMany(p => p.Quotes)
                .WithOne(q => q.Product)
                .HasForeignKey(q => q.ProductID)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.NoAction);
 
         // Configurando o relacionamento com a entidade Event
         builder.HasMany(p => p.Events)
                .WithOne(e => e.Product)
                .HasForeignKey(e => e.ProductID)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.NoAction);
 
         // Definindo o nome da tabela
         builder.ToTable("Products");

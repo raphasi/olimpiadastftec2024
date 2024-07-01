@@ -11,7 +11,7 @@ public interface INoteService
 {
     Task<IEnumerable<NoteDTO>> GetAllAsync();
     Task<NoteDTO> GetByIdAsync(Guid id);
-    Task AddAsync(NoteDTO note);
+    Task<NoteDTO> AddAsync(NoteDTO note);
     Task UpdateAsync(NoteDTO note);
     Task DeleteAsync(Guid id);
 }

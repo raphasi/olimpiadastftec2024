@@ -9,7 +9,7 @@ namespace CRM.Application.Interfaces
     {
         Task<CartDto> GetByIdAsync(Guid cartId);
         Task<IEnumerable<CartDto>> GetAllAsync();
-        Task AddAsync(CartDto cartDto);
+        Task<CartDto> AddAsync(CartDto cartDto);
         Task UpdateAsync(CartDto cartDto);
         Task DeleteAsync(Guid cartId);
     }

@@ -10,11 +10,7 @@ namespace CRM.Application.Mappings
         public DomainToDTOMappingProfile()
         {
             // Mapeamento de Quote para QuoteDTO e vice-versa
-            CreateMap<Quote, QuoteDTO>().ReverseMap()
-            .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.NameProduct))
-            .ForMember(dest => dest.EventID, opt => opt.MapFrom(src => src.NameOpp))
-            .ForMember(dest => dest.OpportunityID, opt => opt.MapFrom(scr => scr.NameProduct))
-            .ForMember(dest => dest.PriceLevelID, opt => opt.MapFrom(scr => scr.NameLevel));
+            CreateMap<Quote, QuoteDTO>().ReverseMap();
 
             // Mapeamento de Opportunity para OpportunityDTO e vice-versa
             CreateMap<Opportunity, OpportunityDTO>().ReverseMap();
@@ -67,6 +63,9 @@ namespace CRM.Application.Mappings
             .ForMember(dest => dest.SecurityIdentifier, opt => opt.MapFrom(src => src.SecurityIdentifierString))
             .ReverseMap()
             .ForMember(dest => dest.SecurityIdentifierString, opt => opt.MapFrom(src => src.SecurityIdentifier));
+
+            CreateMap<ApplicationUser, LeadDTO>()
+            .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.Id));
 
         }
     }

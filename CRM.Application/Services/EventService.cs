@@ -48,8 +48,9 @@ namespace CRM.Application.Services
             return eventDto;
         }
 
-        public async Task AddAsync(EventDTO evento)
+        public async Task<EventDTO> AddAsync(EventDTO evento)
         {
+            evento.EventID = Guid.NewGuid();
             var eventEntity = _mapper.Map<Event>(evento);
             eventEntity.ProductEvents = evento.SelectedProductIds.Select(productId => new ProductEvent
             {
@@ -58,6 +59,7 @@ namespace CRM.Application.Services
             }).ToList();
 
             await _eventRepository.AddEventAsync(eventEntity);
+            return evento;
         }
 
         public async Task UpdateAsync(EventDTO evento)

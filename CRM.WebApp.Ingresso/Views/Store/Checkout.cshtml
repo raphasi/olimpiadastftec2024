@@ -1,0 +1,218 @@
+﻿@model CRM.WebApp.Ingresso.Models.CheckoutViewModel
+
+<div class="content">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="title">Checkout</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CartItems != null && Model.CartItems.Count() > 0)
+                    {
+                        <form method="post" asp-action="CompleteCheckout">
+                            <input asp-for="Opportunity.OpportunityID" hidden />
+                            <input asp-for="Lead.LeadID" hidden />
+
+                            <!-- Informações Pessoais -->
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label>Primeiro Nome:</label>
+                                        <input asp-for="Lead.FirstName" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label>Último Nome:</label>
+                                        <input asp-for="Lead.LastName" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <select asp-for="Lead.TypeLead" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o tipo de cliente">
+                                            <option disabled selected>Tipo de Cliente</option>
+                                            <option value="1">Pessoa Física</option>
+                                            <option value="2">Pessoa Jurídica</option>
+                                        </select>
+                                        <span asp-validation-for="Lead.TypeLead" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contato -->
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label>E-mail:</label>
+                                        <input asp-for="Lead.Email" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label>Telefone:</label>
+                                        <input asp-for="Lead.Telephone" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informações do Cartão -->
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label>Número do cartão:</label>
+                                        <input asp-for="CartHeader.CardNumber" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label>Nome no cartão:</label>
+                                        <input asp-for="CartHeader.NameOnCard" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label>CVV:</label>
+                                        <input asp-for="CartHeader.CVV" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label>Data de expiração:</label>
+                                        <input asp-for="CartHeader.ExpireMonthYear" placeholder="MMYY" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Endereço -->
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address_PostalCode">CEP</label>
+                                        <input asp-for="CartHeader.Address_PostalCode" class="form-control" placeholder="Digite o CEP" />
+                                        <span asp-validation-for="CartHeader.Address_PostalCode" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address1">Rua</label>
+                                        <input asp-for="CartHeader.Address1" class="form-control" placeholder="Digite a rua" />
+                                        <span asp-validation-for="CartHeader.Address1" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address_Adjunct">Bairro</label>
+                                        <input asp-for="CartHeader.Address_Adjunct" class="form-control" placeholder="Digite o bairro" />
+                                        <span asp-validation-for="CartHeader.Address_Adjunct" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address_City">Cidade</label>
+                                        <input asp-for="CartHeader.Address_City" class="form-control" placeholder="Digite a cidade" />
+                                        <span asp-validation-for="CartHeader.Address_City" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pr-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address_State">Estado</label>
+                                        <input asp-for="CartHeader.Address_State" class="form-control" placeholder="Digite o estado" />
+                                        <span asp-validation-for="CartHeader.Address_State" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pl-md-1">
+                                    <div class="form-group">
+                                        <label asp-for="CartHeader.Address_Country">País</label>
+                                        <input asp-for="CartHeader.Address_Country" class="form-control" placeholder="Digite o país" />
+                                        <span asp-validation-for="CartHeader.Address_Country" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notas -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Sobre a Compra:</label>
+                                        <textarea asp-for="CartHeader.Notes" rows="4" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Itens do Carrinho -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Itens do Carrinho:</label>
+                                        <div class="card mt-4">
+                                            <div class="card-body">
+                                                <div class="d-none d-lg-block">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            Detalhe do Produto
+                                                        </div>
+                                                        <div class="col-3">
+                                                            Preço
+                                                        </div>
+                                                        <div class="col-3">
+                                                            Quantidade
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                                @foreach (var item in Model.CartItems)
+                                                {
+                                                    <div class="row h-100">
+                                                        <div class="col-6">
+                                                            <span style="font-size:20px;">@item.Name</span>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <span style="font-size:17px;">@string.Format("{0:c}", item.Price)</span>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <span style="font-size:17px;">
+                                                                @item.Inventory
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+                                                }
+                                                <div class="row">
+                                                    <div class="col-12 pr-4" style="font-size:20px;color:blue">
+                                                        Total Amount: @string.Format("{0:c}", Model.CartHeader.TotalAmount)<br />
+                                                        @if (Model.CartHeader.Discount > 0)
+                                                        {
+                                                            <span style="font-size:20px;color:red">
+                                                                Desconto : @string.Format("{0:P}", Model.CartHeader.Discount / 100)
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botão de Confirmação -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-fill btn-primary">Confirmar Pagamento</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>Seu carrinho está vazio.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

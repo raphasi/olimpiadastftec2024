@@ -8,7 +8,7 @@ public interface IActivityService
 {
     Task<IEnumerable<ActivityDTO>> GetAllAsync();
     Task<ActivityDTO> GetByIdAsync(Guid id);
-    Task AddAsync(ActivityDTO activity);
+    Task<ActivityDTO> AddAsync(ActivityDTO activity);
     Task UpdateAsync(ActivityDTO activity);
     Task DeleteAsync(Guid id);
 }

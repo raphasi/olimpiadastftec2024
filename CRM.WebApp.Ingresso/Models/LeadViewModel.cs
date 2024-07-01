@@ -13,10 +13,10 @@ public class LeadViewModel : EntityBase
     public string FullName { get; set; }
 
     [StringLength(100)]
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
 
     [StringLength(100)]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
 
     [EmailAddress]
     [StringLength(100)]

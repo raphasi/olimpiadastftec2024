@@ -12,6 +12,8 @@ public sealed class Quote : Entity
     public Nullable<Guid> EventID { get; set; }
     public Nullable<Guid> LeadID { get; set; }
     public Nullable<Guid> CustomerID { get; set; }
+    public Nullable<Guid> OrderID { get; set; }
+    public Nullable<Guid> OrderItemID { get; set; }
     public Nullable<int> Quantity { get; set; }
     public Nullable<decimal> Discount { get; set; }
     public Nullable<decimal> TotalPrice { get; set; }

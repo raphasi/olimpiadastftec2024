@@ -1,11 +1,13 @@
 ﻿using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using CRM.Application.Services;
+using CRM.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CRM.API.BEND.Controllers
@@ -17,11 +19,13 @@ namespace CRM.API.BEND.Controllers
     {
         private readonly IQuoteService _quoteService;
         private readonly ILogger<QuoteController> _logger;
+        private readonly IGenericUpdateService<Quote> _genericUpdateService;
 
-        public QuoteController(IQuoteService quoteService, ILogger<QuoteController> logger)
+        public QuoteController(IQuoteService quoteService, ILogger<QuoteController> logger, IGenericUpdateService<Quote> genericUpdateService)
         {
             _quoteService = quoteService;
             _logger = logger;
+            _genericUpdateService = genericUpdateService;
         }
 
         [HttpGet("{id}")]
@@ -62,6 +66,22 @@ namespace CRM.API.BEND.Controllers
             }
         }
 
+        [HttpGet("{id}/quotesopp")]
+        [ProducesResponseType(typeof(IEnumerable<QuoteDTO>), 200)]
+        public async Task<ActionResult<IEnumerable<QuoteDTO>>> GetQuoteOpportunituByIdAsync(Guid id)
+        {
+            try
+            {
+                var quotes = await _quoteService.GetQuoteOpportunituByIdAsync(id);
+                return Ok(quotes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter todas as cotações da oportunidade.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -97,11 +117,11 @@ namespace CRM.API.BEND.Controllers
 
             try
             {
-                var existingQuote = await _quoteService.GetByIdAsync(id);
-                if (existingQuote == null)
-                {
-                    return NotFound();
-                }
+                //var existingQuote = await _quoteService.(id);
+                //if (existingQuote == null)
+                //{
+                //    return NotFound();
+                //}
 
                 await _quoteService.UpdateAsync(quote);
                 return NoContent();
@@ -109,6 +129,49 @@ namespace CRM.API.BEND.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao atualizar cotação.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
+        [HttpPatch("{id}/update-field")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> UpdateField(Guid id, [FromBody] UpdateFieldDTO updateFieldDTO)
+        {
+            if (updateFieldDTO == null || string.IsNullOrEmpty(updateFieldDTO.FieldName))
+            {
+                return BadRequest("Dados do campo são obrigatórios.");
+            }
+
+            try
+            {
+                object fieldValue = null;
+
+                // Verifica o tipo do FieldValue e converte adequadamente
+                if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.Number && updateFieldDTO.FieldValue.TryGetInt32(out int intValue))
+                {
+                    fieldValue = intValue;
+                }
+                else if (updateFieldDTO.FieldValue.ValueKind == JsonValueKind.String)
+                {
+                    fieldValue = updateFieldDTO.FieldValue.GetString();
+                }
+
+                await _genericUpdateService.UpdateFieldAsync(id, updateFieldDTO.FieldName, fieldValue);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar campo da entidade.");
                 return StatusCode(500, "Erro interno do servidor.");
             }
         }

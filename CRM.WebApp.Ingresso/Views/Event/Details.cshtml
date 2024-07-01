@@ -10,9 +10,10 @@
 <p><strong>Localização:</strong> @Model.Location</p>
 <p><strong>Preço do Ingresso:</strong> @Model.TicketPrice?.ToString("C")</p>
 
-<h2>Produtos Disponíveis</h2>
+<br />
 
 <table class="table">
+    <h3>Produtos Disponíveis</h3>
     <thead>
         <tr>
             <th>Nome</th>
@@ -29,10 +30,18 @@
                 <td>@product.Description</td>
                 <td>@product.Price?.ToString("C")</td>
                 <td>
-                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-primary">Detalhes</a>
-                    <a asp-controller="Product" asp-action="AddToCart" asp-route-id="@product.ProductID" class="btn btn-success">Adicionar ao Carrinho</a>
+                    <a asp-controller="Store" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-primary">Detalhe do Ingresso</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<form asp-controller="Store" asp-action="AddToCartMultiProduct" method="post">
+    @for (int i = 0; i < @Model.AvailableProducts.Count; i++)
+    {
+        <input type="hidden" name="listProduct" value="@Model.AvailableProducts[@i].ProductID" />
+    }
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Adicionar produtos ao Carrinho</button>
+    </div>
+</form>

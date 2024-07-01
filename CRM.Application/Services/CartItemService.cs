@@ -32,10 +32,12 @@ namespace CRM.Application.Services
             return _mapper.Map<IEnumerable<CartItemDTO >>(cartItems);
         }
 
-        public async Task AddAsync(CartItemDTO cartItemDto)
+        public async Task<CartItemDTO> AddAsync(CartItemDTO cartItemDto)
         {
+            cartItemDto.CartItemID = cartItemDto.CartItemID;   
             var cartItem = _mapper.Map<CartItem>(cartItemDto);
             await _cartItemRepository.AddAsync(cartItem);
+            return cartItemDto;
         }
 
         public async Task UpdateAsync(CartItemDTO cartItemDto)

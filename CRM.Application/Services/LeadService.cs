@@ -29,10 +29,13 @@ namespace CRM.Application.Services
             return _mapper.Map<LeadDTO>(lead);
         }
 
-        public async Task AddAsync(LeadDTO lead)
+        public async Task<LeadDTO> AddAsync(LeadDTO lead)
         {
+            lead.LeadID = Guid.NewGuid();   
             var leadEntity = _mapper.Map<Lead>(lead);
             await _leadRepository.AddLeadAsync(leadEntity);
+
+            return lead;
         }
 
         public async Task UpdateAsync(LeadDTO lead)

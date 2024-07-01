@@ -29,10 +29,12 @@ public class NoteService : INoteService
         return _mapper.Map<NoteDTO>(note);
     }
 
-    public async Task AddAsync(NoteDTO note)
+    public async Task<NoteDTO> AddAsync(NoteDTO note)
     {
+        note.NoteID = Guid.NewGuid();
         var noteEntity = _mapper.Map<Note>(note);
         await _noteRepository.AddNoteAsync(noteEntity);
+        return note;
     }
 
     public async Task UpdateAsync(NoteDTO note)

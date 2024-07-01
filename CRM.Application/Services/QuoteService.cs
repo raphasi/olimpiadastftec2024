@@ -23,16 +23,24 @@ public class QuoteService : IQuoteService
         return _mapper.Map<IEnumerable<QuoteDTO>>(quotes);
     }
 
+    public async Task<IEnumerable<QuoteDTO>> GetQuoteOpportunituByIdAsync(Guid oppId)
+    {
+        var quotes = await _quoteRepository.GetQuoteOpportunituByIdAsync(oppId);
+        return _mapper.Map<IEnumerable<QuoteDTO>>(quotes);
+    }
+
     public async Task<QuoteDTO> GetByIdAsync(Guid id)
     {
         var quote = await _quoteRepository.GetQuoteByIdAsync(id);
         return _mapper.Map<QuoteDTO>(quote);
     }
 
-    public async Task AddAsync(QuoteDTO quote)
+    public async Task<QuoteDTO> AddAsync(QuoteDTO quote)
     {
+        quote.QuoteID = Guid.NewGuid();
         var quoteEntity = _mapper.Map<Quote>(quote);
         await _quoteRepository.AddQuoteAsync(quoteEntity);
+        return quote;
     }
 
     public async Task UpdateAsync(QuoteDTO quote)

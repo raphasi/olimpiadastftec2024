@@ -3,6 +3,7 @@ using CRM.Domain.Interfaces;
 using CRM.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,6 +21,13 @@ namespace CRM.Infrastructure.Repositories
         public async Task<Quote> GetQuoteByIdAsync(Guid quoteId)
         {
             return await _quoteContext.Set<Quote>().FindAsync(quoteId);
+        }
+
+        public async Task<IEnumerable<Quote>> GetQuoteOpportunituByIdAsync(Guid opportunityId)
+        {
+            return await _quoteContext.Set<Quote>()
+                                  .Where(q => q.OpportunityID == opportunityId)
+                                  .ToListAsync();
         }
 
         public async Task<IEnumerable<Quote>> GetAllQuotesAsync()

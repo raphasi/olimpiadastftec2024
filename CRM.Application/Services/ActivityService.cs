@@ -29,10 +29,12 @@ namespace CRM.Application.Services
             return _mapper.Map<ActivityDTO>(activity);
         }
 
-        public async Task AddAsync(ActivityDTO activity)
+        public async Task<ActivityDTO> AddAsync(ActivityDTO activity)
         {
+            activity.ActivityID = Guid.NewGuid();   
             var activityEntity = _mapper.Map<Activity>(activity);
             await _activityRepository.AddActivityAsync(activityEntity);
+            return activity;
         }
 
         public async Task UpdateAsync(ActivityDTO activity)
