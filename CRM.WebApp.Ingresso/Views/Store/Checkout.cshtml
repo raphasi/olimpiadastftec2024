@@ -30,12 +30,26 @@
                                 </div>
                                 <div class="col-md-6 pl-md-1">
                                     <div class="form-group">
+                                        <label>Tipo de Cliente:</label>
                                         <select asp-for="Lead.TypeLead" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Selecione o tipo de cliente">
-                                            <option disabled selected>Tipo de Cliente</option>
                                             <option value="1">Pessoa Física</option>
                                             <option value="2">Pessoa Jurídica</option>
                                         </select>
                                         <span asp-validation-for="Lead.TypeLead" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pr-md-1" style="display: none;" id="divCPF">
+                                    <div class="form-group">
+                                        <label>CPF Cliente:</label>
+                                        <input asp-for="CartHeader.CPF" placeholder="CPF" class="form-control" id="cpfField"  />
+                                        <span asp-validation-for="CartHeader.CPF" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pr-md-1" style="display: none;" id="divCNPJ">
+                                    <div class="form-group">
+                                        <label>CNPJ Cliente:</label>
+                                        <input asp-for="CartHeader.CNPJ" placeholder="CNPJ" class="form-control" id="cnpjField"  />
+                                        <span asp-validation-for="CartHeader.CNPJ" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -91,14 +105,14 @@
                                 <div class="col-md-6 pr-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address_PostalCode">CEP</label>
-                                        <input asp-for="CartHeader.Address_PostalCode" class="form-control" placeholder="Digite o CEP" />
+                                        <input asp-for="CartHeader.Address_PostalCode" class="form-control" placeholder="Digite o CEP" required />
                                         <span asp-validation-for="CartHeader.Address_PostalCode" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 pl-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address1">Rua</label>
-                                        <input asp-for="CartHeader.Address1" class="form-control" placeholder="Digite a rua" />
+                                        <input asp-for="CartHeader.Address1" class="form-control" placeholder="Digite a rua" required />
                                         <span asp-validation-for="CartHeader.Address1" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -107,14 +121,14 @@
                                 <div class="col-md-6 pr-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address_Adjunct">Bairro</label>
-                                        <input asp-for="CartHeader.Address_Adjunct" class="form-control" placeholder="Digite o bairro" />
+                                        <input asp-for="CartHeader.Address_Adjunct" class="form-control" placeholder="Digite o bairro" required />
                                         <span asp-validation-for="CartHeader.Address_Adjunct" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 pl-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address_City">Cidade</label>
-                                        <input asp-for="CartHeader.Address_City" class="form-control" placeholder="Digite a cidade" />
+                                        <input asp-for="CartHeader.Address_City" class="form-control" placeholder="Digite a cidade" required />
                                         <span asp-validation-for="CartHeader.Address_City" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -123,14 +137,14 @@
                                 <div class="col-md-6 pr-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address_State">Estado</label>
-                                        <input asp-for="CartHeader.Address_State" class="form-control" placeholder="Digite o estado" />
+                                        <input asp-for="CartHeader.Address_State" class="form-control" placeholder="Digite o estado" required />
                                         <span asp-validation-for="CartHeader.Address_State" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 pl-md-1">
                                     <div class="form-group">
                                         <label asp-for="CartHeader.Address_Country">País</label>
-                                        <input asp-for="CartHeader.Address_Country" class="form-control" placeholder="Digite o país" />
+                                        <input asp-for="CartHeader.Address_Country" class="form-control" placeholder="Digite o país" required />
                                         <span asp-validation-for="CartHeader.Address_Country" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -216,3 +230,55 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        var typeLeadSelect = $('select[name="Lead.TypeLead"]');
+        var divCPF = $("#divCPF");
+        var divCNPJ = $("#divCNPJ");
+
+        function toggleFields() {
+            if (typeLeadSelect.val() === "1") { // Pessoa Física
+                divCPF.show();
+                divCNPJ.hide();
+            } else if (typeLeadSelect.val() === "2") { // Pessoa Jurídica
+                divCPF.hide();
+                divCNPJ.show();
+            } else {
+                divCPF.hide();
+                divCNPJ.hide();
+            }
+        }
+
+        typeLeadSelect.change(toggleFields);
+
+        // Trigger change event on page load to set initial state
+        toggleFields();
+    });
+</script>
+<!-- Adicione o script aqui -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var typeLeadSelect = document.querySelector('select[name="Lead.TypeLead"]');
+        var divCPF = document.getElementById("divCPF");
+        var divCNPJ = document.getElementById("divCNPJ");
+
+        function toggleFields() {
+            if (typeLeadSelect.value === "1") { // Pessoa Física
+                divCPF.style.display = "block";
+                divCNPJ.style.display = "none";
+            } else if (typeLeadSelect.value === "2") { // Pessoa Jurídica
+                divCPF.style.display = "none";
+                divCNPJ.style.display = "block";
+            } else {
+                divCPF.style.display = "none";
+                divCNPJ.style.display = "none";
+            }
+        }
+
+        typeLeadSelect.addEventListener("change", toggleFields);
+
+        // Trigger change event on page load to set initial state
+        toggleFields();
+    });
+</script>

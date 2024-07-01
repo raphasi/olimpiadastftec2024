@@ -68,6 +68,7 @@ namespace CRM.WebApp.Site.Controllers
                 try
                 {
                     var client = _httpClientFactory.CreateClient("CRM.API");
+                    PutTokenInHeaderAuthorization(GetAccessToken(), client);
                     var response = await client.PostAsJsonAsync("api/customer", customerViewModel);
                     response.EnsureSuccessStatusCode();
 
@@ -117,6 +118,7 @@ namespace CRM.WebApp.Site.Controllers
                 try
                 {
                     var client = _httpClientFactory.CreateClient("CRM.API");
+                    PutTokenInHeaderAuthorization(GetAccessToken(), client);
                     UpdateEntity(customerViewModel);
                     var response = await client.PutAsJsonAsync($"api/customer/{id}", customerViewModel);
                     if (!response.IsSuccessStatusCode)
@@ -162,6 +164,7 @@ namespace CRM.WebApp.Site.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 var response = await client.DeleteAsync($"api/customer/{id}");
                 if (!response.IsSuccessStatusCode)
                 {
@@ -180,6 +183,7 @@ namespace CRM.WebApp.Site.Controllers
         private async Task<IEnumerable<CustomerViewModel>> GetCustomersAsync()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync("api/customer");
             response.EnsureSuccessStatusCode();
 
@@ -189,6 +193,7 @@ namespace CRM.WebApp.Site.Controllers
         private async Task<CustomerViewModel> GetCustomerByIdAsync(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/customer/{id}");
             if (!response.IsSuccessStatusCode)
             {

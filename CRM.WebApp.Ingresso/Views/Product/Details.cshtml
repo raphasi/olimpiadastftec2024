@@ -1,0 +1,67 @@
+﻿@model CRM.WebApp.Ingresso.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 ml-auto mr-auto text-center">
+            <h1 class="title">@Model.Name</h1>
+            <h4 class="description">@Model.Description</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 ml-auto mr-auto">
+            <div class="card card-pricing card-primary">
+                <div class="card-body">
+                    <ul class="list-group mt-3">
+                        <li class="list-group-item"><strong>Nome:</strong> @Model.Name</li>
+                        <li class="list-group-item"><strong>Descrição:</strong> @Model.Description</li>
+                        <li class="list-group-item"><strong>Preço:</strong> @Model.Price?.ToString("C")</li>
+                        <!-- Adicione outras propriedades conforme necessário -->
+                    </ul>
+                    <div class="card-prices mt-3">
+                        <h3 class="text-on-front">
+                            <span>R$</span>@Model.Price?.ToString("F2")
+                        </h3>
+                        <h5 class="text-on-back">@Model.Price?.ToString("F2")</h5>
+                        <p class="plan">Preço do Produto</p>
+                    </div>
+                </div>
+                <div class="card-footer text-center mb-3 mt-3">
+                    <a href="@Url.Action("AddToCart", "Store", new { id = Model.ProductID })" class="btn btn-round btn-just-icon btn-primary">Adicionar ao Carrinho</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 ml-auto mr-auto">
+            <div class="card card-pricing card-primary">
+                <div class="card-body">
+                    <img class="card-img-top" src="/assets/img/produto_evento/@Model.ImageUrl" alt="@Model.Name">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 mt-5">
+            <h3 class="title">Detalhes Adicionais</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>Aqui você pode adicionar mais informações sobre o produto, como especificações técnicas, benefícios, etc.</p>
+            </div>
+            <div class="col-md-6 ml-auto">
+                <div class="progress-container progress-warning">
+                    <span class="progress-badge">Estoque</span>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-container progress-primary">
+                    <span class="progress-badge">Popularidade</span>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

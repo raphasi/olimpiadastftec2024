@@ -23,6 +23,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync("api/opportunity");
         response.EnsureSuccessStatusCode();
 
@@ -34,6 +35,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
     public async Task<IActionResult> Details(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/opportunity/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -59,6 +61,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.PostAsJsonAsync("api/opportunity", opportunityViewModel);
             response.EnsureSuccessStatusCode();
 
@@ -71,6 +74,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
     public async Task<IActionResult> Edit(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/opportunity/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -95,6 +99,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             UpdateEntity(opportunityViewModel);
             var response = await client.PutAsJsonAsync($"api/opportunity/{id}", opportunityViewModel);
             if (!response.IsSuccessStatusCode)
@@ -111,6 +116,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
     public async Task<IActionResult> Delete(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/opportunity/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -127,6 +133,7 @@ public class OpportunityController : BaseController<OpportunityViewModel, Opport
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.DeleteAsync($"api/opportunity/{id}");
         if (!response.IsSuccessStatusCode)
         {

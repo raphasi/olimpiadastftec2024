@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CRM.WebApp.Ingresso.Controllers;
 
-public class ProductController : Controller
+public class ProductController : BaseController<ProductViewModel, ProductViewModel>
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public ProductController(IHttpClientFactory httpClientFactory)
+    public ProductController(IHttpClientFactory httpClientFactory) : base(httpClientFactory, "product")
     {
         _httpClientFactory = httpClientFactory;
     }
@@ -20,6 +20,7 @@ public class ProductController : Controller
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync("api/product");
         response.EnsureSuccessStatusCode();
 
@@ -30,6 +31,7 @@ public class ProductController : Controller
     public async Task<IActionResult> Details(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/product/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -43,6 +45,7 @@ public class ProductController : Controller
     public async Task<IActionResult> AddToCart(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/product/{id}");
         if (!response.IsSuccessStatusCode)
         {

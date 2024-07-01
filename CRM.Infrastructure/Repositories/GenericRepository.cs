@@ -26,6 +26,9 @@ namespace CRM.Infrastructure.Repositories
             await _genericContext.SaveChangesAsync();
         }
 
-        // Implementação de outros métodos genéricos, se necessário.
+        public async Task<int> GetCountAsync()
+        {
+            return await _genericContext.Set<T>().CountAsync();
+        }
     }
 }

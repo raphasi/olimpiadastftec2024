@@ -22,6 +22,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
     public async Task<IActionResult> Index()
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync("api/note");
         response.EnsureSuccessStatusCode();
 
@@ -33,6 +34,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
     public async Task<IActionResult> Details(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/note/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -58,6 +60,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.PostAsJsonAsync("api/note", noteViewModel);
             response.EnsureSuccessStatusCode();
 
@@ -70,6 +73,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
     public async Task<IActionResult> Edit(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/note/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -94,6 +98,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
         if (ModelState.IsValid)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             UpdateEntity(noteViewModel);
             var response = await client.PutAsJsonAsync($"api/note/{id}", noteViewModel);
             if (!response.IsSuccessStatusCode)
@@ -110,6 +115,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
     public async Task<IActionResult> Delete(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.GetAsync($"api/note/{id}");
         if (!response.IsSuccessStatusCode)
         {
@@ -126,6 +132,7 @@ public class NoteController : BaseController<NoteViewModel, NoteViewModel>
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");
+        PutTokenInHeaderAuthorization(GetAccessToken(), client);
         var response = await client.DeleteAsync($"api/note/{id}");
         if (!response.IsSuccessStatusCode)
         {

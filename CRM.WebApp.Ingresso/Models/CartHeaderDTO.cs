@@ -40,24 +40,31 @@ namespace CRM.WebApp.Ingresso.Models
         [Phone(ErrorMessage = "O Telefone deve ser válido.")]
         public string Telephone { get; set; }
 
+        [Required(ErrorMessage = "O campo Rua é obrigatório.")]
         [StringLength(200, ErrorMessage = "O Endereço 1 não pode exceder 200 caracteres.")]
         public string Address1 { get; set; }
 
+        [Required(ErrorMessage = "O campo CEP é obrigatório.")]
         [StringLength(20, ErrorMessage = "O Código Postal não pode exceder 20 caracteres.")]
         public string Address_PostalCode { get; set; }
 
+        [Required(ErrorMessage = "O campo País é obrigatório.")]
         [StringLength(100, ErrorMessage = "O País não pode exceder 100 caracteres.")]
         public string Address_Country { get; set; }
 
+        [Required(ErrorMessage = "O campo Estado é obrigatório.")]
         [StringLength(100, ErrorMessage = "O Estado não pode exceder 100 caracteres.")]
         public string Address_State { get; set; }
 
+        [Required(ErrorMessage = "O campo Cidade é obrigatório.")]
         [StringLength(100, ErrorMessage = "A Cidade não pode exceder 100 caracteres.")]
         public string Address_City { get; set; }
 
+        [Required(ErrorMessage = "O campo Estado é obrigatório.")]
         [StringLength(200, ErrorMessage = "O Complemento não pode exceder 200 caracteres.")]
         public string Address_Adjunct { get; set; }
 
+        [Required(ErrorMessage = "O campo Tipo de Cliente é obrigatório.")]
         [Range(0, 9999, ErrorMessage = "O Tipo de Cliente deve ser um valor válido.")]
         public int TypeLead { get; set; }
 

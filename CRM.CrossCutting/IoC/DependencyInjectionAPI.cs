@@ -82,6 +82,10 @@ public static class DependencyInjectionAPI
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped(typeof(IGenericUpdateService<>), typeof(GenericUpdateService<>));
 
+        services.AddScoped<IGenericService, GenericService>();
+
+        // Registro do repositório IGenericRepository
+
         // Configuração do AutoMapper
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
         var myhandlers = AppDomain.CurrentDomain.Load("CRM.Application");

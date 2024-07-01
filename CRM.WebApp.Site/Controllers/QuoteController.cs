@@ -35,6 +35,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/quote/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -60,6 +61,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 var response = await client.PostAsJsonAsync("api/quote", quoteViewModel);
                 response.EnsureSuccessStatusCode();
 
@@ -72,6 +74,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/quote/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -96,6 +99,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 UpdateEntity(quoteViewModel);
                 var response = await client.PutAsJsonAsync($"api/quote/{id}", quoteViewModel);
                 if (!response.IsSuccessStatusCode)
@@ -112,6 +116,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/quote/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -128,6 +133,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.DeleteAsync($"api/quote/{id}");
             if (!response.IsSuccessStatusCode)
             {

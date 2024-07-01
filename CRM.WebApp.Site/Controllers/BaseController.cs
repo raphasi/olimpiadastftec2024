@@ -55,6 +55,18 @@ public abstract class BaseController<T, TViewModel> : Controller where T : Entit
         return Ok(entities);
     }
 
+    public async Task<IActionResult> GetCount([FromQuery] string query = null)
+    {
+        var client = _httpClientFactory.CreateClient("CRM.API");
+        var response = await client.GetAsync($"/api/{_entityName}/count?query={query}");
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        var entities = JsonConvert.DeserializeObject<IEnumerable<TViewModel>>(content);
+
+        return Ok(entities);
+    }
+
     public async Task<IActionResult> GetById(string id)
     {
         var client = _httpClientFactory.CreateClient("CRM.API");

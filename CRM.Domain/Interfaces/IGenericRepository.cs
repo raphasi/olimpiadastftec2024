@@ -11,4 +11,5 @@ public interface IGenericRepository<T> where T : class
     Task<T> GetByIdAsync(Guid id);
     Task UpdateAsync(T entity);
     // Outros métodos genéricos que você possa precisar, como Add, Delete, etc.
+    Task<int> GetCountAsync();
 }

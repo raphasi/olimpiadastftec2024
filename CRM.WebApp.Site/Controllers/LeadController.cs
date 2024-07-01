@@ -36,6 +36,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/lead/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -74,6 +75,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/lead/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -98,6 +100,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 UpdateEntity(leadViewModel);
                 var response = await client.PutAsJsonAsync($"api/lead/{id}", leadViewModel);
                 if (!response.IsSuccessStatusCode)
@@ -114,6 +117,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/lead/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -130,6 +134,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.DeleteAsync($"api/lead/{id}");
             if (!response.IsSuccessStatusCode)
             {

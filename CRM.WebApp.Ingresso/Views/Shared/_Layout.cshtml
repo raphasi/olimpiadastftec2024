@@ -365,6 +365,58 @@
     </script>
     <script>
         $(document).ready(function () {
+            var typeLeadSelect = $('select[name="Lead.TypeLead"]');
+            var divCPF = $("#divCPF");
+            var divCNPJ = $("#divCNPJ");
+
+            function toggleFields() {
+                if (typeLeadSelect.val() === "1") { // Pessoa Física
+                    divCPF.show();
+                    divCNPJ.hide();
+                } else if (typeLeadSelect.val() === "2") { // Pessoa Jurídica
+                    divCPF.hide();
+                    divCNPJ.show();
+                } else {
+                    divCPF.hide();
+                    divCNPJ.hide();
+                }
+            }
+
+            typeLeadSelect.change(toggleFields);
+
+            // Trigger change event on page load to set initial state
+            toggleFields();
+        });
+    </script>
+    <!-- Adicione o script aqui -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var typeLeadSelect = document.querySelector('select[name="Lead.TypeLead"]');
+            var divCPF = document.getElementById("divCPF");
+            var divCNPJ = document.getElementById("divCNPJ");
+
+            function toggleFields() {
+                if (typeLeadSelect.value === "1") { // Pessoa Física
+                    divCPF.style.display = "block";
+                    divCNPJ.style.display = "none";
+                } else if (typeLeadSelect.value === "2") { // Pessoa Jurídica
+                    divCPF.style.display = "none";
+                    divCNPJ.style.display = "block";
+                } else {
+                    divCPF.style.display = "none";
+                    divCNPJ.style.display = "none";
+                }
+            }
+
+            typeLeadSelect.addEventListener("change", toggleFields);
+
+            // Trigger change event on page load to set initial state
+            toggleFields();
+        });
+    </script>
+    <script>
+
+        $(document).ready(function () {
             $('#datatable').DataTable({
                 "pagingType": "full_numbers",
                 "lengthMenu": [

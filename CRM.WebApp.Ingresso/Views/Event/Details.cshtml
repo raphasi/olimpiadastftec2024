@@ -30,7 +30,7 @@
                 <td>@product.Description</td>
                 <td>@product.Price?.ToString("C")</td>
                 <td>
-                    <a asp-controller="Store" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-primary">Detalhe do Ingresso</a>
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-primary">Detalhe do Ingresso</a>
                 </td>
             </tr>
         }

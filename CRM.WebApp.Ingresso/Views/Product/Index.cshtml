@@ -16,7 +16,7 @@
                         <h5 class="card-title">@product.Name</h5>
                         <p class="card-text">@product.Description</p>
                         <p class="card-text"><strong>Preço:</strong> @product.Price</p>
-                        <a href="@Url.Action("Details", "Store", new { id = product.ProductID })" class="btn btn-primary">Detalhes</a>
+                        <a href="@Url.Action("Details", "Product", new { id = product.ProductID })" class="btn btn-primary">Detalhes</a>
                         <a href="@Url.Action("AddToCart", "Store", new { id = product.ProductID })" class="btn btn-success">Adicionar ao Carrinho</a>
                     </div>
                 </div>

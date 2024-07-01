@@ -134,5 +134,7 @@ namespace CRM.API.BEND.Controllers
             var prd = await _productService.SearchAsync(query);
             return Ok(prd);
         }
+
+
     }
 }

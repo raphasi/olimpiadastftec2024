@@ -714,6 +714,44 @@
     </script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById('chartBig1').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'Setember', 'October', 'November', 'December'],
+                    datasets: [{
+                        label: 'Performance',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        data: [0, 10, 5, 2, 20, 30, 45]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Value'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             $('#eventSelect').select2({
                 ajax: {
