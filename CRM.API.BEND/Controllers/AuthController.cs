@@ -150,6 +150,13 @@ public class AuthController : ControllerBase
             {
                 throw new Exception("Erro ao criar o usuário.");
             }
+
+            // Adiciona o usuário ao papel "Cliente" após o registro
+            var addToRoleResult = await AddUserToRole(user.Email, "Admin");
+            if (addToRoleResult is BadRequestObjectResult || addToRoleResult is NotFoundObjectResult)
+            {
+                throw new Exception("Erro ao adicionar o usuário na role.");
+            }
         }
         else
         {
