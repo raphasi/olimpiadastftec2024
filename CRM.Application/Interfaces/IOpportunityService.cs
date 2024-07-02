@@ -15,4 +15,5 @@ public interface IOpportunityService
     Task UpdateAsync(OpportunityDTO opportunity);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<OpportunityDTO>> SearchAsync(string query);
+    Task<(int Count, decimal? EstimatedValue)> GetCountAndEstimatedValueAsync();
 }

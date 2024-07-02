@@ -26,6 +26,7 @@
                                 <th>Nome Completo</th>
                                 <th>Email</th>
                                 <th>Telefone</th>
+                                <th>Data de Modificação</th>
                                 <th class="text-right">Ações</th>
                             </tr>
                         </thead>
@@ -36,6 +37,7 @@
                                     <td>@customer.FullName</td>
                                     <td>@customer.Email</td>
                                     <td>@customer.Telephone</td>
+                                    <td>@customer.ModifiedOn?.ToString("dd/MM/yyyy")</td>
                                     <td class="text-right">
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = customer.CustomerID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes do Cliente">
                                             <i class="tim-icons icon-pencil"></i>
@@ -52,6 +54,7 @@
                                 <th>Nome Completo</th>
                                 <th>Email</th>
                                 <th>Telefone</th>
+                                <th>Data de Modificação</th>
                                 <th class="text-right">Ações</th>
                             </tr>
                         </tfoot>

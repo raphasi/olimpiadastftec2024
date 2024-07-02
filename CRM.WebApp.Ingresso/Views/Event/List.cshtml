@@ -16,7 +16,7 @@
                         <h4 class="card-title">@evento.Description</h4>
                         <p class="card-text"><strong>Data:</strong> @evento.EventDate.Value.ToShortDateString()</p>
                         <p class="card-text"><strong>Preço:</strong> @evento.TicketPrice?.ToString("C")</p>
-                        <a href="@Url.Action("Details", "Store", new { id = evento.EventID })" class="btn btn-primary">Detalhes</a>
+                        <a href="@Url.Action("Details", "Store", new { id = evento.EventID })" class="btn btn-facebook">Detalhes</a>
                     </div>
                 </div>
             </div>

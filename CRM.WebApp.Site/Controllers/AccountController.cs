@@ -131,7 +131,8 @@ namespace CRM.WebApp.Site.Controllers
         public IActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("access_token");
-            return NoContent();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

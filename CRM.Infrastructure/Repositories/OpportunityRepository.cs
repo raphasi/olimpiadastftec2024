@@ -17,6 +17,13 @@ namespace CRM.Infrastructure.Repositories
             _opportunityContext = opportunityContext;
         }
 
+        public async Task<(int Count, decimal? EstimatedValue)> GetCountAndEstimatedValueAsync()
+        {
+            var count = await _opportunityContext.Opportunities.CountAsync();
+            var estimatedValue = await _opportunityContext.Opportunities.SumAsync(o => o.EstimatedValue);
+            return (count, estimatedValue);
+        }
+
         public async Task<Opportunity> GetOpportunityByIdAsync(Guid opportunityId)
         {
             return await _opportunityContext.Set<Opportunity>().FindAsync(opportunityId);

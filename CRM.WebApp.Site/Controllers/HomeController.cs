@@ -21,15 +21,15 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Index()
         {
             var customerCount = await GetCountAsync("Customer");
-            //var (opportunityCount, estimatedValue) = await GetOpportunityCountAndEstimatedValueAsync();
+            var (opportunityCount, estimatedValue) = await GetOpportunityCountAndEstimatedValueAsync();
             var quotesCount = await GetCountAsync("Quotes");
             var leadCount = await GetCountAsync("Lead");
 
             var model = new DashboardViewModel
             {
                 CustomerCount = customerCount,
-                //OpportunityCount = opportunityCount,
-                //OpportunityEstimatedValue = estimatedValue,
+                OpportunityCount = opportunityCount,
+                OpportunityEstimatedValue = estimatedValue,
                 QuotesCount = quotesCount,
                 LeadCount = leadCount
             };

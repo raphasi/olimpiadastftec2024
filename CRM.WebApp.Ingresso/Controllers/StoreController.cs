@@ -409,6 +409,32 @@ namespace CRM.WebApp.Ingresso.Controllers
                 response.EnsureSuccessStatusCode();
             }
 
+            var customer = new CustomerDTO
+            {
+                FullName = model.Lead.FirstName + " " + model.Lead.LastName,
+                FirstName = model.Lead.FirstName,
+                LastName = model.Lead.LastName,
+                CPF = string.IsNullOrEmpty(model.CartHeader.CPF) ? "0" : model.CartHeader.CPF,
+                Address1 = model.CartHeader.Address1,
+                Address_Adjunct = model.CartHeader.Address_Adjunct,
+                Address_City = model.CartHeader.Address_City,
+                Address_Country = model.CartHeader.Address_Country,
+                Address_PostalCode = model.CartHeader.Address_PostalCode,
+                Address_State = model.CartHeader.Address_State,
+                Telephone = model.Lead.Telephone,
+                TypeLead = model.CartHeader.TypeLead,
+                CNPJ = string.IsNullOrEmpty(model.CartHeader.CNPJ) ? "0" : model.CartHeader.CNPJ,
+                Email = model.Lead.Email,
+                StatusCode = 1,
+                CreatedOn = DateTime.Now,
+                ModifiedOn = DateTime.Now,
+                CreatedBy = new Guid(user.id),
+                ModifiedBy = new Guid(user.id)
+            };
+
+            response = await client.PostAsJsonAsync("api/customer", customer);
+            response.EnsureSuccessStatusCode();
+
             // Limpar o carrinho e a sessão
             HttpContext.Session.Remove("Cart");
             HttpContext.Session.Remove("opportunity_id");

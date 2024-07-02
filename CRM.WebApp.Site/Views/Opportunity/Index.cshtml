@@ -23,9 +23,11 @@
                     <table id="datatable" class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Descrição</th>
+                                <th>Oportunidade</th>
+                                <th>Lead</th>
+                                <th>Cliente</th>
                                 <th>Valor Estimado</th>
-                                <th>Data de Fechamento</th>
+                                <th>Data de Modificação</th>
                                 <th class="text-right">Ações</th>
                             </tr>
                         </thead>
@@ -33,9 +35,11 @@
                             @foreach (var opportunity in Model)
                             {
                                 <tr>
-                                    <td>@opportunity.Description</td>
-                                    <td>@opportunity.EstimatedValue</td>
-                                    <td>@opportunity.ExpectedCloseDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@opportunity.Name</td>
+                                    <td>@opportunity.LeadName</td>
+                                    <td>@opportunity.CustomerName</td>
+                                    <td>@opportunity.EstimatedValue.ToString("C")</td>
+                                    <td>@opportunity.ModifiedOn?.ToString("dd/MM/yyyy")</td>
                                     <td class="text-right">
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = opportunity.OpportunityID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Oportunidade">
                                             <i class="tim-icons icon-pencil"></i>
@@ -49,9 +53,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Descrição</th>
+                                <th>Oportunidade</th>
+                                <th>Lead</th>
+                                <th>Cliente</th>
                                 <th>Valor Estimado</th>
-                                <th>Data de Fechamento</th>
+                                <th>Data de Modificação</th>
                                 <th class="text-right">Ações</th>
                             </tr>
                         </tfoot>

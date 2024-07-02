@@ -26,6 +26,12 @@ public class OpportunityService : IOpportunityService
         return _mapper.Map<IEnumerable<OpportunityDTO>>(opportunities);
     }
 
+    public async Task<(int Count, decimal? EstimatedValue)> GetCountAndEstimatedValueAsync()
+    {
+        return await _opportunityRepository.GetCountAndEstimatedValueAsync();
+    }
+
+
     public async Task<OpportunityDTO> GetByIdAsync(Guid id)
     {
         var opportunity = await _opportunityRepository.GetOpportunityByIdAsync(id);

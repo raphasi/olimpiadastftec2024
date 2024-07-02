@@ -249,6 +249,25 @@
                 $sidebar = $('.sidebar');
                 $navbar = $('.navbar');
                 $main_panel = $('.main-panel');
+                $('body').removeClass('sidebar-mini');
+
+                var new_color = "blue";
+
+                if ($sidebar.length != 0) {
+                    $sidebar.attr('data', new_color);
+                }
+
+                if ($main_panel.length != 0) {
+                    $main_panel.attr('data', new_color);
+                }
+
+                if ($full_page.length != 0) {
+                    $full_page.attr('filter-color', new_color);
+                }
+
+                if ($sidebar_responsive.length != 0) {
+                    $sidebar_responsive.attr('data', new_color);
+                }
 
                 $full_page = $('.full-page');
 

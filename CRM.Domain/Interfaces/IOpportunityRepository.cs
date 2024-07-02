@@ -13,4 +13,5 @@ public interface IOpportunityRepository
     Task DeleteOpportunityAsync(Guid opportunityId);
     Task<IEnumerable<Opportunity>> SearchAsync(string query);
     Task<IEnumerable<Opportunity>> GetTop10Async();
+    Task<(int Count, decimal? EstimatedValue)> GetCountAndEstimatedValueAsync();
 }

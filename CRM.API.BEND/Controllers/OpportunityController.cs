@@ -176,6 +176,22 @@ namespace CRM.API.BEND.Controllers
             }
         }
 
+        [HttpGet("count-and-estimated-value")]
+        [ProducesResponseType(typeof((int Count, decimal EstimatedValue)), 200)]
+        public async Task<ActionResult<(int Count, decimal EstimatedValue)>> GetCountAndEstimatedValue()
+        {
+            try
+            {
+                var result = await _opportunityService.GetCountAndEstimatedValueAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter contagem e valor estimado das oportunidades.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<OpportunityDTO>>> SearchAsync([FromQuery] string query = null)
         {
