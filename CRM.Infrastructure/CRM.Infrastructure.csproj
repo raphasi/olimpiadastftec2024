@@ -8,6 +8,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20240620154300_create-database.cs" />
+    <Compile Remove="Migrations\20240620154300_create-database.Designer.cs" />
+    <Compile Remove="Migrations\20240623192910_ajuste_quote_opp.cs" />
+    <Compile Remove="Migrations\20240623192910_ajuste_quote_opp.Designer.cs" />
+    <Compile Remove="Migrations\20240623234426_ajuste_quote_opp2.cs" />
+    <Compile Remove="Migrations\20240623234426_ajuste_quote_opp2.Designer.cs" />
+    <Compile Remove="Migrations\20240624015436_ajuste_order.cs" />
+    <Compile Remove="Migrations\20240624015436_ajuste_order.Designer.cs" />
+    <Compile Remove="Migrations\20240624040014_criar_carrinho_compra.cs" />
+    <Compile Remove="Migrations\20240624040014_criar_carrinho_compra.Designer.cs" />
+    <Compile Remove="Migrations\20240624165539_criar_product_event.cs" />
+    <Compile Remove="Migrations\20240624165539_criar_product_event.Designer.cs" />
+    <Compile Remove="Migrations\20240625020154_ajustes_identity.cs" />
+    <Compile Remove="Migrations\20240625020154_ajustes_identity.Designer.cs" />
+    <Compile Remove="Migrations\20240625165925_ajuste_identity_fullname.cs" />
+    <Compile Remove="Migrations\20240625165925_ajuste_identity_fullname.Designer.cs" />
+    <Compile Remove="Migrations\20240626061825_ajuste_identity_sid.cs" />
+    <Compile Remove="Migrations\20240626061825_ajuste_identity_sid.Designer.cs" />
+    <Compile Remove="Migrations\20240627061101_ajuste_evento_img.cs" />
+    <Compile Remove="Migrations\20240627061101_ajuste_evento_img.Designer.cs" />
+    <Compile Remove="Migrations\20240630022523_ajuste_orderitem.cs" />
+    <Compile Remove="Migrations\20240630022523_ajuste_orderitem.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CRM.Domain\CRM.Domain.csproj" />
   </ItemGroup>
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRM.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240624165539_criar_product_event")]
-    partial class criar_product_event
+    [Migration("20240702133108_crm_tfcode_db_initial")]
+    partial class crm_tfcode_db_initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -233,6 +233,11 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<DateTime?>("EventDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("Location")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -427,6 +432,9 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("QuoteID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int?>("StatusCode")
                         .HasColumnType("int");
 
@@ -597,6 +605,12 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<Guid?>("OpportunityID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("OrderID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OrderItemID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PriceLevelID")
                         .HasColumnType("uniqueidentifier");
 
@@ -614,7 +628,11 @@ namespace CRM.Infrastructure.Migrations
 
                     b.HasKey("QuoteID");
 
+                    b.HasIndex("CustomerID");
+
                     b.HasIndex("EventID");
+
+                    b.HasIndex("LeadID");
 
                     b.HasIndex("OpportunityID");
 
@@ -644,6 +662,12 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("LeadID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -658,6 +682,9 @@ namespace CRM.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<Guid?>("ObjectID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -667,11 +694,23 @@ namespace CRM.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SecurityIdentifierString")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -902,7 +941,7 @@ namespace CRM.Infrastructure.Migrations
                     b.HasOne("CRM.Domain.Entities.Product", "Product")
                         .WithMany("Events")
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Product");
                 });
@@ -972,10 +1011,18 @@ namespace CRM.Infrastructure.Migrations
 
             modelBuilder.Entity("CRM.Domain.Entities.Quote", b =>
                 {
+                    b.HasOne("CRM.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerID");
+
                     b.HasOne("CRM.Domain.Entities.Event", "Event")
                         .WithMany("Quotes")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CRM.Domain.Entities.Lead", "Lead")
+                        .WithMany()
+                        .HasForeignKey("LeadID");
 
                     b.HasOne("CRM.Domain.Entities.Opportunity", "Opportunity")
                         .WithMany("Quotes")
@@ -992,7 +1039,11 @@ namespace CRM.Infrastructure.Migrations
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.Navigation("Customer");
+
                     b.Navigation("Event");
+
+                    b.Navigation("Lead");
 
                     b.Navigation("Opportunity");
 

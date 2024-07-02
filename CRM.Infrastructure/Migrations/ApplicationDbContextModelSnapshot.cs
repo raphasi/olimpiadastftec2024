@@ -625,7 +625,11 @@ namespace CRM.Infrastructure.Migrations
 
                     b.HasKey("QuoteID");
 
+                    b.HasIndex("CustomerID");
+
                     b.HasIndex("EventID");
+
+                    b.HasIndex("LeadID");
 
                     b.HasIndex("OpportunityID");
 
@@ -1004,10 +1008,18 @@ namespace CRM.Infrastructure.Migrations
 
             modelBuilder.Entity("CRM.Domain.Entities.Quote", b =>
                 {
+                    b.HasOne("CRM.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerID");
+
                     b.HasOne("CRM.Domain.Entities.Event", "Event")
                         .WithMany("Quotes")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("CRM.Domain.Entities.Lead", "Lead")
+                        .WithMany()
+                        .HasForeignKey("LeadID");
 
                     b.HasOne("CRM.Domain.Entities.Opportunity", "Opportunity")
                         .WithMany("Quotes")
@@ -1024,7 +1036,11 @@ namespace CRM.Infrastructure.Migrations
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.Navigation("Customer");
+
                     b.Navigation("Event");
+
+                    b.Navigation("Lead");
 
                     b.Navigation("Opportunity");
 

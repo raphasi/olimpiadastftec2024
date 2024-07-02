@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CRM.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class createdatabase : Migration
+    public partial class crm_tfcode_db_initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,13 @@ namespace CRM.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LeadID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ObjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SecurityIdentifierString = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -48,6 +55,23 @@ namespace CRM.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    CartID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.CartID);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,6 +276,7 @@ namespace CRM.Infrastructure.Migrations
                 columns: table => new
                 {
                     OpportunityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CustomerID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LeadID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -281,6 +306,37 @@ namespace CRM.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    CartItemID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CartID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.CartItemID);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Carts_CartID",
+                        column: x => x.CartID,
+                        principalTable: "Carts",
+                        principalColumn: "CartID");
+                    table.ForeignKey(
+                        name: "FK_CartItems_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "ProductID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Events",
                 columns: table => new
                 {
@@ -291,6 +347,7 @@ namespace CRM.Infrastructure.Migrations
                     EventDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     TicketPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -304,8 +361,7 @@ namespace CRM.Infrastructure.Migrations
                         name: "FK_Events_Products_ProductID",
                         column: x => x.ProductID,
                         principalTable: "Products",
-                        principalColumn: "ProductID",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ProductID");
                 });
 
             migrationBuilder.CreateTable(
@@ -338,6 +394,7 @@ namespace CRM.Infrastructure.Migrations
                 {
                     OrderID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OpportunityID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    QuoteID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -357,6 +414,36 @@ namespace CRM.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductEvents",
+                columns: table => new
+                {
+                    ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductEvents", x => new { x.ProductID, x.EventID });
+                    table.ForeignKey(
+                        name: "FK_ProductEvents_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "EventID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductEvents_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "ProductID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Quotes",
                 columns: table => new
                 {
@@ -365,9 +452,14 @@ namespace CRM.Infrastructure.Migrations
                     ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PriceLevelID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     EventID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LeadID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CustomerID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderItemID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -378,10 +470,20 @@ namespace CRM.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Quotes", x => x.QuoteID);
                     table.ForeignKey(
+                        name: "FK_Quotes_Customers_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerID");
+                    table.ForeignKey(
                         name: "FK_Quotes_Events_EventID",
                         column: x => x.EventID,
                         principalTable: "Events",
                         principalColumn: "EventID");
+                    table.ForeignKey(
+                        name: "FK_Quotes_Leads_LeadID",
+                        column: x => x.LeadID,
+                        principalTable: "Leads",
+                        principalColumn: "LeadID");
                     table.ForeignKey(
                         name: "FK_Quotes_Opportunities_OpportunityID",
                         column: x => x.OpportunityID,
@@ -441,6 +543,7 @@ namespace CRM.Infrastructure.Migrations
                     OrderItemID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    QuoteID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -510,6 +613,16 @@ namespace CRM.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_CartID",
+                table: "CartItems",
+                column: "CartID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_ProductID",
+                table: "CartItems",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Events_ProductID",
                 table: "Events",
                 column: "ProductID");
@@ -555,9 +668,24 @@ namespace CRM.Infrastructure.Migrations
                 column: "OpportunityID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductEvents_EventID",
+                table: "ProductEvents",
+                column: "EventID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_CustomerID",
+                table: "Quotes",
+                column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Quotes_EventID",
                 table: "Quotes",
                 column: "EventID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_LeadID",
+                table: "Quotes",
+                column: "LeadID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quotes_OpportunityID",
@@ -594,10 +722,16 @@ namespace CRM.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CartItems");
+
+            migrationBuilder.DropTable(
                 name: "Notes");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "ProductEvents");
 
             migrationBuilder.DropTable(
                 name: "Quotes");
@@ -607,6 +741,9 @@ namespace CRM.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Activities");
