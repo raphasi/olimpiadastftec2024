@@ -22,6 +22,8 @@ public sealed class Quote : Entity
 
     //Navigation properties
     public Opportunity Opportunity { get; set; }
+    public Customer Customer { get; set; }
+    public Lead Lead { get; set; }
     public Product Product { get; set; }
     public PriceLevel PriceLevel { get; set; }
     public Event Event { get; set; } // Adicionada a propriedade de navegação para Event

@@ -12,8 +12,20 @@ namespace CRM.Application.Mappings
             // Mapeamento de Quote para QuoteDTO e vice-versa
             CreateMap<Quote, QuoteDTO>().ReverseMap();
 
+            // Mapeamento de Quote para QuoteDTO e vice-versa
+            CreateMap<QuoteDTO, Quote>().ReverseMap()
+                .ForMember(x => x.NameProduct, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(x => x.LeadName, opt => opt.MapFrom(src => src.Lead.FullName))
+                .ForMember(x => x.NameEvento, opt => opt.MapFrom(src => src.Event.Name))
+                .ForMember(x => x.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
+                .ForMember(x => x.NameOpp, opt => opt.MapFrom(src => src.Opportunity.Name));
+
             // Mapeamento de Opportunity para OpportunityDTO e vice-versa
             CreateMap<Opportunity, OpportunityDTO>().ReverseMap();
+            // Mapeamento de Quote para QuoteDTO e vice-versa
+            CreateMap<OpportunityDTO, Opportunity>().ReverseMap()
+                .ForMember(x => x.LeadName, opt => opt.MapFrom(src => src.Lead.FullName))
+                .ForMember(x => x.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName));
 
             // Mapeamento de Product para ProductDTO e vice-versa
             CreateMap<Product, ProductDTO>().ReverseMap();

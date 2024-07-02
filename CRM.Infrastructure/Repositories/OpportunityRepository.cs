@@ -24,7 +24,10 @@ namespace CRM.Infrastructure.Repositories
 
         public async Task<IEnumerable<Opportunity>> GetAllOpportunitiesAsync()
         {
-            return await _opportunityContext.Set<Opportunity>().ToListAsync();
+            return await _opportunityContext.Set<Opportunity>()
+                .Include(c => c.Lead)
+                .Include(c => c.Customer)
+                .ToListAsync();
         }
 
         public async Task AddOpportunityAsync(Opportunity opportunityEntity)

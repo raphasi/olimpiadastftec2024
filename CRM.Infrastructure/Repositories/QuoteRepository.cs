@@ -32,7 +32,13 @@ namespace CRM.Infrastructure.Repositories
 
         public async Task<IEnumerable<Quote>> GetAllQuotesAsync()
         {
-            return await _quoteContext.Set<Quote>().ToListAsync();
+            return await _quoteContext.Set<Quote>()
+                .Include(c => c.Lead)
+                .Include(c => c.Customer)
+                .Include(c => c.Product)
+                .Include(c => c.Event)
+                .Include(c => c.Opportunity)
+                .ToListAsync();
         }
 
         public async Task AddQuoteAsync(Quote quoteEntity)

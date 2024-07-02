@@ -33,6 +33,9 @@ public class OpportunityDTO
     public DateTime? ModifiedOn { get; set; }
     public int? StatusCode { get; set; }
 
+    public string? LeadName { get; set; }
+    public string? CustomerName { get; set; }
+    
     // Navigation properties
     //public CustomerDTO Customer { get; set; }
     //public LeadDTO Lead { get; set; }

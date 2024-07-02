@@ -51,4 +51,7 @@ public class QuoteDTO
     public DateTime? CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
     public int? StatusCode { get; set; }
+
+    public string? LeadName { get; set; }
+    public string? CustomerName { get; set; }
 }

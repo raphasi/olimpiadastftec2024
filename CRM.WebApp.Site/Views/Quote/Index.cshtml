@@ -24,8 +24,8 @@
                         <thead>
                             <tr>
                                 <th>Oportunidade</th>
+                                <th>Lead</th>
                                 <th>Produto</th>
-                                <th>Nível de Preço</th>
                                 <th>Evento</th>
                                 <th>Quantidade</th>
                                 <th>Desconto</th>
@@ -37,13 +37,14 @@
                             @foreach (var quote in Model)
                             {
                                 <tr>
-                                    <td>@quote.OpportunityID</td>
-                                    <td>@quote.ProductID</td>
-                                    <td>@quote.PriceLevelID</td>
-                                    <td>@quote.EventID</td>
+                                    <td>@quote.NameOpp</td>
+                                    <td>@quote.LeadName</td>
+                                    <td>@quote.NameProduct</td>
+                                    <td>@quote.NameEvento</td>
                                     <td>@quote.Quantity</td>
                                     <td>@quote.Discount</td>
-                                    <td>@quote.TotalPrice</td>
+                                    <td>@quote.TotalPrice.ToString("C")</td>
+                                    <td>@quote.ModifiedOn?.ToString("dd/MM/yyyy")</td>
                                     <td class="text-right">
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = quote.QuoteID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Cotação">
                                             <i class="tim-icons icon-pencil"></i>

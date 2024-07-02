@@ -35,7 +35,7 @@
                                 <tr>
                                     <td>@opportunity.Description</td>
                                     <td>@opportunity.EstimatedValue</td>
-                                    <td>@opportunity.ExpectedCloseDate?.ToString("dd/MM/yyyy")</td>
+                                    <td>@opportunity.ExpectedCloseDate.ToString("dd/MM/yyyy")</td>
                                     <td class="text-right">
                                         <a class="btn btn-link btn-warning btn-icon btn-sm edit" href="@Url.Action("Details", new { id = opportunity.OpportunityID })" data-toggle="tooltip" title="Detalhes" aria-label="Detalhes da Oportunidade">
                                             <i class="tim-icons icon-pencil"></i>
