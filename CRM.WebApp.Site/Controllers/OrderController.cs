@@ -23,6 +23,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync("api/order");
             response.EnsureSuccessStatusCode();
 
@@ -34,6 +35,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/order/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -59,6 +61,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 var response = await client.PostAsJsonAsync("api/order", orderViewModel);
                 response.EnsureSuccessStatusCode();
 
@@ -71,6 +74,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/order/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -95,6 +99,7 @@ namespace CRM.WebApp.Site.Controllers
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
+                PutTokenInHeaderAuthorization(GetAccessToken(), client);
                 UpdateEntity(orderViewModel);
                 var response = await client.PutAsJsonAsync($"api/order/{id}", orderViewModel);
                 if (!response.IsSuccessStatusCode)
@@ -111,6 +116,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.GetAsync($"api/order/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -127,6 +133,7 @@ namespace CRM.WebApp.Site.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
             var response = await client.DeleteAsync($"api/order/{id}");
             if (!response.IsSuccessStatusCode)
             {

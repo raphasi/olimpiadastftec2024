@@ -114,7 +114,10 @@ public class AuthController : ControllerBase
         if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
         {
             var tokenResponse = await GenerateTokenResponse(user);
-            return Ok(tokenResponse);
+            if (tokenResponse.UserInfo.Roles.Contains("AdminMaster"))
+            {
+                return Ok(tokenResponse);
+            }
         }
 
         // Validação no Active Directory
@@ -122,28 +125,45 @@ public class AuthController : ControllerBase
         if (ldapService.ValidateUser(model.Email!, model.Password!) && ldapService.IsUserInGroup(model.Email!))
         {
             var objectId = ldapService.GetUserObjectId(model.Email!);
-
-            if (user == null)
-            {
-                user = new ApplicationUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    SecurityIdentifierString = objectId
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password!);
-                if (!result.Succeeded)
-                {
-                    return BadRequest("Erro ao criar o usuário.");
-                }
-            }
+            user = await EnsureUserExists(user, model.Email!, model.Password!, objectId);
 
             var tokenResponse = await GenerateTokenResponse(user);
             return Ok(tokenResponse);
         }
 
         return Unauthorized();
+    }
+
+    private async Task<ApplicationUser> EnsureUserExists(ApplicationUser? user, string email, string password, string objectId)
+    {
+        if (user == null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                SecurityIdentifierString = objectId
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Erro ao criar o usuário.");
+            }
+        }
+        else
+        {
+            var passwordHasher = new PasswordHasher<IdentityUser>();
+            user.PasswordHash = passwordHasher.HashPassword(user, password);
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Erro ao atualizar o usuário.");
+            }
+        }
+
+        return user;
     }
 
     [HttpPost("register")]
