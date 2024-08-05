@@ -89,7 +89,7 @@ namespace CRM.WebApp.Site.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PostAsJsonAsync("api/auth/login_ad", model);
+                var response = await client.PostAsJsonAsync("api/auth/loginAzureAD", model);
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -7,6 +7,12 @@
       "ignored": "true",
       "type": "mssql",
       "connectionId": "ConnectionStrings:DefaultConnection"
+    },
+    "identityapp1": {
+      "connectionInfo": "App registration: CRMApp, Tenant: Diretório Padrão (olimpiadastftec2024.shop - Microsoft Entra ID)",
+      "secretStore": "LocalSecretsFile",
+      "type": "identityapp.secretStore",
+      "connectionId": "AzureAD:ClientSecret"
     }
   }
 }
