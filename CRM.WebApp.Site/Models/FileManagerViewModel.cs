@@ -1,6 +1,6 @@
 ﻿namespace CRM.WebApp.Site.Models
 {
-    public class FileManagerViewModel
+    public class FileManagerViewModel : EntityBase
     {
         public FileInfo[] Files { get; set; }
         public IFormFile IFormFile { get; set; }

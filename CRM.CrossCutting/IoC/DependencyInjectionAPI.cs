@@ -13,6 +13,8 @@ using CRM.Application.Mappings;
 using CRM.Infrastructure.Identity;
 using CRM.Domain.Account;
 using System.Text.Json.Serialization;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Azure;
 
 namespace CRM.CrossCutting.IoC;
 
@@ -27,6 +29,14 @@ public static class DependencyInjectionAPI
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString,
             b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+        // Configuração do Azure Blob Storage
+        services.Configure<ConfigurationImagens>(configuration.GetSection("AzureBlobStorage"));
+        //services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorage:ConnectionString")));
+
+        services.AddAzureClients(conn => conn.AddBlobServiceClient(configuration.GetValue<string>("AzureBlobStorage:ConnectionString")));
+
+        services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorage:ConnectionString")));
 
         // Configuração do Identity
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -52,6 +62,7 @@ public static class DependencyInjectionAPI
         services.AddScoped<IPriceLevelRepository, PriceLevelRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IQuoteRepository, QuoteRepository>();
+        services.AddScoped<IBlobStorageService, BlobStorageService>();
 
         // Registro de Serviços
         services.AddScoped<IActivityService, ActivityService>();

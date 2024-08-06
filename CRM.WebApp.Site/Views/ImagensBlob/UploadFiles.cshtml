@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Upload de Arquivos";
+}
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2>Upload de Arquivos</h2>
+                <p>Nesta seção, você pode fazer upload de arquivos e visualizar os resultados.</p>
+            </div>
+            <div class="card-body text-center">
+                <img src="~/assets/img/image_placeholder.jpg" width="250" height="200" asp-append-version="true" class="img-thumbnail mb-3" />
+                <hr />
+                @if (ViewData["Erro"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <strong>@ViewData["Erro"]</strong>
+                    </div>
+                }
+                @if (ViewData["Resultado"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        <h4>@ViewData["Resultado"]</h4>
+                    </div>
+                    <hr />
+                    @if (ViewBag.Arquivos != null)
+                    {
+                        <div class="table-responsive ps">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>Nome do Arquivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var arquivo in ViewBag.Arquivos)
+                                    {
+                                        <tr>
+                                            <td>@arquivo</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+                <div class="form-group mt-3">
+                    <a class="btn btn-outline-info" asp-controller="Imagens" asp-action="GetImagens">Exibir Imagens</a>
+                </div>
+                <div class="form-group mt-3">
+                    <a class="btn btn-outline-secondary" asp-controller="Imagens" asp-action="Index">Retornar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
