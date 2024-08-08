@@ -16,6 +16,7 @@ namespace CRM.API.BEND.Controllers
         private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
 
+
         public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
             _productService = productService;

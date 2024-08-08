@@ -6,6 +6,7 @@ using CRM.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Microsoft.Extensions.Options;
 
 namespace CRM.Application.Services;
 
@@ -13,22 +14,31 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly string _content_url_blob;
 
-    public ProductService(IProductRepository productRepository, IMapper mapper)
+    public ProductService(IProductRepository productRepository, IMapper mapper, IOptions<ConfigurationImagens> options)
     {
         _productRepository = productRepository;
         _mapper = mapper;
+        _content_url_blob = options.Value.content_url;
     }
 
     public async Task<IEnumerable<ProductDTO>> GetAllAsync()
     {
         var products = await _productRepository.GetAllProductsAsync();
+
+        foreach (var item in products)
+        {
+            item.ImageUrl = _content_url_blob + "/" + item.ImageUrl;
+        }
+
         return _mapper.Map<IEnumerable<ProductDTO>>(products);
     }
 
     public async Task<ProductDTO> GetByIdAsync(Guid id)
     {
         var product = await _productRepository.GetProductByIdAsync(id);
+        product.ImageUrl = _content_url_blob + "/" + product.ImageUrl;
         return _mapper.Map<ProductDTO>(product);
     }
 

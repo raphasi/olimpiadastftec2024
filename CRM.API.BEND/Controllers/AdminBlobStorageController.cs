@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CRM.API.BEND.Controllers
 {
@@ -84,11 +85,12 @@ namespace CRM.API.BEND.Controllers
         [HttpDelete("{uri}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> DeleteBlob(string uri)
+        public async Task<ActionResult> Deletefile(string uri)
         {
             try
             {
-                var blobName = Path.GetFileName(new Uri(uri).LocalPath);
+                var decodeUri = HttpUtility.UrlDecode(uri);
+                var blobName = Path.GetFileName(new Uri(decodeUri).LocalPath);
                 await _blobStorageService.DeleteBlobAsync(blobName);
                 return NoContent();
             }

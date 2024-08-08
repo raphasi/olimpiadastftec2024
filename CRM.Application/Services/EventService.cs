@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CRM.Application.Services
 {
@@ -17,13 +18,15 @@ namespace CRM.Application.Services
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<EventService> _logger;
+        private readonly string _content_url_blob;
 
-        public EventService(IEventRepository eventRepository, IProductRepository productRepository, IMapper mapper, ILogger<EventService> logger)
+        public EventService(IEventRepository eventRepository, IProductRepository productRepository, IMapper mapper, ILogger<EventService> logger, IOptions<ConfigurationImagens> options)
         {
             _eventRepository = eventRepository;
             _productRepository = productRepository;
             _mapper = mapper;
             _logger = logger;
+            _content_url_blob = options.Value.content_url;
         }
 
         public async Task<IEnumerable<EventDTO>> GetAllAsync()
@@ -33,6 +36,7 @@ namespace CRM.Application.Services
             foreach (var eventDto in eventDtos)
             {
                 var eventEntity = events.First(e => e.EventID == eventDto.EventID);
+                eventDto.ImageUrl = _content_url_blob + "/" + eventDto.ImageUrl;
                 if (eventEntity.ProductEvents != null)
                     eventDto.SelectedProductIds = eventEntity.ProductEvents.Select(pe => pe.ProductID).ToList();
             }

@@ -9,7 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Numerics;
+using System.Reflection.Metadata;
+using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CRM.WebApp.Site.Controllers
 {
@@ -29,8 +33,8 @@ namespace CRM.WebApp.Site.Controllers
         {
             try
             {
-                var blobs = await GetBlobsAsync();
-                return View(blobs);
+                //var blobs = await GetBlobsAsync();
+                return View();
             }
             catch (Exception ex)
             {
@@ -70,7 +74,7 @@ namespace CRM.WebApp.Site.Controllers
                     }
                 }
 
-                var response = await client.PostAsync("api/blobstorage/upload", content);
+                var response = await client.PostAsync("api/adminblobstorage/upload", content);
                 response.EnsureSuccessStatusCode();
 
                 ViewData["Resultado"] = $"{files.Count} arquivos foram enviados ao servidor.";
@@ -102,14 +106,18 @@ namespace CRM.WebApp.Site.Controllers
             }
         }
 
-        public async Task<IActionResult> Deletefile(string uri)
+
+        public async Task<IActionResult> DeleteImage(string uri)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
                 PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
-                var response = await client.DeleteAsync($"api/blobstorage/{uri}");
+                // Codificar a URL para passá-la como um parâmetro de consulta
+                var encodedUri = HttpUtility.UrlEncode(uri);
+
+                var response = await client.DeleteAsync($"api/adminblobstorage/{encodedUri}");
                 response.EnsureSuccessStatusCode();
 
                 ViewData["Deletado"] = $"Arquivo {uri} deletado com sucesso";
@@ -123,6 +131,17 @@ namespace CRM.WebApp.Site.Controllers
             }
         }
 
+        private string ExtractBlobNameFromUri(string uri)
+        {
+            // Extrair o nome do blob da URL completa
+            if (Uri.TryCreate(uri, UriKind.Absolute, out var blobUri))
+            {
+                return blobUri.AbsolutePath.TrimStart('/');
+            }
+
+            throw new ArgumentException("URI do blob inválida", nameof(uri));
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteAll()
         {
@@ -131,7 +150,7 @@ namespace CRM.WebApp.Site.Controllers
                 var client = _httpClientFactory.CreateClient("CRM.API");
                 PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
-                var response = await client.PostAsync("api/blobstorage/delete-all", null);
+                var response = await client.PostAsync("api/adminblobstorage/delete-all", null);
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
@@ -149,7 +168,7 @@ namespace CRM.WebApp.Site.Controllers
             var client = _httpClientFactory.CreateClient("CRM.API");
             PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
-            var response = await client.GetAsync("api/blobstorage");
+            var response = await client.GetAsync("api/adminblobstorage");
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<IEnumerable<Uri>>();

@@ -13,7 +13,7 @@
                     <img src="~/assets/img/image_placeholder.jpg" width="250" height="200" asp-append-version="true" />
                 </div>
                 <hr />
-                <form method="post" enctype="multipart/form-data" asp-controller="Imagens" asp-action="UploadFiles">
+                <form method="post" enctype="multipart/form-data" asp-controller="ImagensBlob" asp-action="UploadFiles">
                     <div class="form-group">
                         <label for="files"><b>CLIQUE AQUI PARA ENVIAR OS ARQUIVOS</b></label>
                         <p>(Arquivos com o mesmo nome serão sobrescritos)</p>
@@ -35,7 +35,7 @@
                     <img src="~/assets/img/server.jpg" width="300" height="200" />
                 </div>
                 <hr />
-                <form method="post" enctype="multipart/form-data" asp-controller="Imagens" asp-action="GetImagens">
+                <form method="post" enctype="multipart/form-data" asp-controller="ImagensBlob" asp-action="GetImagens">
                     <div class="form-group text-center">
                         <label><strong>Visualizar Imagens na pasta do servidor:</strong></label>
                     </div>

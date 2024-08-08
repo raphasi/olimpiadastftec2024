@@ -3,6 +3,7 @@ using CRM.Application.DTOs;
 using CRM.Application.Interfaces;
 using CRM.Domain.Entities;
 using CRM.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,11 +14,13 @@ namespace CRM.Application.Services
     {
         private readonly IProductEventRepository _productEventRepository;
         private readonly IMapper _mapper;
+        private readonly string _content_url_blob;
 
-        public ProductEventService(IProductEventRepository productEventRepository, IMapper mapper)
+        public ProductEventService(IProductEventRepository productEventRepository, IMapper mapper, IOptions<ConfigurationImagens> options)
         {
             _productEventRepository = productEventRepository;
             _mapper = mapper;
+            _content_url_blob = options.Value.content_url;
         }
 
         public async Task<ProductEventDTO> GetByIdAsync(Guid productEventId)
@@ -58,6 +61,7 @@ namespace CRM.Application.Services
 
             foreach (var productEvent in productEvents)
             {
+                productEvent.Product.ImageUrl = _content_url_blob + "/" + productEvent.Product.ImageUrl;
                 products.Add(_mapper.Map<ProductDTO>(productEvent.Product));
             }
 

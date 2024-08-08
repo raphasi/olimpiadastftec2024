@@ -9,4 +9,5 @@ namespace CRM.Domain.Entities;
 public class ConfigurationImagens
 {
     public string RepositorioBlob { get; set; }
+    public string content_url { get; set; }
 }
