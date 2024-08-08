@@ -15,5 +15,7 @@ namespace CRM.Application.Interfaces
         JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims, IConfiguration _config);
         string GenerateRefreshToken();
         ClaimsPrincipal GetClaimsPrincipalFromExpiredToken(string token, IConfiguration _config);
+
+        Task<string> AcquireTokenByUsernamePasswordAsync(string email, string password, string clienteId, string _tenantId, string apiScope);
     }
 }

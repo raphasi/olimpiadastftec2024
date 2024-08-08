@@ -1,11 +1,13 @@
 ﻿using CRM.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -68,6 +70,48 @@ namespace CRM.Application.Services
                 throw new SecurityTokenException("Token Inválido");
             }
             return principal;
+        }
+
+        public async Task<string> AcquireTokenByUsernamePasswordAsync(string email, string password, string clienteId, string _tenantId, string apiScope)
+        {
+            try
+            {
+                var publicClient = PublicClientApplicationBuilder.Create(clienteId)
+                    .WithAuthority(new Uri($"https://login.microsoftonline.com/{_tenantId}"))
+                    .Build();
+
+                var result = await publicClient.AcquireTokenByUsernamePassword(
+                    new[] { apiScope },
+                    email,
+                    new NetworkCredential("", password).SecurePassword
+                ).ExecuteAsync();
+
+                return result.AccessToken;
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // Erro específico do MSAL quando é necessária uma interação do usuário
+                Console.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                throw new Exception("Interação do usuário necessária. Verifique as permissões e consentimentos.");
+            }
+            catch (MsalServiceException ex)
+            {
+                // Erro específico do serviço MSAL
+                Console.WriteLine($"MsalServiceException: {ex.Message}");
+                throw new Exception("Erro no serviço de autenticação. Verifique as configurações do Azure AD.");
+            }
+            catch (MsalClientException ex)
+            {
+                // Erro específico do cliente MSAL
+                Console.WriteLine($"MsalClientException: {ex.Message}");
+                throw new Exception("Erro no cliente de autenticação. Verifique as credenciais e configurações.");
+            }
+            catch (Exception ex)
+            {
+                // Outros erros
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw new Exception("Erro desconhecido. Verifique as configurações e tente novamente.");
+            }
         }
     }
 }

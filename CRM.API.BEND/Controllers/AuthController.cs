@@ -7,8 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
+using Microsoft.Identity.Client;
+using Newtonsoft.Json.Linq;
 
 namespace CRM.API.BEND.Controllers;
 
@@ -275,6 +279,58 @@ public class AuthController : ControllerBase
             AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
             RefreshToken = newRefreshToken
         });
+    }
+
+    [HttpPost("loginAzureAD")]
+    public async Task<IActionResult> LoginAzureAD([FromBody] LoginDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email!);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
+            {
+                var tokenResponse = await GenerateTokenResponse(user);
+                if (tokenResponse.UserInfo.Roles.Contains("AdminMaster"))
+                {
+                    return Ok(tokenResponse);
+                }
+            }
+
+            var authService = new TokenService();
+            var accessToken = await authService.AcquireTokenByUsernamePasswordAsync(model.Email, model.Password, _configuration["AzureAD:ClientId"], _configuration["AzureAD:TenantId"], _configuration["AzureAD:scopes"]);
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                var token = accessToken;
+                var handler = new JwtSecurityTokenHandler();
+                var jwtSecurityToken = handler.ReadJwtToken(token);
+
+                var objectId = jwtSecurityToken.Claims.First(claim => claim.Type == "oid").Value;
+
+                user = await EnsureUserExists(user, model.Email!, model.Password!, objectId);
+
+                var tokenResponse = await GenerateTokenResponse(user);
+                return Ok(tokenResponse);
+            }
+
+            return Ok(new
+            {
+                AccessToken = accessToken
+            });
+        }
+        catch (MsalUiRequiredException)
+        {
+            return Unauthorized("Invalid username or password.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
     [Authorize]
