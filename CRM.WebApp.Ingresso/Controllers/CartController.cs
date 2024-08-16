@@ -156,8 +156,10 @@ namespace CRM.WebApp.Ingresso.Controllers
             var response = await client.PatchAsync($"api/opportunity/{opportunityId}/update-field", JsonContent.Create(opportunityUpdate));
             response.EnsureSuccessStatusCode();
 
-            // Cancelar cotações
-            var quotes = await client.GetFromJsonAsync<IEnumerable<QuoteDTO>>($"api/opportunity/{opportunityId}/quotes");
+            // Obter as cotações vinculadas à oportunidade
+            response = await client.GetAsync($"api/quote/{opportunityId}/quotesopp");
+            response.EnsureSuccessStatusCode();
+            var quotes = await response.Content.ReadFromJsonAsync<IEnumerable<QuoteDTO>>();
             foreach (var quote in quotes)
             {
                 var quoteUpdate = new UpdateFieldDTO
