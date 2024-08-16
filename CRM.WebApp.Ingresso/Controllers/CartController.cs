@@ -140,6 +140,7 @@ namespace CRM.WebApp.Ingresso.Controllers
             HttpContext.Session.SetObjectAsJson("Cart", cart);
 
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
             // Obter o ID da oportunidade
             var opportunityId = Guid.Parse(HttpContext.Session.GetString("opportunity_id"));
@@ -155,8 +156,10 @@ namespace CRM.WebApp.Ingresso.Controllers
             var response = await client.PatchAsync($"api/opportunity/{opportunityId}/update-field", JsonContent.Create(opportunityUpdate));
             response.EnsureSuccessStatusCode();
 
-            // Cancelar cotações
-            var quotes = await client.GetFromJsonAsync<IEnumerable<QuoteDTO>>($"api/opportunity/{opportunityId}/quotes");
+            // Obter as cotações vinculadas à oportunidade
+            response = await client.GetAsync($"api/quote/{opportunityId}/quotesopp");
+            response.EnsureSuccessStatusCode();
+            var quotes = await response.Content.ReadFromJsonAsync<IEnumerable<QuoteDTO>>();
             foreach (var quote in quotes)
             {
                 var quoteUpdate = new UpdateFieldDTO
