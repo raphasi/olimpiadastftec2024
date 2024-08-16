@@ -140,6 +140,7 @@ namespace CRM.WebApp.Ingresso.Controllers
             HttpContext.Session.SetObjectAsJson("Cart", cart);
 
             var client = _httpClientFactory.CreateClient("CRM.API");
+            PutTokenInHeaderAuthorization(GetAccessToken(), client);
 
             // Obter o ID da oportunidade
             var opportunityId = Guid.Parse(HttpContext.Session.GetString("opportunity_id"));
