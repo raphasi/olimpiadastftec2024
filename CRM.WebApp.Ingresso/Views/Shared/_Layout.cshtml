@@ -64,6 +64,12 @@
                                         <p>Compras</p>
                                     </a>
                                 </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Opportunity" asp-action="Index">
+                                        <i class="tim-icons icon-paper"></i>
+                                        <p>Meus Pedidos e Compras</p>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -115,20 +121,52 @@
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navigation">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a asp-controller="Account" asp-action="Register" class="nav-link">
-                                    <i class="tim-icons icon-laptop"></i> Registrar
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-controller="Account" asp-action="Login" class="nav-link">
-                                    <i class="tim-icons icon-single-02"></i> Login
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    @{
+                        // Verifica se o cookie "access_token" está presente
+                        var accessToken = Context.Request.Cookies["access_token"];
+                        if (string.IsNullOrEmpty(accessToken))
+                        {
+                            <div class="collapse navbar-collapse" id="navigation">
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <a asp-controller="Account" asp-action="Register" class="nav-link">
+                                            <i class="tim-icons icon-laptop"></i> Registrar
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Account" asp-action="Login" class="nav-link">
+                                            <i class="tim-icons icon-single-02"></i> Login
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="collapse navbar-collapse" id="navigation">
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="dropdown nav-item">
+                                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                            <div class="photo">
+                                                <img src="~/assets/img/default-avatar.png" alt="Profile Photo">
+                                            </div>
+                                            <b class="caret d-none d-lg-block d-xl-block"></b>
+                                            <p class="d-lg-none">
+                                                Log out
+                                            </p>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-navbar">
+                                            <li class="nav-link">
+                                                <a asp-area="" asp-controller="Account" asp-action="Logout" class="nav-item dropdown-item">Log out</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="separator d-lg-none"></li>
+                                </ul>
+                            </div>
+
+                        }
+                    }
                 </div>
             </nav>
 

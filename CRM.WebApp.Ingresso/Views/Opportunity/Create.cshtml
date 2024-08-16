@@ -1,0 +1,145 @@
+﻿@model             OpportunityViewModel
+
+@{
+    ViewData["Title"] = Model.OpportunityID == Guid.Empty ? "Criar Oportunidade" : "Editar Oportunidade";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Opportunity</h4>
+<hr />
+<form asp-action="@(Model.OpportunityID == Guid.Empty ? "Create" : "Edit")" method="post">
+    <input type="hidden" asp-for="OpportunityID" name="OpportunityID" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Infos registro</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Criação</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedOn" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Data de Modificação</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedOn" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Criado por</label>
+                        <div class="form-group">
+                            <input asp-for="CreatedByName" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label">Modificado por</label>
+                        <div class="form-group">
+                            <input asp-for="ModifiedByName" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Status da Oportunidade</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select asp-for="StatusCode" class="selectpicker" data-size="7" data-style="btn btn-primary" title="Single Select">
+                            <option disabled selected>Status</option>
+                            <option value="1">Ativo</option>
+                            <option value="2">Inativo</option>
+                            <option value="4">Ganha</option>
+                            <option value="5">Perdido</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Informações da Oportunidade</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label asp-for="Name" class="col-sm-2 col-form-label">Nome Opp</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="Description" class="col-sm-2 col-form-label">Descrição</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="Description" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="EstimatedValue" class="col-sm-2 col-form-label">Valor Estimado</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="EstimatedValue" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="ExpectedCloseDate" class="col-sm-2 col-form-label">Data de Fechamento</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <input asp-for="ExpectedCloseDate" class="form-control datetimepicker" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="CustomerID" class="col-sm-2 col-form-label">Cliente</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <select id="customerSelect" asp-for="CustomerID" class="form-control" data-url="/customer/search">
+                                            <option value="">Selecione um Cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label asp-for="LeadID" class="col-sm-2 col-form-label">Lead</label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <select id="leadSelect" asp-for="LeadID" class="form-control" data-url="/lead/search">
+                                            <option value="">Selecione um Cliente Potencial</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a class="btn btn-secondary" asp-action="Index">Voltar</a>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

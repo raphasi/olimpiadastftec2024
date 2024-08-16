@@ -32,7 +32,6 @@ public static class DependencyInjectionEntraId
             options.SupportedUICultures = supportedCultures;
         });
 
-
         // Configuração de Autorização
         services.AddAuthorization(options =>
         {
@@ -41,41 +40,35 @@ public static class DependencyInjectionEntraId
             // Adicione outras políticas conforme necessário
         });
 
-        // Configura o esquema de autenticação JWT-Bearer
-        services.AddAuthentication(opt =>
+        // Configura o esquema de autenticação
+        services.AddAuthentication(options =>
         {
-            opt.DefaultScheme = AzureADDefaults.AuthenticationScheme;
-        }).AddCookie(options =>
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer("AzureAD", options =>
         {
-            options.LoginPath = "/Account/Login"; // Caminho para a página de login
-            options.AccessDeniedPath = "/Account/AccessDenied"; // Caminho para a página de acesso negado
-        })            // Configura a validação do token JWT
-            .AddJwtBearer("AzureAD", options =>
+            options.Authority = configuration["AzureAD:Issuer"];
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        // Ler o token do cookie
-                        var token = context.Request.Cookies["access_token"];
-                        if (!string.IsNullOrEmpty(token))
-                        {
-                            context.Token = token;
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    // Valores válidos para a validação
-                    ValidIssuer = configuration["AzureAD:Issuer"],
-                    ValidAudience = configuration["AzureAD:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                    ClockSkew = TimeSpan.Zero // Elimina o tempo de tolerância padrão para expiração do token
-                };
-            });
+                ValidateIssuer = true,
+                ValidIssuer = configuration["AzureAD:Issuer"],
+                ValidAudience = configuration["AzureAD:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                ClockSkew = TimeSpan.Zero
+            };
+        })
+        .AddJwtBearer("AzureB2C", options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = configuration["AzureAdB2C:Issuer"],
+                ValidAudience = configuration["AzureAdB2C:ClientId"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
 
         // Adiciona o serviço CORS com uma política permissiva
         services.AddCors(options =>

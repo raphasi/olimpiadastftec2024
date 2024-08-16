@@ -9,8 +9,9 @@
       "connectionId": "ConnectionStrings:DefaultConnection"
     },
     "identityapp1": {
-      "connectionInfo": "App registration: CRMApp, Tenant: Diretório Padrão (olimpiadastftec2024.shop - Microsoft Entra ID)",
-      "secretStore": "LocalSecretsFile",
+      "connectionInfo": "App registration: INGRESSOAPP, Tenant: olimpiadas-b2c (olimpiadasb2c.onmicrosoft.com - AAD B2C)",
+      "secretStore": null,
+      "resourceId": null,
       "type": "identityapp.secretStore",
       "connectionId": "AzureAD:ClientSecret"
     }

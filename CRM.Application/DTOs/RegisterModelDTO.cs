@@ -22,6 +22,7 @@ namespace CRM.Application.DTOs
         public string? FullName { get; set; }
         [Required(ErrorMessage = "Telefone é obrigatório")]
         public string? PhoneNumber { get; set; }
+        public bool? IsMicrosoftAccount { get; set; }
 
     }
 }

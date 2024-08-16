@@ -8,8 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddInfrastructureAPI(builder.Configuration);
-//builder.Services.AddInfrastructureJWT(builder.Configuration);
-builder.Services.AddInfrastructureEntraId(builder.Configuration);
+builder.Services.AddInfrastructureJWT(builder.Configuration);
 builder.Services.AddInfrastructureSwagger();
 
 builder.Services.AddControllers();
@@ -27,12 +26,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CRM.API v1");
+    c.RoutePrefix = string.Empty; // Serve o Swagger UI na raiz
+});
 
 app.UseRouting();
 app.UseAuthentication();
+app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();

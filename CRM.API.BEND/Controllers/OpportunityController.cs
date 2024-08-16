@@ -49,6 +49,28 @@ namespace CRM.API.BEND.Controllers
             }
         }
 
+        [HttpGet("lead-opp/{leadid}")]
+        [ProducesResponseType(typeof(OpportunityDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<OpportunityDTO>> GetOpportunityByLeadId(Guid leadid)
+        {
+            try
+            {
+                var opportunity = await _opportunityService.GetByLeadIdAsync(leadid);
+                if (opportunity == null || opportunity.Count() == 0)
+                {
+                    _logger.LogWarning("Oportunidade com LeadID {OpportunityId} não encontrada.", leadid);
+                    return Ok(opportunity);
+                }
+                return Ok(opportunity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao obter oportunidade por ID.");
+                return StatusCode(500, "Erro interno do servidor.");
+            }
+        }
+
         [HttpPatch("{id}/update-field")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

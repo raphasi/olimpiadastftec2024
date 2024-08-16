@@ -40,6 +40,14 @@ public static class DependencyInjectionSwagger
                     Array.Empty<string>()
                 }
             });
+
+            // Adiciona suporte para comentários XML, se necessário
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (File.Exists(xmlPath))
+            {
+                c.IncludeXmlComments(xmlPath);
+            }
         });
 
         return services;

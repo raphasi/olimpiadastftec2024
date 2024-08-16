@@ -247,6 +247,56 @@ public class AuthController : ControllerBase
         return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
     }
 
+    [HttpPost("register_b2c")]
+    public async Task<IActionResult> Register_B2c([FromBody] RegisterModelDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var userId = await _tokenService.CreateUser(model, _configuration["AzureAdB2C:ClientId"], _configuration["AzureAdB2C:TenantId"], _configuration["AzureAdB2C:Instance"], _configuration["AzureAdB2C:Domain"], _configuration["AzureAdB2C:scopes"], _configuration["AzureAdB2C:ClientSecret"], _configuration["AzureAdB2C:SignUpSignInPolicyId"]);
+
+            var userExists = await _userManager.FindByEmailAsync(model.Email!);
+            if (userExists != null)
+            {
+                return Conflict(new ResponseDTO { Status = "Error", Message = "User already exists!" });
+            }
+
+            var user = new ApplicationUser
+            {
+                Email = model.Email,
+                RefreshTokenExpiryTime = DateTime.Now.AddDays(1),
+                UserName = model.UserName,
+                FullName = model.FullName,
+                SecurityIdentifierString = userId,
+                LeadID = model.LeadID
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password!);
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDTO { Status = "Error", Message = "User creation failed." });
+            }
+
+            // Adiciona o usuário ao papel "Cliente" após o registro
+            var addToRoleResult = await AddUserToRole(user.Email, "Cliente");
+            if (addToRoleResult is BadRequestObjectResult || addToRoleResult is NotFoundObjectResult)
+            {
+                return addToRoleResult;
+            }
+
+
+            return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new ResponseDTO { Status = "Error", Message = $"User registration failed: {ex.Message}" });
+        }
+    }
+
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken([FromBody] TokenDTO tokenModel)
     {
@@ -302,6 +352,66 @@ public class AuthController : ControllerBase
                 var jwtSecurityToken = handler.ReadJwtToken(token);
 
                 var objectId = jwtSecurityToken.Claims.First(claim => claim.Type == "oid").Value;
+                var isAdminCRM = jwtSecurityToken.Claims.Any(claim => claim.Type == "roles" && claim.Value == _configuration["AzureAD:Role"]);
+
+                if (!isAdminCRM)
+                    return Unauthorized("Role de Usuário Inválida.");
+
+                if (user == null)
+                    user = await EnsureUserExists(user, model.Email!, model.Password!, objectId);
+
+                var tokenResponse = await GenerateTokenResponse(user);
+                return Ok(tokenResponse);
+            }
+            else
+            {
+                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password!))
+                {
+                    var tokenResponse = await GenerateTokenResponse(user);
+                    if (tokenResponse.UserInfo.Roles.Contains("AdminMaster"))
+                    {
+                        return Ok(tokenResponse);
+                    }
+                }
+            }
+
+            return Unauthorized();
+        }
+        catch (MsalUiRequiredException)
+        {
+            return Unauthorized("Invalid username or password.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpPost("loginAzureB2c")]
+    public async Task<IActionResult> LoginAzureB2c([FromBody] LoginDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email!);
+            var authService = new TokenService();
+            var accessToken = await authService.AcquireTokenByUsernamePasswordAsyncB2c(_configuration["AzureAdB2C_Auth:ClientId"], _configuration["AzureAdB2C_Auth:Domain"], _configuration["AzureAdB2C_Auth:ROPC"], _configuration["AzureAdB2C_Auth:scopes"], model.Email, model.Password);
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                var token = accessToken;
+                var handler = new JwtSecurityTokenHandler();
+                var jwtSecurityToken = handler.ReadJwtToken(token);
+
+                var objectId = jwtSecurityToken.Claims.First(claim => claim.Type == "oid").Value;
+                var isClient = jwtSecurityToken.Claims.Any(claim => claim.Type == "scp" && claim.Value == _configuration["AzureAdB2C_Auth:Role"]);
+
+                if (!isClient)
+                    return Unauthorized("Role de Usuário Inválida.");
 
                 if (user == null)
                     user = await EnsureUserExists(user, model.Email!, model.Password!, objectId);

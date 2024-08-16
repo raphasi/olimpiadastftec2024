@@ -1,5 +1,10 @@
-﻿using CRM.Application.Interfaces;
+﻿using Azure.Identity;
+using CRM.Application.DTOs;
+using CRM.Application.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -113,5 +118,113 @@ namespace CRM.Application.Services
                 throw new Exception("Erro desconhecido. Verifique as configurações e tente novamente.");
             }
         }
+
+        public async Task<string> CreateUser(RegisterModelDTO userModel, string clienteId, string _tenantId, string _instance, string _domain, string apiScope, string clientSecret, string policyName)
+        {
+            try
+            {
+                // Registrar usuário no Azure AD B2C
+                var clientSecretCredential = new ClientSecretCredential(_tenantId, clienteId, clientSecret);
+                var graphClient = new GraphServiceClient(clientSecretCredential);
+
+                var newUser = new User
+                {
+                    AccountEnabled = true,
+                    DisplayName = userModel.FullName,
+                    Mail = userModel.Email, // E-mail real do usuário
+                    MailNickname = userModel.Email.Split('@')[0],
+                    MobilePhone = userModel.PhoneNumber,
+                    PasswordProfile = new PasswordProfile
+                    {
+                        ForceChangePasswordNextSignIn = false,
+                        Password = userModel.Password
+                    },
+                    Identities = new List<ObjectIdentity>
+                    {
+                        new ObjectIdentity
+                        {
+                            SignInType = "emailAddress",
+                            Issuer = _domain,
+                            IssuerAssignedId = userModel.Email // E-mail real do usuário
+                        }
+                    },
+                    UserPrincipalName = $"{userModel.Email.Split('@')[0]}@" + _domain// Domínio verificado
+                };
+
+                var createdUser = await graphClient.Users.PostAsync(newUser);
+
+                // O Azure AD B2C deve estar configurado para enviar e-mails de verificação automaticamente
+                return createdUser.Id;
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                Console.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                throw new Exception("Interação do usuário necessária. Verifique as permissões e consentimentos.");
+            }
+            catch (MsalServiceException ex)
+            {
+                Console.WriteLine($"MsalServiceException: {ex.Message}");
+                throw new Exception("Erro no serviço de autenticação. Verifique as configurações do Azure AD.");
+            }
+            catch (MsalClientException ex)
+            {
+                Console.WriteLine($"MsalClientException: {ex.Message}");
+                throw new Exception("Erro no cliente de autenticação. Verifique as credenciais e configurações.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw new Exception("Erro desconhecido. Verifique as configurações e tente novamente.");
+            }
+        }
+
+        public async Task<string> AcquireTokenByUsernamePasswordAsyncB2c(string clienteId, string _tenantName, string policyName, string apiScope, string username, string password)
+        {
+            try
+            {
+                // Monta a URL da autoridade no formato correto para Azure AD B2C
+                string authority = $"https://{_tenantName}.b2clogin.com/tfp/{_tenantName}.onmicrosoft.com/{policyName}";
+
+                // Configura o PublicClientApplication para autenticar o usuário
+                var publicClient = PublicClientApplicationBuilder.Create(clienteId)
+                    .WithAuthority(new Uri(authority))
+                    .Build();
+
+                // Autentica o usuário usando ROPC
+                var authResult = await publicClient.AcquireTokenByUsernamePassword(
+                    new[] { apiScope },
+                    username,
+                    new NetworkCredential("", password).SecurePassword
+                ).ExecuteAsync();
+
+                return authResult.AccessToken;
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // Erro específico do MSAL quando é necessária uma interação do usuário
+                Console.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                throw new Exception("Interação do usuário necessária. Verifique as permissões e consentimentos.");
+            }
+            catch (MsalServiceException ex)
+            {
+                // Erro específico do serviço MSAL
+                Console.WriteLine($"MsalServiceException: {ex.Message}");
+                throw new Exception("Erro no serviço de autenticação. Verifique as configurações do Azure AD.");
+            }
+            catch (MsalClientException ex)
+            {
+                // Erro específico do cliente MSAL
+                Console.WriteLine($"MsalClientException: {ex.Message}");
+                throw new Exception("Erro no cliente de autenticação. Verifique as credenciais e configurações.");
+            }
+            catch (Exception ex)
+            {
+                // Outros erros
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw new Exception("Erro desconhecido. Verifique as configurações e tente novamente.");
+            }
+        }
+
+
     }
 }

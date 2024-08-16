@@ -38,6 +38,12 @@ public class OpportunityService : IOpportunityService
         return _mapper.Map<OpportunityDTO>(opportunity);
     }
 
+    public async Task<IEnumerable<OpportunityDTO>> GetByLeadIdAsync(Guid id)
+    {
+        var opportunity = await _opportunityRepository.GetOpportunityByLeadIdAsync(id);
+        return _mapper.Map<IEnumerable<OpportunityDTO>>(opportunity);
+    }
+
     public async Task<OpportunityDTO> AddAsync(OpportunityDTO opportunity)
     {
         opportunity.OpportunityID = Guid.NewGuid();

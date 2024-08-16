@@ -63,7 +63,7 @@ namespace CRM.WebApp.Ingresso.Controllers
                     roleName = "Cliente"
                 };
 
-                var response = await client.PostAsJsonAsync("api/auth/register_loja", model);
+                var response = await client.PostAsJsonAsync("api/auth/register_b2c", model);
                 response.EnsureSuccessStatusCode();
 
                  if (response.IsSuccessStatusCode)
@@ -74,7 +74,7 @@ namespace CRM.WebApp.Ingresso.Controllers
                         Email = model.Email,
                         Password = model.Password
                     };
-                    var responseLogin = await client.PostAsJsonAsync("api/auth/login", loginModel);
+                    var responseLogin = await client.PostAsJsonAsync("api/auth/loginazureb2c", loginModel);
                     responseLogin.EnsureSuccessStatusCode();
                     if (responseLogin.IsSuccessStatusCode)
                     {
@@ -143,7 +143,7 @@ namespace CRM.WebApp.Ingresso.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient("CRM.API");
-                var response = await client.PostAsJsonAsync("api/auth/login", model);
+                var response = await client.PostAsJsonAsync("api/auth/loginazureb2c", model);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -185,7 +185,8 @@ namespace CRM.WebApp.Ingresso.Controllers
         public IActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete("access_token");
-            return NoContent();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

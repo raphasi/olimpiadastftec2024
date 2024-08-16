@@ -40,15 +40,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Adiciona o middleware personalizado
+
 app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
 
-// Adiciona o middleware personalizado
-app.UseRedirectToLogin();
 
 app.UseAuthentication();
+app.UseRedirectToLogin();
 app.UseAuthorization();
 
 // Configura a localização

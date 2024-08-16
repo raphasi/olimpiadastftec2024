@@ -29,6 +29,16 @@ namespace CRM.Infrastructure.Repositories
             return await _opportunityContext.Set<Opportunity>().FindAsync(opportunityId);
         }
 
+        public async Task<IEnumerable<Opportunity>> GetOpportunityByLeadIdAsync(Guid leadId)
+        {
+            return await _opportunityContext.Set<Opportunity>()
+                .Include(c => c.Lead)
+                .Include(c => c.Customer)
+                .Include(c => c.Quotes)
+                .Where(c => c.LeadID == leadId)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Opportunity>> GetAllOpportunitiesAsync()
         {
             return await _opportunityContext.Set<Opportunity>()

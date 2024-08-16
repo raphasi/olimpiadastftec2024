@@ -11,6 +11,7 @@ public interface IOpportunityService
 {
     Task<IEnumerable<OpportunityDTO>> GetAllAsync();
     Task<OpportunityDTO> GetByIdAsync(Guid id);
+    Task<IEnumerable<OpportunityDTO>> GetByLeadIdAsync(Guid id);
     Task<OpportunityDTO> AddAsync(OpportunityDTO opportunity);
     Task UpdateAsync(OpportunityDTO opportunity);
     Task DeleteAsync(Guid id);
